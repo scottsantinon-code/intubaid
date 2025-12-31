@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="IntubAid">
+    <title>IntubAid</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --bg: #f5f5f7;
+            --bg-grouped: #ffffff;
+            --label: #1d1d1f;
+            --label-secondary: #424245;
+            --label-tertiary: #86868b;
+            --label-quaternary: #d2d2d7;
+            --separator: rgba(0,0,0,0.08);
+            --fill: rgba(118,118,128,0.12);
+            --fill-secondary: rgba(118,118,128,0.08);
+            --blue: #0071e3;
+            --green: #30d158;
+            --orange: #ff9f0a;
+            --red: #ff453a;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--label);
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 20px;
+            padding-top: max(12px, env(safe-area-inset-top));
+            background: linear-gradient(to bottom, rgba(245,245,247,0.97) 0%, rgba(245,245,247,0.92) 100%);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 0.5px solid rgba(0,0,0,0.06);
+        }
+        
+        .nav-bar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1d1d1f 0%, #424245 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-btn {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--blue);
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+        
+        .nav-btn:active { background: var(--fill); }
+        .nav-btn.red { color: var(--red); }
+        
+        .seg-wrap { padding: 12px 20px 0; }
+        
+        .segments {
+            display: flex;
+            background: var(--fill);
+            border-radius: 10px;
+            padding: 3px;
+            position: relative;
+        }
+        
+        .seg-slider {
+            position: absolute;
+            top: 3px;
+            height: calc(100% - 6px);
+            background: var(--bg-grouped);
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .seg {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-secondary);
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: color 0.2s;
+        }
+        
+        .seg.active { color: var(--label); }
+        
+        .seg-count {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            font-feature-settings: 'tnum';
+        }
+        
+        .seg.active .seg-count { color: var(--label-secondary); }
+        .seg-count.done { color: var(--green); }
+        
+        .content {
+            flex: 1;
+            padding: 16px 20px;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            overflow-y: auto;
+        }
+        
+        .panel { display: none; }
+        .panel.active {
+            display: block;
+            animation: fadeIn 0.25s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .group-hdr {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 8px;
+            padding-left: 4px;
+        }
+        
+        .group-hdr:first-child { margin-top: 0; }
+        
+        .card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        /* Risk Row - Compact */
+        .risk-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            min-height: 36px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .risk-row:active { background: var(--fill-secondary); }
+        .risk-row + .risk-row { border-top: 0.5px solid var(--separator); }
+        
+        .toggle {
+            width: 44px;
+            height: 26px;
+            background: var(--fill);
+            border-radius: 13px;
+            position: relative;
+            flex-shrink: 0;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+        
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .toggle.on { background: var(--orange); }
+        .toggle.on::after { transform: translateX(18px); }
+        
+        .risk-content { flex: 1; }
+        
+        .risk-name {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--label);
+        }
+        
+        /* Mitigation Chips - Compact */
+        .mit-chips {
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        
+        .mit-chips.visible { display: flex; }
+        
+        .mit-chip {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 5px 10px;
+            background: var(--fill);
+            border-radius: 100px;
+            color: var(--label-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+        
+        .mit-chip:active { transform: scale(0.96); }
+        
+        .mit-chip.on {
+            background: var(--green);
+            color: #fff;
+        }
+        
+        /* Checkbox - Compact */
+        .chk {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--label-quaternary);
+            margin-right: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .chk.on {
+            background: var(--green);
+            border-color: transparent;
+        }
+        
+        .chk.on::after {
+            content: '';
+            width: 4px;
+            height: 8px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        
+        .chk-text {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--label);
+        }
+        
+        .chk-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            min-height: 36px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .chk-row:active { background: var(--fill-secondary); }
+        .chk-row + .chk-row { border-top: 0.5px solid var(--separator); }
+        .chk-row.done .chk-text { color: var(--label-tertiary); }
+        
+        .chk-row .chk {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .chk-row .chk.on::after {
+            width: 4px;
+            height: 8px;
+            border-width: 0 2px 2px 0;
+        }
+        
+        /* Compact Equipment Checklist */
+        .equip-card { padding: 0; }
+        
+        .equip-section-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 4px;
+            background: var(--fill-secondary);
+        }
+        
+        .equip-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            min-height: 36px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .equip-row:active { background: var(--fill-secondary); }
+        .equip-row + .equip-row { border-top: 0.5px solid var(--separator); }
+        .equip-row.done .chk-text { color: var(--label-tertiary); }
+        
+        .equip-row .chk {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .equip-row .chk.on::after {
+            width: 4px;
+            height: 8px;
+            border-width: 0 2px 2px 0;
+        }
+        
+        .equip-row .chk-text {
+            font-size: 14px;
+        }
+        
+        /* Drug Selection */
+        .drug-select-section {
+            margin-bottom: 12px;
+        }
+        
+        /* Recipes Section */
+        .recipes-section {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .recipes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            cursor: pointer;
+        }
+        
+        .recipes-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--label);
+        }
+        
+        .recipes-chevron {
+            font-size: 18px;
+            color: var(--label-tertiary);
+            transition: transform 0.2s;
+        }
+        
+        .recipes-section.open .recipes-chevron {
+            transform: rotate(90deg);
+        }
+        
+        .recipes-body {
+            display: none;
+            padding: 0 14px 14px;
+        }
+        
+        .recipes-section.open .recipes-body {
+            display: block;
+        }
+        
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .recipe-btn {
+            background: var(--fill);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .recipe-btn:active { transform: scale(0.96); }
+        .recipe-btn.sel { background: var(--blue); }
+        
+        .recipe-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--label);
+        }
+        
+        .recipe-desc {
+            font-size: 10px;
+            color: var(--label-tertiary);
+            margin-top: 1px;
+        }
+        
+        .recipe-btn.sel .recipe-name,
+        .recipe-btn.sel .recipe-desc { color: #fff; }
+        
+        .scn-header {
+            display: none;
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .scn-header.visible {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .scn-header-name {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+        }
+        
+        .scn-change {
+            font-size: 15px;
+            color: var(--blue);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .calc { display: none; }
+        .calc.visible { display: block; }
+        
+        .drug-alert {
+            display: flex;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: #fff3e0;
+            border-radius: 10px;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .drug-alert .alert-icon { font-size: 16px; }
+        .drug-alert .alert-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #bf360c;
+            line-height: 1.35;
+        }
+        
+        .callout {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+        }
+        
+        /* Drug Timing Graph - Pharmacokinetic Curves */
+        .drug-timing {
+            margin-top: 10px;
+        }
+        
+        .timing-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 12px 14px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .timing-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+        
+        .timing-graph {
+            position: relative;
+            height: 70px;
+            margin-bottom: 4px;
+            background: linear-gradient(to bottom, var(--fill-secondary) 0%, transparent 100%);
+            border-radius: 6px;
+        }
+        
+        .timing-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .timing-axis {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+        }
+        
+        .timing-tick {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+            font-feature-settings: 'tnum';
+        }
+        
+        .timing-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .timing-leg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--label-secondary);
+        }
+        
+        .timing-leg-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .timing-leg-item.sedation .timing-leg-dot { background: #007aff; }
+        .timing-leg-item.analgesia .timing-leg-dot { background: #af52de; }
+        .timing-leg-item.paralytic .timing-leg-dot { background: #8b0000; }
+        
+        .callout-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: #e65100;
+            text-transform: uppercase;
+            letter-spacing: 0.05px;
+            margin-bottom: 6px;
+        }
+        
+        .callout-item {
+            font-size: 13px;
+            color: var(--label);
+            padding: 2px 0 2px 12px;
+            position: relative;
+        }
+        
+        .callout-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #e65100;
+        }
+        
+        .custom-sel {
+            display: none;
+            margin-bottom: 12px;
+        }
+        
+        .custom-sel.visible { display: block; }
+        
+        .custom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .custom-btn {
+            background: var(--bg-grouped);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--label);
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 44px;
+        }
+        
+        .custom-btn:active { transform: scale(0.96); }
+        
+        .custom-btn.sel {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.25);
+        }
+        
+        .input-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .field-lbl {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .field-input {
+            width: 100%;
+            background: var(--fill);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--label);
+            font-feature-settings: 'tnum';
+            transition: box-shadow 0.15s;
+        }
+        
+        .field-input::placeholder { color: var(--label-quaternary); }
+        .field-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.12);
+        }
+        
+        .drug-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .drug-card-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 6px;
+        }
+        
+        .drug-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+        }
+        
+        .drug-row + .drug-row { border-top: 0.5px solid var(--separator); }
+        
+        .drug-chk {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--label-quaternary);
+            margin-right: 10px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .drug-chk.on {
+            background: var(--blue);
+            border-color: transparent;
+        }
+        
+        .drug-chk.on::after {
+            content: '';
+            width: 4px;
+            height: 8px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        
+        .drug-chk.opt { border-style: dashed; }
+        
+        .drug-info { flex: 1; min-width: 0; }
+        
+        .drug-name {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+            color: var(--label);
+        }
+        
+        .drug-opt {
+            font-size: 13px;
+            color: var(--label-tertiary);
+        }
+        
+        .drug-meta {
+            font-size: 12px;
+            color: var(--label-tertiary);
+            margin-top: 1px;
+        }
+        
+        .drug-doses {
+            text-align: right;
+        }
+        
+        .drug-dose {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            font-feature-settings: 'tnum';
+            white-space: nowrap;
+        }
+        
+        .drug-dose.fixed {
+            font-weight: 400;
+            color: var(--label-secondary);
+        }
+        
+        .drug-ml {
+            font-size: 12px;
+            color: var(--label-tertiary);
+            font-feature-settings: 'tnum';
+        }
+        
+        /* GO Tab - Summary and Timers */
+        .go-summary {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .go-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+        
+        .go-summary-row + .go-summary-row {
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .go-summary-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+        }
+        
+        .go-summary-value {
+            font-size: 14px;
+            color: var(--label);
+            text-align: right;
+            max-width: 60%;
+        }
+        
+        .go-airway {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .go-plan-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+        
+        .go-plan-row + .go-plan-row {
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .go-plan-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--blue);
+            width: 20px;
+            flex-shrink: 0;
+        }
+        
+        .go-plan-text {
+            font-size: 14px;
+            color: var(--label);
+        }
+        
+        .timer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .timer-box {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .timer-box:active { transform: scale(0.98); }
+        .timer-box.started { cursor: default; }
+        .timer-box.started:active { transform: none; }
+        .timer-box.disabled { opacity: 0.5; cursor: default; }
+        .timer-box.disabled:active { transform: none; }
+        .timer-box.ready { background: rgba(52, 199, 89, 0.1); }
+        .timer-box.active { background: rgba(255, 149, 0, 0.1); }
+        
+        .timer-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+        
+        .timer-countdown {
+            font-size: 32px;
+            font-weight: 300;
+            font-feature-settings: 'tnum';
+            color: var(--label);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        
+        .timer-box.ready .timer-countdown { color: var(--green); }
+        .timer-box.active .timer-countdown { color: var(--orange); }
+        
+        .timer-status {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+        }
+        
+        .timer-box.ready .timer-status { color: var(--green); }
+        .timer-box.active .timer-status { color: var(--orange); }
+        
+        .readiness-alert {
+            display: none;
+            padding: 10px 12px;
+            background: #fff3e0;
+            border-radius: 10px;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .readiness-alert.visible { display: flex; }
+        .readiness-alert .alert-icon { font-size: 14px; }
+        .readiness-alert .alert-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #bf360c;
+            line-height: 1.35;
+        }
+        
+        /* Plan Panel - Compact */
+        .plan-toggle-wrap {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .plan-toggle-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: inherit;
+            background: var(--fill);
+            color: var(--label-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .plan-toggle-btn:active { transform: scale(0.98); }
+        .plan-toggle-btn.active {
+            background: var(--blue);
+            color: #fff;
+        }
+        
+        .plan-section {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .plan-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+        
+        .plan-text {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--label);
+            line-height: 1.35;
+        }
+        
+        .plan-warning {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #bf360c;
+            line-height: 1.35;
+        }
+        
+        .plan-warning .alert-icon { font-size: 14px; }
+        
+        /* Assess Button */
+        .assess-btn {
+            font-size: 12px;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 4px 10px;
+            background: var(--fill);
+            border: none;
+            border-radius: 100px;
+            color: var(--blue);
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        
+        .assess-btn:active { opacity: 0.7; }
+        
+        /* Post-intubation Section */
+        .post-intub-section {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .section-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 4px;
+            background: var(--fill-secondary);
+        }
+        
+        .post-intub-list .equip-row:first-child { border-top: none; }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .modal-overlay.visible { display: flex; }
+        
+        .modal {
+            background: var(--bg);
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 0.5px solid var(--separator);
+        }
+        
+        .modal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--blue);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .assess-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .assess-section-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 4px;
+            background: var(--fill-secondary);
+        }
+        
+        .assess-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px;
+            min-height: 36px;
+            cursor: pointer;
+        }
+        
+        .assess-row + .assess-row { border-top: 0.5px solid var(--separator); }
+        .assess-row.on .chk-text { color: var(--orange); font-weight: 500; }
+        
+        .assess-row .chk {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        .assess-row .chk.on {
+            background: var(--orange);
+        }
+        
+        .assess-result {
+            text-align: center;
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--label-secondary);
+        }
+        
+        .assess-result.warning {
+            color: var(--orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <nav class="nav">
+            <div class="nav-bar">
+                <h1 class="nav-title" id="navTitle">IntubAid</h1>
+                <button class="nav-btn red" onclick="reset()">Reset</button>
+            </div>
+        </nav>
+        
+        <div class="seg-wrap" id="segWrap">
+            <div class="segments">
+                <div class="seg-slider" id="slider"></div>
+                <button class="seg active" data-tab="risks"><span>Risks</span></button>
+                <button class="seg" data-tab="checks"><span>Checks</span><span class="seg-count" id="checksCount">0/8</span></button>
+                <button class="seg" data-tab="equip"><span>Equip</span><span class="seg-count" id="equipCount">0/12</span></button>
+                <button class="seg" data-tab="drugs"><span>Drugs</span><span class="seg-count" id="drugsCount">—</span></button>
+                <button class="seg" data-tab="plan"><span>Airway</span></button>
+                <button class="seg" data-tab="timer"><span>GO</span></button>
+            </div>
+        </div>
+        
+        <main class="content">
+            <!-- Risks -->
+            <div class="panel active" id="risks-panel">
+                <div class="card">
+                    <div class="risk-row" onclick="toggleRisk('aspiration')">
+                        <div class="toggle" id="t-aspiration"></div>
+                        <div class="risk-content">
+                            <div class="risk-name">Aspiration</div>
+                            <div class="mit-chips" id="mc-aspiration">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">2× yankauers</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">NGT</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">RSI</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('difficult')">
+                        <div class="toggle" id="t-difficult"></div>
+                        <div class="risk-content">
+                            <div class="risk-name">Anatomical difficulty</div>
+                            <button class="assess-btn" onclick="event.stopPropagation();showDifficultyAssess()">Assess</button>
+                            <div class="mit-chips" id="mc-difficult">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Anaes backup</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">AFOI / awake trache</span>
+                            </div>
+                            <div class="mit-chips" id="mc-difficult2" style="margin-top:4px;">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Double setup</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Mark neck</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pillow plan</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('haemo')">
+                        <div class="toggle" id="t-haemo"></div>
+                        <div class="risk-content">
+                            <div class="risk-name">Haemodynamic instability</div>
+                            <div class="mit-chips" id="mc-haemo">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Art line</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Vasopressor</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pads on</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">DSI</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('hypoxia')">
+                        <div class="toggle" id="t-hypoxia"></div>
+                        <div class="risk-content">
+                            <div class="risk-name">Hypoxia</div>
+                            <div class="mit-chips" id="mc-hypoxia">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pre-ox with NIV</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Diuresis</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">iNO</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">VV ECMO</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('acidaemia')">
+                        <div class="toggle" id="t-acidaemia"></div>
+                        <div class="risk-content">
+                            <div class="risk-name">Acidaemia</div>
+                            <div class="mit-chips" id="mc-acidaemia">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Bicarb</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic vent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Checks -->
+            <div class="panel" id="checks-panel">
+                <div class="card">
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Allergies</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Major cardio/respiratory comorbidities</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Positioning optimal – EAM in line with sternal notch</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Monitoring on</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">EtCO₂ on BVM</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">IV access + pump set connected</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Ventilator set</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Post intubation sedation ready</span></div>
+                </div>
+            </div>
+            
+            <!-- Equipment -->
+            <div class="panel" id="equip-panel">
+                <div class="card equip-card">
+                    <div class="equip-section-hdr">Positioning</div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Ramped / head elevated</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bed height optimised</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bed controls accessible</span></div>
+                    
+                    <div class="equip-section-hdr">Oxygenation</div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">BVM + PEEP valve</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">OPA (red + yellow)</span></div>
+                    
+                    <div class="equip-section-hdr">Laryngoscopy</div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Direct mac – checked</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Video mac – checked</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Hyperangulated – checked</span></div>
+                    
+                    <div class="equip-section-hdr">Intubation</div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bougie – moulded</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Stylet</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">ETT ×2 – checked</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">10ml syringe + tape</span></div>
+                    
+                    <div class="equip-section-hdr">Rescue</div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">LMA</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Suction under pillow</span></div>
+                    <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">CICO kit – scalpel, bougie, 6.0</span></div>
+                </div>
+            </div>
+            
+            <!-- Drugs -->
+            <div class="panel" id="drugs-panel">
+                <div class="drug-select-section">
+                    <div class="custom-grid">
+                        <button class="custom-btn" onclick="toggleDrug('ketamine',this)">Ketamine</button>
+                        <button class="custom-btn" onclick="toggleDrug('propofol',this)">Propofol</button>
+                        <button class="custom-btn" onclick="toggleDrug('midazolam',this)">Midazolam</button>
+                        <button class="custom-btn" onclick="toggleDrug('fentanyl',this)">Fentanyl</button>
+                        <button class="custom-btn" onclick="toggleDrug('rocuronium',this)">Rocuronium</button>
+                        <button class="custom-btn" onclick="toggleDrug('suxamethonium',this)">Sux</button>
+                    </div>
+                </div>
+                
+                <div class="recipes-section">
+                    <div class="recipes-header" onclick="toggleRecipes()">
+                        <span class="recipes-title">Recipes</span>
+                        <span class="recipes-chevron" id="recipesChevron">›</span>
+                    </div>
+                    <div class="recipes-body" id="recipesBody">
+                        <div class="recipes-grid">
+                            <button class="recipe-btn" onclick="selRecipe('elective')"><span class="recipe-name">Elective</span></button>
+                            <button class="recipe-btn" onclick="selRecipe('rsi')"><span class="recipe-name">RSI</span></button>
+                            <button class="recipe-btn" onclick="selRecipe('dsi')"><span class="recipe-name">DSI</span></button>
+                            <button class="recipe-btn" onclick="selRecipe('hypotension')"><span class="recipe-name">Shocked</span></button>
+                            <button class="recipe-btn" onclick="selRecipe('htn')"><span class="recipe-name">ICH/SAH/Dissection</span></button>
+                            <button class="recipe-btn" onclick="selRecipe('cardiac')"><span class="recipe-name">Cardiac</span><span class="recipe-desc">Induction, AS</span></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-card" id="weightCard">
+                    <div class="field-lbl">Weight (kg)</div>
+                    <input type="number" class="field-input" id="wtInput" placeholder="70" oninput="doCalc()">
+                </div>
+                
+                <div id="drugCards"></div>
+                
+                <div class="drug-alert" id="drugAlert" style="display:none;">
+                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-text" id="drugAlertText"></span>
+                </div>
+                
+                <div class="callout" id="callout" style="display:none;">
+                    <div class="callout-hdr">Consider</div>
+                    <div id="calloutItems"></div>
+                </div>
+                
+                <div class="drug-timing" id="drugTiming" style="display:none;">
+                    <div class="timing-card">
+                        <div class="timing-hdr">Effect Over Time (simultaneous administration)</div>
+                        <div class="timing-graph">
+                            <svg class="timing-svg" id="timingSvg" viewBox="0 0 300 80" preserveAspectRatio="none"></svg>
+                        </div>
+                        <div class="timing-axis">
+                            <span class="timing-tick">0s</span>
+                            <span class="timing-tick">1m</span>
+                            <span class="timing-tick">2m</span>
+                            <span class="timing-tick">3m</span>
+                            <span class="timing-tick">4m</span>
+                            <span class="timing-tick">5m</span>
+                        </div>
+                        <div class="timing-legend" id="timingLegend"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Plan -->
+            <div class="panel" id="plan-panel">
+                <div class="plan-toggle-wrap">
+                    <button class="plan-toggle-btn active" id="planToggleStd" onclick="setPlanType('standard')">Standard</button>
+                    <button class="plan-toggle-btn" id="planToggleDiff" onclick="setPlanType('difficult')">Difficult airway</button>
+                </div>
+                
+                <div id="planStandard">
+                    <div class="plan-section">
+                        <div class="plan-label">Plan A</div>
+                        <div class="plan-text">Video laryngoscopy with MAC 4 blade, size <span class="ett-size">X</span> ETT with stylet</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan B</div>
+                        <div class="plan-text">Size <span class="lma-size">X</span> LMA</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan C</div>
+                        <div class="plan-text">BMV with OPA</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan D</div>
+                        <div class="plan-text">eFONA</div>
+                    </div>
+                </div>
+                
+                <div id="planDifficult" style="display:none;">
+                    <div class="plan-warning">
+                        <span class="alert-icon">⚠️</span>
+                        <span>Consider anaesthetics support, AFOI, tracheostomy, dual setup, mark neck</span>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan A</div>
+                        <div class="plan-text">Video laryngoscopy with hyperangulated blade, size <span class="ett-size">X</span> ETT with stylet</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan B</div>
+                        <div class="plan-text">Size <span class="lma-size">X</span> LMA</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan C</div>
+                        <div class="plan-text">BMV with OPA</div>
+                    </div>
+                    <div class="plan-section">
+                        <div class="plan-label">Plan D</div>
+                        <div class="plan-text">eFONA</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timer -->
+            <div class="panel" id="timer-panel">
+                <div class="readiness-alert" id="readinessAlert">
+                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-text" id="readinessText"></span>
+                </div>
+                
+                <div class="go-summary" id="goSummary">
+                    <div class="go-summary-row">
+                        <span class="go-summary-label">Risks</span>
+                        <span class="go-summary-value" id="goRisks">None</span>
+                    </div>
+                    <div class="go-summary-row">
+                        <span class="go-summary-label">Drugs</span>
+                        <span class="go-summary-value" id="goDrugs">None selected</span>
+                    </div>
+                </div>
+                
+                <div class="go-airway" id="goAirway">
+                    <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text" id="goPlanA">VL MAC 4</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">B</span><span class="go-plan-text">LMA</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">C</span><span class="go-plan-text">BMV + OPA</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">D</span><span class="go-plan-text">eFONA</span></div>
+                </div>
+                
+                <div class="timer-grid">
+                    <div class="timer-box" id="preoxBox" onclick="startPreox()">
+                        <div class="timer-label">Pre-oxygenation</div>
+                        <div class="timer-countdown" id="preoxTime">0:00</div>
+                        <div class="timer-status" id="preoxStatus">Tap to start</div>
+                    </div>
+                    <div class="timer-box" id="paralysisBox" onclick="startParalysis()">
+                        <div class="timer-label">Paralysis</div>
+                        <div class="timer-countdown" id="paralysisTime">0:00</div>
+                        <div class="timer-status" id="paralysisStatus">Tap when given</div>
+                    </div>
+                </div>
+                
+                <div class="post-intub-section">
+                    <div class="section-hdr">Post-intubation</div>
+                    <div class="post-intub-list">
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">ETCO2 confirmed</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Bilateral breath sounds</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Tube depth checked</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Tube secured</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Cuff pressure checked</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Sedation running</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Ventilator settings confirmed</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">CXR ordered</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Evidence -->
+            </main>
+    </div>
+    
+    <!-- Difficulty Assessment Modal -->
+    <div class="modal-overlay" id="difficultyModal" onclick="if(event.target===this)hideDifficultyAssess()">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="hideDifficultyAssess()">Done</button>
+                <span class="modal-title">Difficult Airway Features</span>
+            </div>
+            <div class="modal-body">
+                <div class="assess-card">
+                    <div class="assess-section-hdr">Look externally</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Facial trauma / burns</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Large beard</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Obesity / large neck</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Short thyromental distance</span></div>
+                    
+                    <div class="assess-section-hdr">Evaluate 3-3-2</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mouth opening &lt;3 fingers</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mandible length &lt;3 fingers</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Floor of mouth to thyroid &lt;2 fingers</span></div>
+                    
+                    <div class="assess-section-hdr">Mallampati</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Grade III or IV</span></div>
+                    
+                    <div class="assess-section-hdr">Obstruction / pathology</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Stridor / hoarse voice</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Neck mass / radiation</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Epiglottitis / angioedema</span></div>
+                    
+                    <div class="assess-section-hdr">Neck mobility</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">C-spine immobilisation</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Ankylosing spondylitis / RA</span></div>
+                    
+                    <div class="assess-section-hdr">Previous difficulty</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Known difficult airway</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Previous tracheostomy</span></div>
+                </div>
+                <div class="assess-result" id="assessResult">0 features identified</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const S = {
+            risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false},
+            checks: 0, equip: 0,
+            selectedDrugs: [], recipe: null,
+            wt: null, planType: 'standard',
+            preoxStart: null, preoxTimer: null, preoxDone: false,
+            paralysisStart: null, paralysisTimer: null
+        };
+        
+        // Smart rounding for drug doses - rounds to clinically sensible values
+        function roundDose(drugId, dose, isMcg) {
+            if (isMcg) {
+                // Fentanyl: round to nearest 25mcg
+                return Math.round(dose / 25) * 25;
+            }
+            // mg doses
+            switch(drugId) {
+                case 'rocuronium':
+                    // Round to nearest 50mg
+                    return Math.round(dose / 50) * 50;
+                case 'ketamine':
+                case 'propofol':
+                    // Round to nearest 10mg
+                    return Math.round(dose / 10) * 10;
+                case 'suxamethonium':
+                    // Round to nearest 10mg
+                    return Math.round(dose / 10) * 10;
+                case 'midazolam':
+                    // Round to nearest 0.5mg
+                    return Math.round(dose * 2) / 2;
+                default:
+                    return Math.round(dose);
+            }
+        }
+        
+        // Standard Australian preparations (concentration in mg/mL or mcg/mL)
+        const DRUG_PREPS = {
+            ketamine: {conc: 10, unit: 'mg/mL'},      // 200mg/20mL
+            propofol: {conc: 10, unit: 'mg/mL'},      // 200mg/20mL
+            midazolam: {conc: 5, unit: 'mg/mL'},      // 5mg/mL
+            fentanyl: {conc: 50, unit: 'mcg/mL'},     // 100mcg/2mL
+            rocuronium: {conc: 10, unit: 'mg/mL'},    // 50mg/5mL
+            suxamethonium: {conc: 50, unit: 'mg/mL'}  // 100mg/2mL
+        };
+        
+        const DRUGS = {
+            // Evidence-based IV pharmacokinetics (all times in seconds)
+            // onset = clinical effect begins, peak = max effect, offset = effect wears off
+            ketamine: {name:'Ketamine',onset:45,peak:90,offset:600,type:'sedation'},        // 2mg/kg: onset 45s, peak 90s, duration 10min
+            propofol: {name:'Propofol',onset:40,peak:90,offset:480,type:'sedation'},        // 2mg/kg: onset 40s, peak 90s, duration 8min
+            midazolam: {name:'Midazolam',onset:120,peak:300,offset:1800,type:'sedation'},    // onset 2min, peak 5min, duration 30min
+            fentanyl: {name:'Fentanyl',onset:120,peak:240,offset:3600,type:'analgesia'},     // onset 2min, peak 4min, duration 60min
+            rocuronium: {name:'Rocuronium',onset:60,peak:90,offset:4200,type:'paralytic'},  // 1.2mg/kg: onset 60s, peak 90s, duration 70min
+            suxamethonium: {name:'Suxamethonium',onset:45,peak:60,offset:540,type:'paralytic'} // 1.5mg/kg: onset 45s, peak 60s, duration 9min
+        };
+        
+        const SCN_NAMES = {
+            dsi: 'DSI',
+            rsi: 'RSI',
+            htn: 'ICH/SAH/Dissection',
+            hypotension: 'Shocked',
+            elective: 'Elective',
+            cardiac: 'Cardiac induction / critical AS',
+            custom: 'Custom'
+        };
+        
+        const SCNS = {
+            dsi: {
+                cons: [],
+                drugs: [
+                    {id:'ketamine',fixed:true,dose:'50mg boluses until unconscious'},
+                    {id:'rocuronium',rate:1.2,unit:'mg/kg'}
+                ]
+            },
+            rsi: {
+                cons: [],
+                drugs: [
+                    {id:'ketamine',rate:2,unit:'mg/kg'},
+                    {id:'fentanyl',rate:2,unit:'mcg/kg',opt:true},
+                    {id:'rocuronium',rate:1.2,unit:'mg/kg'}
+                ]
+            },
+            htn: {
+                cons: ['DSI','Hyperangulated blade','PRN propofol','PRN esmolol (30mg)','PRN metaraminol'],
+                drugs: [
+                    {id:'fentanyl',fixed:true,dose:'200–300 mcg'},
+                    {id:'propofol',rate:2,unit:'mg/kg'},
+                    {id:'rocuronium',fixed:true,dose:'150 mg'}
+                ]
+            },
+            hypotension: {
+                cons: ['Norad running','Adrenaline drawn up'],
+                drugs: [
+                    {id:'midazolam',fixed:true,dose:'0–5 mg'},
+                    {id:'ketamine',fixed:true,dose:'20–100 mg'},
+                    {id:'rocuronium',fixed:true,dose:'150 mg'}
+                ]
+            },
+            elective: {
+                cons: ['Give fentanyl ~2 mins prior','Await unconsciousness before paralysis'],
+                drugs: [
+                    {id:'fentanyl',rate:3,unit:'mcg/kg'},
+                    {id:'propofol',rate:2,unit:'mg/kg'},
+                    {id:'rocuronium',rate:0.6,unit:'mg/kg'}
+                ]
+            },
+            cardiac: {
+                cons: ['Norad running','Metaraminol boluses'],
+                drugs: [
+                    {id:'midazolam',fixed:true,dose:'1–2 mg'},
+                    {id:'fentanyl',fixed:true,dose:'300–400 mcg'},
+                    {id:'propofol',fixed:true,dose:'20–30 mg'},
+                    {id:'rocuronium',fixed:true,dose:'150 mg'}
+                ]
+            },
+            custom: {cons:[],drugs:[]}
+        };
+        
+        function initSlider() {
+            const a = document.querySelector('.seg.active');
+            const s = document.getElementById('slider');
+            if (a && s) { s.style.width = a.offsetWidth+'px'; s.style.left = a.offsetLeft+'px'; }
+        }
+        
+        document.querySelectorAll('.seg').forEach(seg => {
+            seg.addEventListener('click', () => {
+                document.querySelectorAll('.seg').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                seg.classList.add('active');
+                document.getElementById(seg.dataset.tab+'-panel').classList.add('active');
+                initSlider();
+                if (seg.dataset.tab === 'timer') updateGoSummary();
+            });
+        });
+        
+        function toggleRisk(id) {
+            S.risks[id] = !S.risks[id];
+            document.getElementById('t-'+id).classList.toggle('on', S.risks[id]);
+            document.getElementById('mc-'+id).classList.toggle('visible', S.risks[id]);
+            // Also toggle second row for anatomical difficulty and auto-select plan type
+            if (id === 'difficult') {
+                document.getElementById('mc-difficult2').classList.toggle('visible', S.risks[id]);
+                setPlanType(S.risks[id] ? 'difficult' : 'standard');
+            }
+            checkAlert();
+        }
+        
+        function setPlanType(type) {
+            S.planType = type;
+            document.getElementById('planToggleStd').classList.toggle('active', type === 'standard');
+            document.getElementById('planToggleDiff').classList.toggle('active', type === 'difficult');
+            document.getElementById('planStandard').style.display = type === 'standard' ? 'block' : 'none';
+            document.getElementById('planDifficult').style.display = type === 'difficult' ? 'block' : 'none';
+        }
+        
+        function toggleChk(row, type) {
+            const c = row.querySelector('.chk');
+            const was = c.classList.contains('on');
+            c.classList.toggle('on');
+            row.classList.toggle('done');
+            S[type] += was ? -1 : 1;
+            updateCounts();
+        }
+        
+        function updateCounts() {
+            document.getElementById('checksCount').textContent = S.checks+'/8';
+            document.getElementById('checksCount').classList.toggle('done', S.checks===8);
+            document.getElementById('equipCount').textContent = S.equip+'/12';
+            document.getElementById('equipCount').classList.toggle('done', S.equip===12);
+        }
+        
+        function toggleRecipes() {
+            document.querySelector('.recipes-section').classList.toggle('open');
+        }
+        
+        function toggleDrug(id, btn) {
+            btn.classList.toggle('sel');
+            if (btn.classList.contains('sel')) {
+                if (!S.selectedDrugs.includes(id)) S.selectedDrugs.push(id);
+            } else {
+                S.selectedDrugs = S.selectedDrugs.filter(d=>d!==id);
+            }
+            
+            // Clear recipe selection when manually toggling drugs
+            S.recipe = null;
+            document.querySelectorAll('.recipe-btn').forEach(b=>b.classList.remove('sel'));
+            document.getElementById('callout').style.display = 'none';
+            
+            // Show weight input if any drugs selected
+            document.getElementById('weightCard').style.display = S.selectedDrugs.length ? 'block' : 'none';
+            document.getElementById('drugsCount').textContent = S.selectedDrugs.length ? '' : '—';
+            
+            doCalc();
+            checkAlert();
+        }
+        
+        function selRecipe(id) {
+            S.recipe = id;
+            document.querySelectorAll('.recipe-btn').forEach(b=>b.classList.remove('sel'));
+            event.target.closest('.recipe-btn').classList.add('sel');
+            
+            // Apply recipe drugs to selection
+            const recipe = SCNS[id];
+            S.selectedDrugs = recipe.drugs.map(d => d.id);
+            
+            // Update drug buttons
+            document.querySelectorAll('.custom-btn').forEach(btn => {
+                const drugId = btn.textContent.toLowerCase().replace('sux', 'suxamethonium');
+                btn.classList.toggle('sel', S.selectedDrugs.includes(drugId));
+            });
+            
+            // Show considerations
+            const co = document.getElementById('callout');
+            if (recipe.cons.length) {
+                document.getElementById('calloutItems').innerHTML = recipe.cons.map(c=>`<div class="callout-item">${c}</div>`).join('');
+                co.style.display = 'block';
+            } else co.style.display = 'none';
+            
+            // Show/hide weight input based on whether any drugs are weight-based
+            const hasWeightBased = recipe.drugs.some(d => !d.fixed);
+            document.getElementById('weightCard').style.display = hasWeightBased ? 'block' : 'none';
+            
+            document.getElementById('drugsCount').textContent = '';
+            doCalc();
+            checkAlert();
+        }
+        
+        function doCalc() {
+            const w = parseFloat(document.getElementById('wtInput').value);
+            S.wt = w||null;
+            renderDrugs();
+        }
+        
+        function getSelectedDrugs() {
+            if (!S.selectedDrugs.length) return [];
+            
+            // If using a recipe, use recipe's drug config
+            if (S.recipe) {
+                return SCNS[S.recipe].drugs.filter(d => S.selectedDrugs.includes(d.id));
+            }
+            
+            // Otherwise use default rates for selected drugs
+            const defaultRates = {ketamine:2,propofol:2,midazolam:0.1,fentanyl:2,rocuronium:1.2,suxamethonium:1.5};
+            return S.selectedDrugs.map(id=>({
+                id, 
+                rate: defaultRates[id], 
+                unit: id==='fentanyl'?'mcg/kg':'mg/kg'
+            }));
+        }
+        
+        function renderDrugs() {
+            const c = document.getElementById('drugCards');
+            let drugs = getSelectedDrugs();
+            if (!drugs.length) { c.innerHTML=''; renderDrugTiming([]); return; }
+            
+            c.innerHTML = `<div class="drug-card">${drugs.map(drugRow).join('')}</div>`;
+            // Use setTimeout to ensure DOM is updated before checking selection
+            setTimeout(updateDrugTimingFromSelection, 0);
+        }
+        
+        function renderDrugTiming(drugs) {
+            const container = document.getElementById('drugTiming');
+            const svg = document.getElementById('timingSvg');
+            const legend = document.getElementById('timingLegend');
+            
+            if (!drugs.length) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.style.display = 'block';
+            
+            const maxTime = 300; // 5 minutes in seconds (first 5 mins most critical for RSI)
+            const width = 300;
+            const height = 80;
+            
+            // Unique colors for each drug
+            const drugColors = {
+                ketamine: '#34c759',      // Green
+                propofol: '#007aff',      // Blue
+                midazolam: '#5856d6',     // Purple
+                fentanyl: '#ff9500',      // Orange
+                rocuronium: '#ff3b30',    // Red
+                suxamethonium: '#af52de'  // Magenta
+            };
+            
+            // Generate pharmacokinetic curve using onset, peak, and offset
+            // Models: sharp rise from onset to peak, gradual decay towards offset
+            function pkCurve(onset, peak, offset, color, opacity) {
+                const onsetX = (onset / maxTime) * width;
+                const peakX = (peak / maxTime) * width;
+                const offsetX = (offset / maxTime) * width; // May be beyond graph
+                
+                let path = `M 0 ${height}`;
+                
+                for (let x = 0; x <= width; x += 2) {
+                    let y = height;
+                    
+                    // For clinical accuracy: "onset" = when adequate effect is achieved (not when it first starts)
+                    // So we start rising well before onset, and by onset time we're at ~80% effect
+                    const riseStartX = onsetX * 0.3; // Start rising at 30% of onset time
+                    
+                    if (x < riseStartX) {
+                        // Before drug starts working - no effect
+                        y = height;
+                    } else if (x < onsetX) {
+                        // Early rising phase - getting to ~80% by onset time
+                        const progress = (x - riseStartX) / (onsetX - riseStartX);
+                        const rise = progress < 0.5 
+                            ? 2 * progress * progress 
+                            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                        y = height - (height * 0.85 * 0.8 * rise); // Reaches 80% at onset
+                    } else if (x < peakX) {
+                        // Final rise from onset (80%) to peak (100%)
+                        const progress = (x - onsetX) / (peakX - onsetX);
+                        const currentEffect = 0.8 + (0.2 * progress); // 80% to 100%
+                        y = height - (height * 0.85 * currentEffect);
+                    } else {
+                        // Decay phase - exponential decay towards offset
+                        const decayTime = offset - peak; // Time from peak to offset
+                        const timeSincePeak = (x / width) * maxTime - peak;
+                        // Exponential decay: effect halves roughly every (offset-peak)/3
+                        const halfLife = decayTime / 3;
+                        const decay = Math.exp(-0.693 * timeSincePeak / halfLife);
+                        y = height - (height * 0.85 * decay);
+                    }
+                    
+                    path += ` L ${x} ${y}`;
+                }
+                
+                path += ` L ${width} ${height} Z`;
+                
+                return `<path d="${path}" fill="${color}" fill-opacity="${opacity}" stroke="${color}" stroke-width="1.5" stroke-opacity="${opacity + 0.2}"/>`;
+            }
+            
+            // Sort: paralytic first (drawn first, so behind), then others
+            const sorted = [...drugs].sort((a,b) => {
+                const typeOrder = {paralytic: 0, analgesia: 1, sedation: 2};
+                const aType = DRUGS[a.id].type;
+                const bType = DRUGS[b.id].type;
+                return (typeOrder[aType] || 1) - (typeOrder[bType] || 1);
+            });
+            
+            // Draw curves
+            let svgContent = '';
+            sorted.forEach(d => {
+                const info = DRUGS[d.id];
+                const color = drugColors[d.id] || '#888';
+                svgContent += pkCurve(info.onset, info.peak, info.offset, color, 0.4);
+            });
+            
+            svg.innerHTML = svgContent;
+            
+            // Build legend
+            legend.innerHTML = drugs.map(d => {
+                const info = DRUGS[d.id];
+                const color = drugColors[d.id] || '#888';
+                return `<div class="timing-leg-item"><div class="timing-leg-dot" style="background:${color}"></div>${info.name}</div>`;
+            }).join('');
+        }
+        
+        function drugRow(d) {
+            const info = DRUGS[d.id];
+            const prep = DRUG_PREPS[d.id];
+            let dose='—', ml='', meta='';
+            
+            if (d.fixed) {
+                dose = d.dose;
+            } else {
+                meta = `${d.rate} ${d.unit}`;
+                if (S.wt) {
+                    const rawDose = d.rate * S.wt;
+                    const isMcg = d.unit.includes('mcg');
+                    const roundedDose = roundDose(d.id, rawDose, isMcg);
+                    dose = roundedDose + (isMcg ? ' mcg' : ' mg');
+                    
+                    // Calculate mL based on rounded dose
+                    let mlVal;
+                    if (isMcg && prep.unit === 'mcg/mL') {
+                        mlVal = roundedDose / prep.conc;
+                    } else if (!isMcg && prep.unit === 'mg/mL') {
+                        mlVal = roundedDose / prep.conc;
+                    }
+                    if (mlVal) {
+                        const mlRounded = Math.round(mlVal * 2) / 2; // Round to nearest 0.5mL
+                        ml = mlRounded + ' mL of ' + prep.conc + ' ' + prep.unit;
+                    }
+                }
+            }
+            
+            const opt = d.opt?' <span class="drug-opt">(optional)</span>':'';
+            const cls = d.opt?'drug-chk opt':'drug-chk on';
+            
+            return `<div class="drug-row" data-drug="${d.id}">
+                <div class="${cls}" onclick="toggleDrugSel(this,'${d.id}')"></div>
+                <div class="drug-info">
+                    <div class="drug-name">${info.name}${opt}</div>
+                    ${meta?`<div class="drug-meta">${meta}</div>`:''}
+                </div>
+                <div class="drug-doses">
+                    <div class="drug-dose ${d.fixed?'fixed':''}">${dose}</div>
+                    ${ml?`<div class="drug-ml">${ml}</div>`:''}
+                </div>
+            </div>`;
+        }
+        
+        function toggleDrugSel(el, drugId) {
+            el.classList.toggle('on');
+            updateDrugTimingFromSelection();
+        }
+        
+        function updateDrugTimingFromSelection() {
+            const drugs = getSelectedDrugs();
+            const selectedDrugs = [];
+            
+            document.querySelectorAll('.drug-row[data-drug]').forEach(row => {
+                const chk = row.querySelector('.drug-chk');
+                if (chk && chk.classList.contains('on')) {
+                    const drugId = row.dataset.drug;
+                    const drug = drugs.find(d => d.id === drugId);
+                    if (drug) selectedDrugs.push(drug);
+                }
+            });
+            
+            renderDrugTiming(selectedDrugs);
+        }
+        
+        function checkAlert() {
+            const drugAlert = document.getElementById('drugAlert');
+            if (S.risks.haemo && S.selectedDrugs.includes('propofol')) {
+                document.getElementById('drugAlertText').textContent = 'Haemodynamic instability flagged — Propofol may cause hypotension';
+                drugAlert.style.display = 'flex';
+                return;
+            }
+            drugAlert.style.display = 'none';
+        }
+        
+        // Timer Tab
+        function startPreox() {
+            if (S.preoxStart) return;
+            S.preoxStart = Date.now();
+            document.getElementById('preoxBox').classList.add('started', 'active');
+            document.getElementById('preoxStatus').textContent = 'Running';
+            S.preoxTimer = setInterval(updatePreox, 1000);
+            updatePreox();
+        }
+        
+        function updatePreox() {
+            const elapsed = Math.floor((Date.now() - S.preoxStart) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('preoxTime').textContent = m + ':' + String(s).padStart(2,'0');
+            
+            const box = document.getElementById('preoxBox');
+            const status = document.getElementById('preoxStatus');
+            
+            if (elapsed >= 180 && !S.preoxDone) {
+                S.preoxDone = true;
+                box.classList.remove('active');
+                box.classList.add('ready');
+                status.textContent = 'Ready ✓';
+            }
+        }
+        
+        function startParalysis() {
+            if (S.paralysisStart) return;
+            S.paralysisStart = Date.now();
+            document.getElementById('paralysisBox').classList.add('started', 'active');
+            document.getElementById('paralysisStatus').textContent = 'Running';
+            S.paralysisTimer = setInterval(updateParalysis, 1000);
+            updateParalysis();
+        }
+        
+        function updateParalysis() {
+            const elapsed = Math.floor((Date.now() - S.paralysisStart) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('paralysisTime').textContent = m + ':' + String(s).padStart(2,'0');
+        }
+        
+        function updateGoSummary() {
+            // Check readiness
+            const alertEl = document.getElementById('readinessAlert');
+            const alertText = document.getElementById('readinessText');
+            const issues = [];
+            if (S.checks < 8) issues.push((8 - S.checks) + ' checks incomplete');
+            if (S.equip < 12) issues.push((12 - S.equip) + ' equipment items not ready');
+            
+            if (issues.length) {
+                alertText.textContent = issues.join(', ');
+                alertEl.classList.add('visible');
+            } else {
+                alertEl.classList.remove('visible');
+            }
+            
+            // Update GO summary
+            const riskNames = {aspiration:'Aspiration',difficult:'Difficult',haemo:'Haemo',hypoxia:'Hypoxia',acidaemia:'Acidaemia'};
+            const activeRisks = Object.entries(S.risks).filter(([k,v]) => v).map(([k]) => riskNames[k]);
+            document.getElementById('goRisks').textContent = activeRisks.length ? activeRisks.join(', ') : 'None';
+            
+            const drugs = getSelectedDrugs();
+            const drugNames = drugs.map(d => DRUGS[d.id].name);
+            document.getElementById('goDrugs').textContent = drugNames.length ? drugNames.join(', ') : 'None selected';
+            
+            // Update airway plan
+            document.getElementById('goPlanA').textContent = S.planType === 'difficult' ? 'VL hyperangulated' : 'VL MAC 4';
+        }
+        
+        // Difficulty Assessment Modal
+        function showDifficultyAssess() {
+            document.getElementById('difficultyModal').classList.add('visible');
+        }
+        
+        function hideDifficultyAssess() {
+            document.getElementById('difficultyModal').classList.remove('visible');
+        }
+        
+        function toggleAssess(row) {
+            const chk = row.querySelector('.chk');
+            chk.classList.toggle('on');
+            row.classList.toggle('on');
+            updateAssessCount();
+        }
+        
+        function updateAssessCount() {
+            const count = document.querySelectorAll('.assess-row .chk.on').length;
+            const result = document.getElementById('assessResult');
+            result.textContent = count + ' feature' + (count !== 1 ? 's' : '') + ' identified';
+            result.classList.toggle('warning', count > 0);
+            
+            // Auto-toggle difficult airway if features found
+            if (count > 0 && !S.risks.difficult) {
+                toggleRisk('difficult');
+            }
+        }
+        
+        // Post-intubation checklist
+        function togglePostIntub(row) {
+            const chk = row.querySelector('.chk');
+            chk.classList.toggle('on');
+            row.classList.toggle('done');
+        }
+        
+        function reset() {
+            if (!confirm('Reset all data?')) return;
+            clearInterval(S.preoxTimer);
+            clearInterval(S.paralysisTimer);
+            Object.assign(S, {
+                risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false},
+                checks:0, equip:0, selectedDrugs:[], recipe:null, wt:null, planType:'standard',
+                preoxStart:null, preoxTimer:null, preoxDone:false,
+                paralysisStart:null, paralysisTimer:null
+            });
+            
+            document.querySelectorAll('.toggle').forEach(t=>t.classList.remove('on'));
+            document.querySelectorAll('.mit-chips').forEach(m=>m.classList.remove('visible'));
+            document.querySelectorAll('.mit-chip').forEach(c=>c.classList.remove('on'));
+            document.querySelectorAll('.chk').forEach(c=>c.classList.remove('on'));
+            document.querySelectorAll('.chk-row, .equip-row').forEach(r=>r.classList.remove('done'));
+            document.querySelectorAll('.custom-btn').forEach(b=>b.classList.remove('sel'));
+            document.querySelectorAll('.recipe-btn').forEach(b=>b.classList.remove('sel'));
+            
+            document.getElementById('wtInput').value='';
+            document.getElementById('weightCard').style.display = 'none';
+            document.getElementById('drugAlert').style.display='none';
+            document.getElementById('callout').style.display='none';
+            document.getElementById('drugCards').innerHTML='';
+            document.getElementById('drugTiming').style.display='none';
+            document.getElementById('timingSvg').innerHTML='';
+            document.getElementById('timingLegend').innerHTML='';
+            setPlanType('standard');
+            document.querySelector('.recipes-section').classList.remove('open');
+            document.getElementById('readinessAlert').classList.remove('visible');
+            
+            // Reset timers
+            document.getElementById('preoxTime').textContent = '0:00';
+            document.getElementById('preoxStatus').textContent = 'Tap to start';
+            document.getElementById('preoxBox').classList.remove('started', 'active', 'ready');
+            document.getElementById('paralysisTime').textContent = '0:00';
+            document.getElementById('paralysisStatus').textContent = 'Tap when given';
+            document.getElementById('paralysisBox').classList.remove('started', 'active');
+            document.getElementById('goPlanA').textContent = 'VL MAC 4';
+            document.getElementById('goRisks').textContent = 'None';
+            document.getElementById('goDrugs').textContent = 'None selected';
+            
+            document.getElementById('segWrap').style.display = 'block';
+            document.getElementById('navTitle').textContent = 'IntubAid';
+            
+            updateCounts();
+            document.getElementById('drugsCount').textContent='—';
+            
+            document.querySelectorAll('.seg').forEach((s,i)=>s.classList.toggle('active',i===0));
+            document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+            initSlider();
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => { initSlider(); updateCounts(); });
+        window.addEventListener('resize', initSlider);
+    </script>
+</body>
+</html>
