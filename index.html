@@ -1,0 +1,3055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="IntubAid">
+    <title>IntubAid</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --bg: #f5f5f7;
+            --bg-grouped: #ffffff;
+            --label: #1d1d1f;
+            --label-secondary: #424245;
+            --label-tertiary: #86868b;
+            --label-quaternary: #d2d2d7;
+            --separator: rgba(0,0,0,0.08);
+            --fill: rgba(118,118,128,0.12);
+            --fill-secondary: rgba(118,118,128,0.08);
+            --blue: #0071e3;
+            --green: #30d158;
+            --orange: #ff9f0a;
+            --red: #ff453a;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--label);
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 20px;
+            padding-top: max(12px, env(safe-area-inset-top));
+            background: var(--bg);
+            border-bottom: 0.5px solid rgba(0,0,0,0.06);
+        }
+        
+        .nav-bar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1d1d1f 0%, #424245 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .home-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--fill);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--blue);
+            transition: all 0.15s;
+        }
+        
+        .home-btn:active {
+            transform: scale(0.95);
+            background: var(--fill-secondary);
+        }
+        
+        .nav-home {
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 8px;
+            opacity: 0.6;
+            -webkit-text-fill-color: var(--blue);
+        }
+        
+        .nav-home:active { opacity: 0.4; }
+        
+        .nav-btn {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--blue);
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+        
+        .nav-btn:active { background: var(--fill); }
+        .nav-btn.red { color: var(--red); }
+        
+        /* Phase Navigation */
+        .phase-nav {
+            padding: 12px 20px 0;
+        }
+        
+        .phase-steps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .phase-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.5;
+        }
+        
+        .phase-step.active {
+            opacity: 1;
+        }
+        
+        .phase-step.ready { background: rgba(255, 149, 0, 0.15); }
+        .phase-step.ready.active { background: var(--orange); }
+        .phase-step.set { background: rgba(0, 122, 255, 0.15); }
+        .phase-step.set.active { background: var(--blue); }
+        .phase-step.go { background: rgba(52, 199, 89, 0.15); }
+        .phase-step.go.active { background: var(--green); }
+        
+        .phase-num {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--label);
+        }
+        
+        .phase-step.active .phase-num { color: #fff; }
+        
+        .phase-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--label);
+        }
+        
+        .phase-step.active .phase-name { color: #fff; }
+        
+        .sub-tabs {
+            display: flex;
+            background: var(--fill);
+            border-radius: 10px;
+            padding: 3px;
+        }
+        
+        .sub-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--label-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sub-tab.active {
+            background: var(--bg-grouped);
+            color: var(--label);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        
+        .sub-count {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            margin-left: 4px;
+        }
+        
+        .sub-tab.active .sub-count { color: var(--label-secondary); }
+        .sub-count.done { color: var(--green); }
+        
+        .content {
+            flex: 1;
+            padding: 16px 20px;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            overflow-y: auto;
+        }
+        
+        .panel { display: none; }
+        .panel.active {
+            display: block;
+            animation: fadeIn 0.25s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .panel-instruction {
+            font-size: 15px;
+            color: var(--label-secondary);
+            text-align: center;
+            padding: 8px 16px 12px;
+            font-style: italic;
+        }
+        
+        .group-hdr {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 8px;
+            padding-left: 4px;
+        }
+        
+        .group-hdr:first-child { margin-top: 0; }
+        
+        .card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        /* Home Cards */
+        .home-card {
+            display: flex;
+            align-items: center;
+            background: var(--bg-grouped);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        
+        .home-card:active {
+            transform: scale(0.98);
+        }
+        
+        .home-step {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .home-card.ready .home-step { background: var(--orange); }
+        .home-card.set .home-step { background: var(--blue); }
+        .home-card.go .home-step { background: var(--green); }
+        
+        .home-content {
+            flex: 1;
+        }
+        
+        .home-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--label);
+            letter-spacing: -0.3px;
+        }
+        
+        .home-desc {
+            font-size: 15px;
+            color: var(--label-secondary);
+            margin-top: 2px;
+        }
+        
+        .home-chevron {
+            font-size: 28px;
+            color: var(--label-tertiary);
+            font-weight: 300;
+        }
+        
+        .home-footer {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        
+        /* Risk Row - Compact */
+        .risk-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            min-height: 44px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .risk-row:active { background: var(--fill-secondary); }
+        .risk-row + .risk-row { border-top: 0.5px solid var(--separator); }
+        
+        .toggle {
+            width: 48px;
+            height: 28px;
+            background: var(--fill);
+            border-radius: 14px;
+            position: relative;
+            flex-shrink: 0;
+            margin-right: 12px;
+            transition: background 0.2s;
+        }
+        
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .toggle.on { background: var(--orange); }
+        .toggle.on::after { transform: translateX(20px); }
+        
+        .risk-content { flex: 1; }
+        
+        .risk-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .risk-name {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--label);
+        }
+        
+        /* Mitigation Section */
+        .mit-section {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: var(--fill-secondary);
+            border-radius: 8px;
+        }
+        
+        .mit-section.visible { display: block; }
+        
+        .mit-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+        
+        /* Mitigation Chips */
+        .mit-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .mit-chip {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 14px;
+            background: var(--fill);
+            border-radius: 100px;
+            color: var(--label-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+        
+        .mit-chip:active { transform: scale(0.96); }
+        
+        .mit-chip.on {
+            background: var(--green);
+            color: #fff;
+        }
+        
+        .mit-chip.has-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .info-icon {
+            font-size: 11px;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        
+        .mit-chip.on .info-icon {
+            opacity: 0.9;
+        }
+        
+        /* Checkbox - Compact */
+        .chk {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--label-quaternary);
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .chk.on {
+            background: var(--green);
+            border-color: transparent;
+        }
+        
+        .chk.on::after {
+            content: '';
+            width: 5px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        
+        .chk-text {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--label);
+        }
+        
+        .chk-subtext {
+            font-size: 13px;
+            color: var(--label-tertiary);
+            font-weight: 400;
+        }
+        
+        .chk-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            min-height: 44px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        .chk-row:active { background: var(--fill-secondary); }
+        .chk-row + .chk-row { border-top: 0.5px solid var(--separator); }
+        .chk-row.done .chk-text { color: var(--label-tertiary); }
+        
+        .chk-row .chk {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+        
+        .chk-row .chk.on::after {
+            width: 5px;
+            height: 10px;
+            border-width: 0 2.5px 2.5px 0;
+        }
+        
+        /* Compact Equipment Checklist */
+        .equip-card { padding: 0; }
+        
+        .equip-section-hdr {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 6px;
+            background: var(--fill-secondary);
+        }
+        
+        .equip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .equip-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            min-height: 44px;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-bottom: 0.5px solid var(--separator);
+        }
+        
+        .equip-row:active { background: var(--fill-secondary); }
+        .equip-row:nth-child(odd) { border-right: 0.5px solid var(--separator); }
+        .equip-row.done .chk-text { color: var(--label-tertiary); }
+        .equip-row.equip-full { border-right: none; }
+        
+        .equip-row .chk {
+            width: 22px;
+            height: 22px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .equip-row .chk.on::after {
+            width: 5px;
+            height: 9px;
+            border-width: 0 2px 2px 0;
+        }
+        
+        .equip-row .chk-text {
+            font-size: 13px;
+            line-height: 1.2;
+        }
+        
+        /* Drug Selection */
+        .section-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+        
+        /* Two-column drug layout */
+        .drugs-two-col {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .drugs-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .drugs-col-hdr {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+        
+        .drug-btn {
+            background: var(--bg-grouped);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--label);
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: all 0.15s;
+            text-align: center;
+        }
+        
+        .drug-btn:active { transform: scale(0.97); }
+        
+        .drug-btn.sel {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.25);
+        }
+        
+        /* Drug Info Card */
+        .drug-info-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 12px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .drug-info-item {
+            padding: 8px 0;
+        }
+        
+        .drug-info-item + .drug-info-item {
+            border-top: 0.5px solid var(--separator);
+            margin-top: 4px;
+            padding-top: 10px;
+        }
+        
+        .drug-info-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--label);
+            margin-bottom: 4px;
+        }
+        
+        .drug-info-pros, .drug-info-cons {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 2px;
+        }
+        
+        .drug-info-pros {
+            color: var(--green);
+        }
+        
+        .drug-info-cons {
+            color: var(--red);
+        }
+        
+        .info-label {
+            font-weight: 600;
+            margin-right: 3px;
+        }
+        
+        .drug-info-evidence {
+            font-size: 13px;
+            color: var(--label-secondary);
+            font-style: italic;
+            margin-top: 4px;
+            padding: 8px;
+            background: var(--fill);
+            border-radius: 6px;
+            line-height: 1.4;
+        }
+        
+        /* Special Circumstances */
+        .special-circumstances {
+            margin-top: 16px;
+        }
+        
+        .special-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .special-btn {
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 10px 14px;
+            background: var(--fill);
+            border: none;
+            border-radius: 8px;
+            color: var(--label);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .special-btn:active { transform: scale(0.96); }
+        
+        .special-btn.sel {
+            background: var(--orange);
+            color: #fff;
+        }
+        
+        .special-alert {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #fff3e0;
+            border-radius: 8px;
+        }
+        
+        .special-alert-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: #e65100;
+            line-height: 1.5;
+        }
+        
+        /* Airway Tab */
+        .airway-section {
+            margin-bottom: 16px;
+        }
+        
+        .airway-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--label);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+        }
+        
+        .airway-option-group {
+            margin-bottom: 14px;
+        }
+        
+        .airway-option-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+            margin-bottom: 8px;
+        }
+        
+        .airway-options {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .airway-opt {
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 10px 12px;
+            background: var(--fill);
+            border: 1.5px solid transparent;
+            border-radius: 10px;
+            color: var(--label);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .airway-opt:active { transform: scale(0.97); }
+        
+        .airway-opt.sel {
+            background: var(--blue);
+            color: #fff;
+        }
+        
+        .airway-rescue {
+            padding: 8px 0;
+            margin-bottom: 12px;
+        }
+        
+        .airway-rescue-text {
+            font-size: 14px;
+            color: var(--label-tertiary);
+            line-height: 1.4;
+        }
+        
+        .airway-fixed {
+            padding-top: 8px;
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .airway-plan-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 16px;
+            color: var(--label);
+        }
+        
+        .airway-plan-label {
+            width: 28px;
+            height: 28px;
+            background: var(--fill);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--label-secondary);
+            margin-right: 12px;
+        }
+        
+        /* GO Tab - Summary and Timers */
+        .go-summary {
+            margin-bottom: 10px;
+        }
+        
+        .go-risks-card, .go-drugs-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .go-risks-none {
+            font-size: 16px;
+            color: var(--label-tertiary);
+        }
+        
+        .go-risk-item {
+            padding: 8px 0;
+        }
+        
+        .go-risk-item + .go-risk-item {
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .go-risk-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--label);
+        }
+        
+        .go-risk-mits {
+            font-size: 15px;
+            color: var(--label-secondary);
+            margin-top: 2px;
+            padding-left: 10px;
+        }
+        
+        .go-drugs-card {
+            font-size: 16px;
+            color: var(--label);
+        }
+        
+        .go-airway {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .go-plan-row {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+        }
+        
+        .go-plan-row + .go-plan-row {
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .go-plan-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            width: 24px;
+            flex-shrink: 0;
+        }
+        
+        .go-plan-text {
+            font-size: 16px;
+            color: var(--label);
+        }
+        
+        .go-plan-sub {
+            font-size: 14px;
+            color: var(--label-tertiary);
+            font-weight: 400;
+        }
+        
+        .go-rescue-row {
+            font-size: 13px;
+            color: var(--label-secondary);
+            padding: 6px 0 6px 24px;
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .go-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+        
+        .timer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .timer-box {
+            background: var(--bg-grouped);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .timer-box:active { transform: scale(0.98); }
+        .timer-box.started { cursor: default; }
+        .timer-box.started:active { transform: none; }
+        .timer-box.ready { background: rgba(52, 199, 89, 0.1); }
+        .timer-box.active { background: rgba(255, 149, 0, 0.1); }
+        
+        .timer-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+        
+        .timer-countdown {
+            font-size: 40px;
+            font-weight: 300;
+            font-feature-settings: 'tnum';
+            color: var(--label);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        
+        .timer-box.ready .timer-countdown { color: var(--green); }
+        .timer-box.active .timer-countdown { color: var(--orange); }
+        
+        .timer-status {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+        }
+        
+        .timer-box.ready .timer-status { color: var(--green); }
+        .timer-box.active .timer-status { color: var(--orange); }
+        
+        .readiness-alert {
+            display: none;
+            padding: 12px 14px;
+            background: #fff3e0;
+            border-radius: 10px;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .readiness-alert.visible { display: flex; }
+        .readiness-alert .alert-icon { font-size: 16px; }
+        .readiness-alert .alert-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: #bf360c;
+            line-height: 1.4;
+        }
+        
+        .alert-link {
+            color: #bf360c;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .alert-link:active {
+            opacity: 0.7;
+        }
+        
+        /* Assess Button */
+        .assess-btn {
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 5px 12px;
+            background: var(--fill);
+            border: none;
+            border-radius: 100px;
+            color: var(--blue);
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        
+        .assess-btn:active { opacity: 0.7; }
+        
+        /* Post-intubation Section */
+        .post-intub-section {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+            margin-bottom: 10px;
+        }
+        
+        .section-hdr {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 12px 14px;
+            background: var(--fill-secondary);
+        }
+        
+        .section-hdr.collapsible {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .collapse-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+        
+        .section-hdr.collapsible.open .collapse-icon {
+            transform: rotate(180deg);
+        }
+        
+        .post-intub-list .equip-row:first-child { border-top: none; }
+        
+        .reset-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: inherit;
+            background: var(--fill);
+            color: var(--label-tertiary);
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .reset-btn:active { opacity: 0.7; }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .modal-overlay.visible { display: flex; }
+        
+        .modal {
+            background: var(--bg);
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 0.5px solid var(--separator);
+        }
+        
+        .modal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+            background: var(--fill);
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .modal-done-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 16px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        .modal-done-btn:active {
+            opacity: 0.8;
+        }
+        
+        .disclaimer-modal {
+            border-radius: 16px;
+            margin: 20px;
+            max-height: none;
+        }
+        
+        .disclaimer-modal .modal-header {
+            justify-content: center;
+            background: var(--orange);
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .disclaimer-modal .modal-title {
+            color: #fff;
+        }
+        
+        .disclaimer-content {
+            padding: 8px 0;
+        }
+        
+        .disclaimer-content p {
+            font-size: 15px;
+            color: var(--label);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        
+        .disclaimer-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .disclaimer-btn {
+            width: 100%;
+            padding: 16px;
+            margin-top: 16px;
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        
+        .disclaimer-btn:active {
+            opacity: 0.8;
+        }
+        
+        /* Info Modal (Bicarbonate, etc.) */
+        .info-modal {
+            border-radius: 16px;
+            margin: 20px;
+            max-width: 400px;
+        }
+        
+        .info-modal .modal-header {
+            justify-content: space-between;
+        }
+        
+        .info-content {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--label);
+        }
+        
+        .info-content p {
+            margin-bottom: 12px;
+        }
+        
+        .info-content ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+        
+        .info-content li {
+            margin-bottom: 8px;
+        }
+        
+        .info-caution {
+            background: rgba(255, 159, 10, 0.1);
+            border-left: 3px solid var(--orange);
+            padding: 12px 14px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+        }
+        
+        /* Collaboration Modal */
+        .collab-modal {
+            border-radius: 16px;
+            margin: 20px;
+            max-width: 360px;
+        }
+        
+        .collab-modal .modal-header {
+            justify-content: space-between;
+            background: var(--blue);
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .collab-modal .modal-title {
+            color: #fff;
+        }
+        
+        .collab-modal .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .collab-desc {
+            font-size: 16px;
+            color: var(--label-secondary);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .collab-desc.connected {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--green);
+        }
+        
+        .collab-btn {
+            width: 100%;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            background: var(--bg);
+            border: 1px solid var(--separator);
+            border-radius: 12px;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: all 0.15s;
+        }
+        
+        .collab-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .collab-btn.primary {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+        
+        .collab-btn.primary .collab-btn-text,
+        .collab-btn.primary .collab-btn-sub {
+            color: #fff;
+        }
+        
+        .collab-btn.secondary {
+            background: var(--fill);
+            border: none;
+            padding: 14px;
+            margin-top: 8px;
+        }
+        
+        .collab-btn-icon {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        
+        .collab-btn-text {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--label);
+        }
+        
+        .collab-btn-sub {
+            font-size: 14px;
+            color: var(--label-tertiary);
+        }
+        
+        .session-code {
+            font-size: 40px;
+            font-weight: 700;
+            font-family: 'SF Mono', monospace;
+            letter-spacing: 4px;
+            text-align: center;
+            padding: 18px;
+            background: var(--fill);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            color: var(--label);
+        }
+        
+        .session-input {
+            width: 100%;
+            font-size: 32px;
+            font-weight: 600;
+            font-family: 'SF Mono', monospace;
+            letter-spacing: 3px;
+            text-align: center;
+            padding: 16px;
+            background: var(--fill);
+            border: 2px solid var(--separator);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            color: var(--label);
+            outline: none;
+        }
+        
+        .session-input:focus {
+            border-color: var(--blue);
+        }
+        
+        .collab-hint {
+            font-size: 14px;
+            color: var(--label-tertiary);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        
+        .collab-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 15px;
+            color: var(--label-secondary);
+            padding: 12px;
+            background: var(--fill);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .collab-status.connected {
+            background: rgba(48, 209, 88, 0.1);
+            color: var(--green);
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--label-tertiary);
+        }
+        
+        .status-dot.waiting {
+            background: var(--orange);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-dot.connected {
+            background: var(--green);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        .collab-connected-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 12px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+        }
+        
+        /* Session indicator (floating pill) */
+        .session-indicator {
+            display: none;
+            position: fixed;
+            top: 54px;
+            right: 12px;
+            background: rgba(48, 209, 88, 0.95);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            align-items: center;
+            gap: 6px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+        
+        .session-indicator.visible {
+            display: flex;
+        }
+        
+        .session-indicator .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+        }
+        
+        /* Work Together button */
+        .collab-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            margin-top: 0;
+            background: var(--fill);
+            border: 1px dashed var(--label-tertiary);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--label-secondary);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .collab-trigger:active {
+            background: var(--fill-secondary);
+        }
+        
+        .collab-trigger.active {
+            background: rgba(48, 209, 88, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+        
+        .assess-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+        }
+        
+        .assess-section-hdr {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 12px 14px 6px;
+            background: var(--fill-secondary);
+        }
+        
+        .assess-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            min-height: 42px;
+            cursor: pointer;
+        }
+        
+        .assess-row + .assess-row { border-top: 0.5px solid var(--separator); }
+        .assess-row.on .chk-text { color: var(--orange); font-weight: 500; }
+        
+        .assess-row .chk {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+        
+        .assess-row .chk.on {
+            background: var(--orange);
+        }
+        
+        .assess-result {
+            text-align: center;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--label-secondary);
+        }
+        
+        .assess-result.warning {
+            color: var(--orange);
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getDatabase, ref, set, update, onValue, remove, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWz4Bs7lli--k8DbpdLfk5gSbQL7NWSPo",
+            authDomain: "intubaid.firebaseapp.com",
+            databaseURL: "https://intubaid-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "intubaid",
+            storageBucket: "intubaid.firebasestorage.app",
+            messagingSenderId: "722286992938",
+            appId: "1:722286992938:web:726686db9a107a8ff82d53"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // Expose to global scope for use in inline handlers
+        window.firebaseDB = db;
+        window.firebaseRef = ref;
+        window.firebaseSet = set;
+        window.firebaseUpdate = update;
+        window.firebaseOnValue = onValue;
+        window.firebaseRemove = remove;
+        window.firebaseOnDisconnect = onDisconnect;
+        window.firebaseServerTimestamp = serverTimestamp;
+    </script>
+</head>
+<body>
+    <div class="app">
+        <nav class="nav">
+            <div class="nav-bar">
+                <h1 class="nav-title" id="navTitle">IntubAid</h1>
+                <button class="home-btn" id="homeBtn" onclick="goHome()" style="display:none;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        
+        <div class="phase-nav" id="phaseNav" style="display:none;">
+            <div class="phase-steps">
+                <div class="phase-step ready" id="phaseReady" onclick="goToPhase('ready')">
+                    <span class="phase-num">1</span>
+                    <span class="phase-name">Ready</span>
+                </div>
+                <div class="phase-step set" id="phaseSet" onclick="goToPhase('set')">
+                    <span class="phase-num">2</span>
+                    <span class="phase-name">Set</span>
+                </div>
+                <div class="phase-step go" id="phaseGo" onclick="goToPhase('go')">
+                    <span class="phase-num">3</span>
+                    <span class="phase-name">Go</span>
+                </div>
+            </div>
+            <div class="sub-tabs" id="subTabs">
+                <button class="sub-tab active" data-tab="risks">Risks</button>
+                <button class="sub-tab" data-tab="checks">Checks <span class="sub-count" id="checksCount">0/9</span></button>
+            </div>
+        </div>
+        
+        <main class="content">
+            <!-- Home -->
+            <div class="panel active" id="home-panel">
+                <div class="home-card ready" onclick="goToStep('ready')">
+                    <div class="home-step">1</div>
+                    <div class="home-content">
+                        <div class="home-title">Ready</div>
+                        <div class="home-desc">Identify risks & complete checks</div>
+                    </div>
+                    <div class="home-chevron">›</div>
+                </div>
+                <div class="home-card set" onclick="goToStep('set')">
+                    <div class="home-step">2</div>
+                    <div class="home-content">
+                        <div class="home-title">Set</div>
+                        <div class="home-desc">Prepare equipment & drugs</div>
+                    </div>
+                    <div class="home-chevron">›</div>
+                </div>
+                <div class="home-card go" onclick="goToStep('go')">
+                    <div class="home-step">3</div>
+                    <div class="home-content">
+                        <div class="home-title">Go</div>
+                    </div>
+                    <div class="home-chevron">›</div>
+                </div>
+                
+                <div class="home-footer">
+                    <button class="collab-trigger" id="collabTrigger" onclick="openCollabModal()">
+                        <svg width="24" height="24" viewBox="0 0 60 60" fill="currentColor"><path d="m57.859 5.018c-.713297-.0723674-1.431681.07486818-2.059.422-.3062758-.9935906-1.0430095-1.79685016-2.0064864-2.18766897-.9634769-.39081882-2.051608-.32778609-2.9635136.17166897-.5077104-1.57213372-2.0456014-2.57516049-3.689-2.406-1.0693851.12156354-2.0217756.73260075-2.578 1.654-.8313886-.61545069-1.8959636-.82321948-2.8977568-.56554345-1.0017931.25767603-1.833996.95332415-2.2652432 1.89354345h-9.848c-.1824546-.00135359-.3611277-.05215619-.517-.147l-4.043-2.419c-.4647996-.28090279-.9969206-.43086415-1.54-.434h-14.809c-1.82994155-.02451483-3.38821954 1.32527631-3.625 3.14-.07225308.71361161.07496938 1.43228049.422 2.06-.99387552.30587375-1.79740742 1.04265202-2.18811759 2.00633915-.39071017.96368712-.32713703 2.05201805.17311759 2.96366085-1.57456683.5058717-2.57901437 2.0461359-2.407 3.691.12112007 1.0695428.73227254 2.022113 1.654 2.578-.50746305.6998981-.74019761 1.5617989-.654 2.422.14287018 1.1956544.89201833 2.2331981 1.982 2.745v9.844c-.00174647.1815935-.05291015.3592836-.148.514l-2.44 4.064c-.2655487.4632574-.40743068.9870499-.412 1.521v14.809c-.02303509 1.829566 1.3267193 3.3868757 3.141 3.624.71319562.0703896 1.43099617-.0767264 2.059-.422.30612275.9939325 1.04309437 1.7974472 2.00692723 2.1881378.96383286.3906907 2.05228167.3271121 2.96407277-.1731378.4633205 1.4469284 1.809704 2.4276974 3.329 2.425 1.2055336.0002685 2.322003-.6347283 2.938-1.671.8321843.6154258 1.8973988.8230587 2.8997985.5652323 1.0023997-.2578265 1.8352354-.9536554 2.2672015-1.8942323h9.843c.1824546.0013536.3611277.0521562.517.147l4.043 2.421c.4651005.2798508.9972017.42877 1.54.431h14.809c1.8299416.0245148 3.3882195-1.3252763 3.625-3.14.0720458-.7132807-.0751702-1.4315695-.422-2.059.9938755-.3058738 1.7974074-1.042652 2.1881176-2.0063391.3907102-.9636872.327137-2.0520181-.1731176-2.9636609 1.5737652-.5057195 2.5780149-2.0448458 2.407-3.689-.1211201-1.0695428-.7322725-2.022113-1.654-2.578.507463-.6998981.7401976-1.5617989.654-2.422-.143991-1.1942418-.8930034-2.2300858-1.982-2.741v-9.85c.0021231-.1820292.0528755-.3601805.147-.516l2.422-4.042c.2798404-.4654711.4287517-.9978896.431-1.541v-14.809c.0230351-1.82956601-1.3267193-3.38687575-3.141-3.624zm-54.851 9.645c-.0463306-.4238298.08988816-.8473503.37460845-1.1647028.28472029-.3173524.69103705-.4985481 1.11739155-.4982972h6.5c.5522847 0 1-.4477153 1-1s-.4477153-1-1-1h-4.5c-.42629448.0010112-.8328833-.1794096-1.11816549-.4961778-.28528218-.3167681-.42230725-.73995874-.37683451-1.1638222.12796759-.79696883.83147693-1.37248929 1.638-1.34h6.357c.5522847 0 1-.44771525 1-1s-.4477153-1-1-1h-4.5c-.42629448.00101123-.8328833-.17940959-1.11816549-.49617777-.28528218-.31676818-.42230725-.73995877-.37683451-1.16382223.1275504-.79720882.83132436-1.37294576 1.638-1.34h14.809c.1822741.00138325.3607033.05256061.516.148l4.044 2.422c.465398.27904179.9973641.42757776 1.54.43h9.448v8.889l-1.732-1.418c-1.2997134-.9920197-3.1278644-.8915159-4.311.237-.8784975.8519673-1.1838425 2.1357425-.783 3.292h-3.353c-.7870196.0033139-1.5412181.3157675-2.1.87l-9.411 9.334-.02.02-.416.412c-.4877945.4768937-1.2687913.4715383-1.75-.012-.4392138-.4409512-.4820552-1.1396951-.1-1.631l2.75-3.36c.2445321-.29906.2949399-.7122196.1294846-1.0613004s-.5171779-.571641-.9034846-.5716996h-11.357c-.80522709.0314569-1.50712477-.5433694-1.635-1.339-.04572041-.4235054.09077461-.8464772.37542515-1.1633704.28465054-.3168931.69060872-.4978186 1.11657485-.4976296h5.5c.5522847 0 1-.4477153 1-1s-.4477153-1-1-1h-6.357c-.80442416.0311405-1.50580838-.5424073-1.635-1.337zm39.992 18.994-9.13 9.054c-.1836391.1835334-.4323716.2870521-.692.288h-4.836l-9.053-9.126c-.1840516-.1837832-.2879416-.4329036-.289-.693v-4.84l9.127-9.051c.1839665-.184388.4335348-.2883148.694-.289h4.84l9.053 9.126c.1826449.184883.2853542.4341145.286.694zm-23.348 24.335c-.4210381.0454447-.8414044-.0914018-1.155-.376-.3150607-.2856821-.4954343-.6907059-.497-1.116v-.015-5.485c0-.5522847-.4477153-1-1-1s-1 .4477153-1 1v5.5.014.845c.0274644.8080688-.5522423 1.5096383-1.351 1.635-.4201596.04574-.8397246-.0912013-1.152-.376-.3157804-.2860017-.4962448-.6919558-.497-1.118v-2-.02-4.48c0-.5522847-.4477153-1-1-1s-1 .4477153-1 1v4.5.012c-.0026683.4240276-.1846823.8271157-.5010002 1.1095153-.316318.2823995-.73738387.4177236-1.1589998.3724847-.79681564-.1275084-1.37242635-.8306985-1.34-1.637v-1.857-.015-4.485c0-.5522847-.44771525-1-1-1s-1 .4477153-1 1v4.5.009c-.00185239.4243577-.18336505.8280738-.49955713 1.1111028-.31619209.2830291-.73747235.4188836-1.15944287.3738972-.79658301-.1274307-1.37238414-.8298994-1.341-1.636v-14.809c.00154101-.1801517.04867232-.3569801.137-.514l2.433-4.046c.27845949-.4652825.42695702-.9967655.43-1.539v-9.45h8.888l-1.419 1.733c-.9148286 1.1127325-.9798926 2.6975092-.1593568 3.8814881.8205357 1.1839789 2.3272752 1.6794449 3.6903568 1.2135119v3.352c.0033139.7870196.3157675 1.5412181.87 2.1l9.326 9.4c.011.012.022.023.034.034l.407.41c.3503884.3566587.4523023.8888576.2584682 1.3497327-.1938342.4608751-.6454917.7602538-1.1454682.7592673-.2721359.0012076-.5366007-.0901209-.75-.259l-3.359-2.749c-.2990014-.2497249-.7158111-.3030767-1.0680718-.1367134-.3522608.1663632-.5758432.5221548-.5729282.9117134v11.357c.0276692.8070895-.5504401 1.5082829-1.348 1.635zm39.34-10.655c.0463306.4238298-.0898882.8473503-.3746084 1.1647028-.2847203.3173524-.6910371.4985481-1.1173916.4982972h-6.5c-.5522847 0-1 .4477153-1 1s.4477153 1 1 1h4.5c.4262945-.0010112.8328833.1794096 1.1181655.4961778.2852822.3167681.4223072.7399587.3768345 1.1638222-.1279676.7969688-.8314769 1.3724893-1.638 1.34h-6.357c-.5522847 0-1 .4477153-1 1s.4477153 1 1 1h4.5c.4262945-.0010112.8328833.1794096 1.1181655.4961778.2852822.3167681.4223072.7399587.3768345 1.1638222-.1275504.7972088-.8313244 1.3729458-1.638 1.34h-14.809c-.1822741-.0013833-.3607033-.0525606-.516-.148l-4.044-2.422c-.465398-.2790418-.9973641-.4275778-1.54-.43h-9.448v-8.891l1.732 1.418c1.2985208.9958877 3.1294738.8952298 4.311-.237.8787634-.8509228 1.1852394-2.1337549.786-3.29h3.35c.7870196-.0033139 1.5412181-.3157675 2.1-.87l9.408-9.33.035-.034.407-.4c.4877945-.4768937 1.2687913-.4715383 1.75.012.4392138.4409512.4820552 1.1396951.1 1.631l-2.75 3.36c-.2429447.2986794-.2928442.7103058-.1283026 1.0583828s.5142985.5707793.8993026.5726172h11.357c.8052271-.0314569 1.5071248.5433694 1.635 1.339.0457204.4235054-.0907746.8464772-.3754252 1.1633704-.2846505.3168931-.6906087.4978186-1.1165748.4976296h-5.5c-.5522847 0-1 .4477153-1 1s.4477153 1 1 1h6.36c.8033013-.0295912 1.502941.5435819 1.632 1.337zm.008-23.886c-.001534.1821145-.0523299.3604185-.147.516l-2.423 4.044c-.2789145.4650868-.4274476.996697-.43 1.539v9.45h-8.891l1.419-1.733c1.0300158-1.2873797.9270696-3.1434268-.239-4.309-.8735475-.8382248-2.136691-1.1293354-3.289-.758v-3.38c-.0033139-.7870196-.3157675-1.5412181-.87-2.1l-9.33-9.414-.019-.019-.413-.416c-.2342944-.2314392-.3651624-.5477093-.3629029-.8770311s.1374549-.6437663.3749029-.8719689c.4469994-.4264546 1.1362785-.4686899 1.632-.1l3.359 2.749c.2987148.2417036.7095035.2908685 1.0568205.1264846s.5697246-.5132384.5721795-.8974846v-11.357c-.0309343-.80540032.5442088-1.50716065 1.34-1.635.4233431-.04541573.8460408.0912172 1.1627044.37583293s.4974539.69039491.4972956 1.11616707v5.5c0 .5522847.4477153 1 1 1s1-.4477153 1-1v-6.357c-.0313889-.80555296.5439698-1.50757643 1.34-1.635.4233431-.04541573.8460408.0912172 1.1627044.37583293s.4974539.69039491.4972956 1.11616707v6.5c0 .5522847.4477153 1 1 1s1-.4477153 1-1v-4.5c-.0007267-.42612042.1798174-.83243925.4965507-1.1174992s.7397594-.42195433 1.1634493-.3765008c.7968156.12750842 1.3724263.83069851 1.34 1.637v6.357c0 .5522847.4477153 1 1 1s1-.4477153 1-1v-4.5c-.0007267-.42612042.1798174-.83243925.4965507-1.1174992s.7397594-.42195433 1.1634493-.3765008c.7961835.12788239 1.3714522.83022536 1.34 1.636z"/></svg>
+                        <span>Work Together</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Risks -->
+            <div class="panel" id="risks-panel">
+                <div class="panel-instruction">Toggle risks that apply → select mitigations to employ</div>
+                <div class="card">
+                    <div class="risk-row" onclick="toggleRisk('aspiration')">
+                        <div class="toggle" id="t-aspiration"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Aspiration</span>
+                            </div>
+                            <div class="mit-section" id="mc-aspiration">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">2× yankauers</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">NGT + aspirate</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">RSI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('difficult')">
+                        <div class="toggle" id="t-difficult"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Anatomical difficulty</span>
+                                <button class="assess-btn" onclick="event.stopPropagation();showDifficultyAssess()">Assess</button>
+                            </div>
+                            <div class="mit-section" id="mc-difficult">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Anaes backup</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">AFOI / awake trache</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Double setup</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Mark neck</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('haemo')">
+                        <div class="toggle" id="t-haemo"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Haemodynamic instability</span>
+                            </div>
+                            <div class="mit-section" id="mc-haemo">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Art line</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Vasopressor running</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pads on</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">DSI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('hypoxia')">
+                        <div class="toggle" id="t-hypoxia"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Hypoxia</span>
+                            </div>
+                            <div class="mit-section" id="mc-hypoxia">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic oxygenation</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pre-ox with NIV</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Diuresis</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">iNO</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">VV ECMO</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('acidaemia')">
+                        <div class="toggle" id="t-acidaemia"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Acidaemia</span>
+                            </div>
+                            <div class="mit-section" id="mc-acidaemia">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip has-info" onclick="event.stopPropagation();this.classList.toggle('on')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="risk-row" onclick="toggleRisk('icp')">
+                        <div class="toggle" id="t-icp"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Raised ICP</span>
+                            </div>
+                            <div class="mit-section" id="mc-icp">
+                                <div class="mit-label">Consider:</div>
+                                <div class="mit-chips">
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Target CPP</span>
+                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Checks -->
+            <div class="panel" id="checks-panel">
+                <div class="card">
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Roles allocated</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Need for aerosol PPE considered</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Allergies noted</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Major cardio/respiratory comorbidities noted</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Positioning optimal<br><span class="chk-subtext">EAM in line with sternal notch</span></span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Monitoring on</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">EtCO₂ on BVM</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">IV access + pump set connected</span></div>
+                    <div class="chk-row" onclick="toggleChk(this,'checks')"><div class="chk"></div><span class="chk-text">Post intubation sedation ready</span></div>
+                </div>
+            </div>
+            
+            <!-- Equipment -->
+            <div class="panel" id="equip-panel">
+                <div class="card equip-card">
+                    <div class="equip-section-hdr">Positioning</div>
+                    <div class="equip-row equip-full" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bed height + controls accessible</span></div>
+                    
+                    <div class="equip-section-hdr">Oxygenation</div>
+                    <div class="equip-grid">
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">BVM + PEEP valve</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">OPA (red + yellow)</span></div>
+                    </div>
+                    
+                    <div class="equip-section-hdr">Laryngoscopy</div>
+                    <div class="equip-grid">
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Direct</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Video</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Hyperangulated</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bougie</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Stylet</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">ETT ×2</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">10ml syringe</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Tape</span></div>
+                    </div>
+                    
+                    <div class="equip-section-hdr">Rescue</div>
+                    <div class="equip-grid">
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">LMA</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Suction</span></div>
+                        <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">CICO kit</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Drugs -->
+            <div class="panel" id="drugs-panel">
+                <div class="drugs-two-col">
+                    <div class="drugs-col">
+                        <div class="drugs-col-hdr">Sedation / Analgesia</div>
+                        <button class="drug-btn" onclick="toggleDrug('ketamine',this)">Ketamine</button>
+                        <button class="drug-btn" onclick="toggleDrug('propofol',this)">Propofol</button>
+                        <button class="drug-btn" onclick="toggleDrug('midazolam',this)">Midazolam</button>
+                        <button class="drug-btn" onclick="toggleDrug('fentanyl',this)">Fentanyl</button>
+                        <button class="drug-btn" onclick="toggleDrug('morphine',this)">Morphine</button>
+                    </div>
+                    <div class="drugs-col">
+                        <div class="drugs-col-hdr">Paralysis</div>
+                        <button class="drug-btn" onclick="toggleDrug('rocuronium',this)">Rocuronium</button>
+                        <button class="drug-btn" onclick="toggleDrug('suxamethonium',this)">Sux</button>
+                    </div>
+                </div>
+                
+                <div class="drug-info-card" id="drugInfoCard" style="display:none;">
+                    <div class="drug-info-content" id="drugInfoContent"></div>
+                </div>
+                
+            </div>
+            
+            <!-- Airway -->
+            <div class="panel" id="airway-panel">
+                <div class="card" style="padding: 16px;">
+                    <div class="airway-section">
+                        <div class="airway-section-title">Plan A — First attempt</div>
+                        
+                        <div class="airway-option-group" id="deviceGroup">
+                            <div class="airway-option-label">Device</div>
+                            <div class="airway-options">
+                                <button class="airway-opt" onclick="selectAirwayDevice('direct', this)">Direct</button>
+                                <button class="airway-opt sel" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
+                                <button class="airway-opt" onclick="selectAirwayDevice('vl-hyper', this)">VL Hyperangulated</button>
+                            </div>
+                        </div>
+                        
+                        <div class="airway-option-group" id="adjunctGroup">
+                            <div class="airway-option-label">Adjunct</div>
+                            <div class="airway-options">
+                                <button class="airway-opt sel" onclick="selectAirwayAdjunct('none', this)">None</button>
+                                <button class="airway-opt" onclick="selectAirwayAdjunct('bougie', this)">Bougie</button>
+                                <button class="airway-opt" onclick="selectAirwayAdjunct('stylet', this)">Stylet</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="airway-rescue" id="airwayRescue">
+                        <div class="airway-section-title">Plan A rescue</div>
+                        <div class="airway-rescue-text" id="airwayRescueText">
+                            If first attempt fails: hyperangulated blade, bougie or stylet, or reposition
+                        </div>
+                    </div>
+                    
+                    <div class="airway-fixed">
+                        <div class="airway-section-title">Plans B–D</div>
+                        <div class="airway-plan-row"><span class="airway-plan-label">B</span><span>LMA (+/- fibreoptic intubation)</span></div>
+                        <div class="airway-plan-row"><span class="airway-plan-label">C</span><span>2-handed BMV + OPA</span></div>
+                        <div class="airway-plan-row"><span class="airway-plan-label">D</span><span>eFONA</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timer -->
+            <div class="panel" id="timer-panel">
+                <div class="readiness-alert" id="readinessAlert">
+                    <span class="alert-icon">⚠️</span>
+                    <span class="alert-text" id="readinessText"></span>
+                </div>
+                
+                <div class="go-summary" id="goSummary">
+                    <div class="go-section-title">Risks & Mitigations</div>
+                    <div class="go-risks-card">
+                        <span id="goRisksNone" class="go-risks-none">None identified</span>
+                        <div id="goRisksContainer" style="display:none;"></div>
+                    </div>
+                    
+                    <div class="go-section-title">Drugs</div>
+                    <div class="go-drugs-card">
+                        <span id="goDrugs">None selected</span>
+                    </div>
+                </div>
+                
+                <div class="go-section-title">Airway plan</div>
+                <div class="go-airway" id="goAirway">
+                    <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
+                    <div class="go-rescue-row" id="goRescue">Rescues: hyperangulated blade, bougie or stylet, or reposition</div>
+                    <div class="go-plan-row"><span class="go-plan-label">B</span><span class="go-plan-text">LMA <span class="go-plan-sub">(+/- fibreoptic intubation)</span></span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">C</span><span class="go-plan-text">2-handed BMV + OPA</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">D</span><span class="go-plan-text">eFONA</span></div>
+                </div>
+                
+                <div class="go-section-title">Timers</div>
+                <div class="timer-grid">
+                    <div class="timer-box" id="preoxBox" onclick="startPreox()">
+                        <div class="timer-label">Pre-oxygenation</div>
+                        <div class="timer-countdown" id="preoxTime">0:00</div>
+                        <div class="timer-status" id="preoxStatus">Tap to start</div>
+                    </div>
+                    <div class="timer-box" id="paralysisBox" onclick="startParalysis()">
+                        <div class="timer-label">Paralysis</div>
+                        <div class="timer-countdown" id="paralysisTime">0:00</div>
+                        <div class="timer-status" id="paralysisStatus">Tap when given</div>
+                    </div>
+                </div>
+                
+                <div class="post-intub-section">
+                    <div class="section-hdr collapsible" onclick="togglePostIntubSection()">
+                        Post intubation checklist
+                        <span class="collapse-icon" id="postIntubIcon">▼</span>
+                    </div>
+                    <div class="post-intub-list" id="postIntubList" style="display:none;">
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">ETCO2 confirmed</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Bilateral breath sounds</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Tube depth checked</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Sedation running</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">Ventilator settings confirmed</span>
+                        </div>
+                        <div class="equip-row" onclick="togglePostIntub(this)">
+                            <div class="chk"></div>
+                            <span class="chk-text">CXR ordered</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="reset-btn" onclick="reset()">Reset</button>
+            </div>
+            
+            <!-- Evidence -->
+            </main>
+    </div>
+    
+    <!-- Difficulty Assessment Modal -->
+    <div class="modal-overlay" id="difficultyModal" onclick="if(event.target===this)hideDifficultyAssess()">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Difficult Airway Features</span>
+                <button class="modal-close" onclick="hideDifficultyAssess()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="assess-card">
+                    <div class="assess-section-hdr">Look externally</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Facial trauma / burns</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Large beard</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Obesity / large neck</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Short thyromental distance</span></div>
+                    
+                    <div class="assess-section-hdr">Look in mouth</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mouth opening &lt;3 fingers</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mallampati III or IV</span></div>
+                    
+                    <div class="assess-section-hdr">Neck mobility</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">C-spine immobilisation</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Ankylosing spondylitis / RA</span></div>
+                    
+                    <div class="assess-section-hdr">Obstruction / pathology</div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Stridor / hoarse voice</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Neck mass / radiation</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Epiglottitis / angioedema</span></div>
+                </div>
+                <div class="assess-result" id="assessResult">0 features identified</div>
+                <button class="modal-done-btn" onclick="hideDifficultyAssess()">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay visible" id="disclaimerModal">
+        <div class="modal disclaimer-modal">
+            <div class="modal-header">
+                <span class="modal-title">Important Notice</span>
+            </div>
+            <div class="modal-body">
+                <div class="disclaimer-content">
+                    <p><strong>For healthcare professionals only</strong></p>
+                    <p>This application is intended as a cognitive aid and does not replace clinical judgement, training, or institutional protocols.</p>
+                    <p>Always follow your institution's policies, guidelines, and checklists. This app is not a substitute for proper airway management training or competency assessment.</p>
+                    <p>The developers accept no liability for clinical decisions made using this tool. Use at your own discretion and risk.</p>
+                </div>
+                <button class="disclaimer-btn" onclick="acceptDisclaimer()">I understand</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bicarbonate Info Modal -->
+    <div class="modal-overlay" id="bicarbModal" onclick="if(event.target===this)hideBicarbInfo()">
+        <div class="modal info-modal">
+            <div class="modal-header">
+                <span class="modal-title">Bicarbonate in Acidaemia</span>
+                <button class="modal-close" onclick="hideBicarbInfo()">Done</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <p><strong>Controversial and context-dependent</strong></p>
+                    <p>The role of bicarbonate before intubation is debated:</p>
+                    <ul>
+                        <li><strong>Metabolic acidosis:</strong> May provide temporary buffer, but doesn't address underlying cause. Risk of CO₂ generation if ventilation inadequate.</li>
+                        <li><strong>Respiratory acidosis:</strong> Generally not helpful – the problem is ventilation, not buffering capacity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Collaboration Modal -->
+    <div class="modal-overlay" id="collabModal">
+        <div class="modal collab-modal">
+            <div class="modal-header">
+                <span class="modal-title">Work Together</span>
+                <button class="modal-close" onclick="closeCollabModal()">✕</button>
+            </div>
+            <div class="modal-body" id="collabModalBody">
+                <div id="collabChoices">
+                    <p class="collab-desc">Sync checklists in real-time with a team member</p>
+                    <button class="collab-btn primary" onclick="startSession()">
+                        <span class="collab-btn-icon">📡</span>
+                        <span class="collab-btn-text">Start Session</span>
+                        <span class="collab-btn-sub">Generate a code for others to join</span>
+                    </button>
+                    <button class="collab-btn" onclick="showJoinSession()">
+                        <span class="collab-btn-icon">🔗</span>
+                        <span class="collab-btn-text">Join Session</span>
+                        <span class="collab-btn-sub">Enter a code to connect</span>
+                    </button>
+                </div>
+                <div id="collabHosting" style="display:none;">
+                    <p class="collab-desc">Share this code with your teammate:</p>
+                    <div class="session-code" id="sessionCode">----</div>
+                    <p class="collab-hint">They tap "Join Session" and enter this code</p>
+                    <div class="collab-status" id="hostStatus">
+                        <span class="status-dot waiting"></span>
+                        <span>Waiting for teammate...</span>
+                    </div>
+                    <button class="collab-btn secondary" onclick="endSession()">End Session</button>
+                </div>
+                <div id="collabJoining" style="display:none;">
+                    <p class="collab-desc">Enter the session code:</p>
+                    <input type="text" class="session-input" id="joinCodeInput" maxlength="8" placeholder="XXXX" oninput="this.value=this.value.toUpperCase()">
+                    <button class="collab-btn primary" onclick="joinSession()">Connect</button>
+                    <button class="collab-btn secondary" onclick="showCollabChoices()">Back</button>
+                </div>
+                <div id="collabConnected" style="display:none;">
+                    <div class="collab-connected-icon">✓</div>
+                    <p class="collab-desc connected">Session active!</p>
+                    <div class="collab-status connected">
+                        <span class="status-dot connected"></span>
+                        <span id="connectedCount">2 devices connected</span>
+                    </div>
+                    <p class="collab-hint">All changes sync in real-time</p>
+                    <button class="collab-btn secondary" onclick="endSession()">Leave Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Session indicator (shown when in active session) -->
+    <div class="session-indicator" id="sessionIndicator" onclick="openCollabModal()">
+        <span class="status-dot connected"></span>
+        <span id="indicatorText">2 synced</span>
+    </div>
+    
+    <script>
+        const S = {
+            risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
+            checks: 0, equip: 0,
+            selectedDrugs: [],
+            planType: 'standard',
+            airwayDevice: 'vl-mac',
+            airwayAdjunct: 'none',
+            preoxStart: null, preoxTimer: null, preoxDone: false,
+            paralysisStart: null, paralysisTimer: null
+        };
+        
+        const DRUGS = {
+            // Evidence-based IV pharmacokinetics (all times in seconds)
+            // onset = clinical effect begins, peak = max effect, offset = effect wears off
+            ketamine: {name:'Ketamine',onset:45,peak:90,offset:600,type:'sedation'},        // 2mg/kg: onset 45s, peak 90s, duration 10min
+            propofol: {name:'Propofol',onset:40,peak:90,offset:480,type:'sedation'},        // 2mg/kg: onset 40s, peak 90s, duration 8min
+            midazolam: {name:'Midazolam',onset:120,peak:300,offset:1800,type:'sedation'},    // onset 2min, peak 5min, duration 30min
+            fentanyl: {name:'Fentanyl',onset:120,peak:240,offset:3600,type:'analgesia'},     // onset 2min, peak 4min, duration 60min
+            morphine: {name:'Morphine',onset:300,peak:600,offset:7200,type:'analgesia'},     // onset 5min, peak 10min, duration 2hr
+            rocuronium: {name:'Rocuronium',onset:60,peak:90,offset:4200,type:'paralytic'},  // 1.2mg/kg: onset 60s, peak 90s, duration 70min
+            suxamethonium: {name:'Suxamethonium',onset:45,peak:60,offset:540,type:'paralytic'} // 1.5mg/kg: onset 45s, peak 60s, duration 9min
+        };
+        
+        const DRUG_INFO = {
+            ketamine: {
+                pros: ['Haemodynamic stability', 'Bronchodilation', 'Maintains respiratory drive initially'],
+                cons: ['Emergence phenomena', 'Hypersalivation'],
+                evidence: 'FAKT (2022): Ketamine + fentanyl vs ketamine alone – fentanyl ↓ tachycardia/hypertension but ↑ risk of hypotension'
+            },
+            propofol: {
+                pros: ['Rapid onset', 'Smooth induction', 'Antiemetic'],
+                cons: ['Hypotension', 'Apnoea', 'No analgesic effect'],
+                evidence: 'INTUBE: Any dose of propofol associated with ↑ hypotension in critically ill.'
+            },
+            midazolam: {
+                pros: ['Amnesia', 'Anxiolysis', 'Less hypotension than propofol'],
+                cons: ['Slow onset (2-3 min)', 'No analgesia', 'Unpredictable in shock'],
+                evidence: null
+            },
+            fentanyl: {
+                pros: ['Blunts laryngoscopy response', 'Haemodynamic stability at low doses'],
+                cons: ['Chest wall rigidity', 'Slow onset'],
+                evidence: 'FAKT (2022): ↓ tachycardia/hypertension but ↑ risk of hypotension. Avoid in serotonin syndrome.'
+            },
+            morphine: {
+                pros: ['Not serotonergic – preferred in serotonin syndrome'],
+                cons: ['Slow onset (5+ min)', 'Histamine release → hypotension'],
+                evidence: null
+            },
+            rocuronium: {
+                pros: ['No fasciculations', 'Reversible with sugammadex', 'No hyperkalaemia risk'],
+                cons: ['Longer duration'],
+                evidence: '1.2 mg/kg provides intubating conditions at 60s comparable to suxamethonium'
+            },
+            suxamethonium: {
+                pros: ['Fastest onset', 'Short duration (5-10 min)'],
+                cons: ['Hyperkalaemia risk (burns, denervation, prolonged immobility)', 'MH trigger', 'Fasciculations → ↑ICP, ↑IOP'],
+                evidence: 'Contraindicated: burns >24h, crush injury, denervation, prolonged immobility, hyperkalaemia'
+            }
+        };
+        
+        const SPECIAL_CIRCUMSTANCES = {
+            serotonin: {
+                alert: 'Avoid fentanyl – use morphine or ketamine for analgesia',
+                avoid: ['fentanyl']
+            },
+            icp: {
+                alert: 'Avoid ↑HR/↑BP: High-dose opioid, hyperangulated blade, esmolol drawn up',
+                avoid: []
+            }
+        };
+        
+        // Phase configuration
+        const PHASES = {
+            ready: {tabs: ['risks', 'checks'], defaultTab: 'risks'},
+            set: {tabs: ['equip', 'drugs', 'airway'], defaultTab: 'equip'},
+            go: {tabs: ['timer'], defaultTab: 'timer'}
+        };
+        
+        let currentPhase = null;
+        
+        function goToStep(step) {
+            goToPhase(step);
+        }
+        
+        function goToPhase(phase) {
+            currentPhase = phase;
+            document.getElementById('home-panel').classList.remove('active');
+            document.getElementById('phaseNav').style.display = 'block';
+            document.getElementById('navTitle').textContent = 'IntubAid';
+            document.getElementById('homeBtn').style.display = 'flex';
+            
+            // Update phase step highlights
+            document.querySelectorAll('.phase-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('phase' + phase.charAt(0).toUpperCase() + phase.slice(1)).classList.add('active');
+            
+            // Update sub-tabs for this phase
+            const phaseConfig = PHASES[phase];
+            const subTabsEl = document.getElementById('subTabs');
+            
+            // Hide sub-tabs if only one tab in phase
+            if (phaseConfig.tabs.length === 1) {
+                subTabsEl.style.display = 'none';
+            } else {
+                subTabsEl.style.display = 'flex';
+                const subTabsHtml = phaseConfig.tabs.map(tab => {
+                    const countId = tab === 'checks' ? 'checksCount' : (tab === 'equip' ? 'equipCount' : (tab === 'drugs' ? 'drugsCount' : ''));
+                    const countSpan = countId ? ` <span class="sub-count" id="${countId}">${getCountText(tab)}</span>` : '';
+                    const label = tab.charAt(0).toUpperCase() + tab.slice(1);
+                    return `<button class="sub-tab" data-tab="${tab}">${label}${countSpan}</button>`;
+                }).join('');
+                subTabsEl.innerHTML = subTabsHtml;
+                
+                // Rebind sub-tab click handlers
+                document.querySelectorAll('.sub-tab').forEach(tab => {
+                    tab.addEventListener('click', () => switchSubTab(tab.dataset.tab));
+                });
+            }
+            
+            // Show default tab
+            switchSubTab(phaseConfig.defaultTab);
+        }
+        
+        function getCountText(tab) {
+            if (tab === 'checks') return S.checks + '/9';
+            if (tab === 'equip') return S.equip + '/14';
+            if (tab === 'drugs') return S.selectedDrugs.length ? '' : '—';
+            return '';
+        }
+        
+        function switchSubTab(tab) {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.sub-tab[data-tab="${tab}"]`)?.classList.add('active');
+            
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(tab + '-panel').classList.add('active');
+            
+            if (tab === 'timer') updateGoSummary();
+            updateCounts();
+        }
+        
+        function goHome() {
+            currentPhase = null;
+            document.getElementById('phaseNav').style.display = 'none';
+            document.getElementById('homeBtn').style.display = 'none';
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('home-panel').classList.add('active');
+            document.getElementById('navTitle').textContent = 'IntubAid';
+        }
+        
+        function toggleRisk(id) {
+            S.risks[id] = !S.risks[id];
+            document.getElementById('t-'+id).classList.toggle('on', S.risks[id]);
+            document.getElementById('mc-'+id).classList.toggle('visible', S.risks[id]);
+            // Auto-select plan type for difficult airway
+            if (id === 'difficult') {
+                setPlanType(S.risks[id] ? 'difficult' : 'standard');
+            }
+        }
+        
+        function setPlanType(type) {
+            S.planType = type;
+        }
+        
+        function toggleChk(row, type) {
+            const c = row.querySelector('.chk');
+            const was = c.classList.contains('on');
+            c.classList.toggle('on');
+            row.classList.toggle('done');
+            S[type] += was ? -1 : 1;
+            updateCounts();
+        }
+        
+        function updateCounts() {
+            const checksEl = document.getElementById('checksCount');
+            const equipEl = document.getElementById('equipCount');
+            const drugsEl = document.getElementById('drugsCount');
+            
+            if (checksEl) {
+                checksEl.textContent = S.checks+'/9';
+                checksEl.classList.toggle('done', S.checks===9);
+            }
+            if (equipEl) {
+                equipEl.textContent = S.equip+'/14';
+                equipEl.classList.toggle('done', S.equip===14);
+            }
+            if (drugsEl) {
+                drugsEl.textContent = S.selectedDrugs.length ? '' : '—';
+            }
+        }
+        
+        function toggleDrug(id, btn) {
+            btn.classList.toggle('sel');
+            if (btn.classList.contains('sel')) {
+                if (!S.selectedDrugs.includes(id)) S.selectedDrugs.push(id);
+            } else {
+                S.selectedDrugs = S.selectedDrugs.filter(d=>d!==id);
+            }
+            
+            document.getElementById('drugsCount').textContent = S.selectedDrugs.length ? '' : '—';
+            
+            updateDrugInfo();
+            checkSpecialConflicts();
+        }
+        
+        function updateDrugInfo() {
+            const infoCard = document.getElementById('drugInfoCard');
+            const infoContent = document.getElementById('drugInfoContent');
+            
+            if (!S.selectedDrugs.length) {
+                infoCard.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            S.selectedDrugs.forEach(id => {
+                const info = DRUG_INFO[id];
+                const drug = DRUGS[id];
+                if (!info) return;
+                
+                html += `<div class="drug-info-item">
+                    <div class="drug-info-name">${drug.name}</div>
+                    <div class="drug-info-pros"><span class="info-label">✓</span> ${info.pros.join(' • ')}</div>
+                    <div class="drug-info-cons"><span class="info-label">✗</span> ${info.cons.join(' • ')}</div>
+                    ${info.evidence ? `<div class="drug-info-evidence">${info.evidence}</div>` : ''}
+                </div>`;
+            });
+            
+            infoContent.innerHTML = html;
+            infoCard.style.display = 'block';
+        }
+        
+        function toggleSpecial(id, btn) {
+            btn.classList.toggle('sel');
+            checkSpecialConflicts();
+        }
+        
+        function checkSpecialConflicts() {
+            const alertEl = document.getElementById('specialAlert');
+            const alertText = document.getElementById('specialAlertText');
+            const alerts = [];
+            
+            document.querySelectorAll('.special-btn.sel').forEach(btn => {
+                const id = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/)[1];
+                const circ = SPECIAL_CIRCUMSTANCES[id];
+                if (circ && circ.alert) {
+                    // Check if any avoided drugs are selected
+                    const conflicts = circ.avoid.filter(d => S.selectedDrugs.includes(d));
+                    if (conflicts.length > 0) {
+                        alerts.push(`⚠️ ${circ.alert}`);
+                    } else {
+                        alerts.push(`💡 ${circ.alert}`);
+                    }
+                }
+            });
+            
+            if (alerts.length) {
+                alertText.innerHTML = alerts.join('<br>');
+                alertEl.style.display = 'block';
+            } else {
+                alertEl.style.display = 'none';
+            }
+        }
+        
+        // Airway plan functions
+        function selectAirwayDevice(device, btn) {
+            document.querySelectorAll('#deviceGroup .airway-opt').forEach(b => b.classList.remove('sel'));
+            btn.classList.add('sel');
+            S.airwayDevice = device;
+            
+            // Auto-select stylet when hyperangulated is chosen
+            if (device === 'vl-hyper') {
+                document.querySelectorAll('#adjunctGroup .airway-opt').forEach(b => b.classList.remove('sel'));
+                document.querySelector('#adjunctGroup .airway-opt[onclick*="stylet"]').classList.add('sel');
+                S.airwayAdjunct = 'stylet';
+            }
+            
+            updateAirwayPlan();
+            syncToFirebase();
+        }
+        
+        function selectAirwayAdjunct(adjunct, btn) {
+            document.querySelectorAll('#adjunctGroup .airway-opt').forEach(b => b.classList.remove('sel'));
+            btn.classList.add('sel');
+            S.airwayAdjunct = adjunct;
+            updateAirwayPlan();
+            syncToFirebase();
+        }
+        
+        function updateAirwayPlan() {
+            // Build Plan A text
+            const deviceNames = {
+                'direct': 'Direct laryngoscopy',
+                'vl-mac': 'VL MAC',
+                'vl-hyper': 'VL Hyperangulated'
+            };
+            const adjunctNames = {
+                'none': '',
+                'bougie': ' + bougie',
+                'stylet': ' + stylet'
+            };
+            
+            const planAText = deviceNames[S.airwayDevice] + adjunctNames[S.airwayAdjunct];
+            document.getElementById('goPlanA').textContent = planAText;
+            
+            // Build rescue options
+            const rescueOptions = [];
+            
+            // If not using hyperangulated, it's a rescue option
+            if (S.airwayDevice !== 'vl-hyper') {
+                rescueOptions.push('hyperangulated blade');
+            }
+            
+            // If not using bougie or stylet, they're rescue options
+            if (S.airwayAdjunct === 'none') {
+                rescueOptions.push('bougie or stylet');
+            } else if (S.airwayAdjunct === 'bougie') {
+                rescueOptions.push('stylet');
+            } else if (S.airwayAdjunct === 'stylet') {
+                rescueOptions.push('bougie');
+            }
+            
+            // Add repositioning as always an option
+            rescueOptions.push('reposition');
+            
+            // Build rescue text
+            let rescueText;
+            if (rescueOptions.length > 1) {
+                rescueText = 'Rescues: ' + rescueOptions.slice(0, -1).join(', ') + ', or ' + rescueOptions[rescueOptions.length - 1];
+            } else {
+                rescueText = 'Rescues: ' + rescueOptions[0];
+            }
+            
+            // Update airway tab rescue text
+            const rescueEl = document.getElementById('airwayRescueText');
+            rescueEl.textContent = 'If first attempt fails: ' + rescueOptions.slice(0, -1).join(', ') + ', or ' + rescueOptions[rescueOptions.length - 1];
+            
+            // Update GO page rescue text
+            const goRescueEl = document.getElementById('goRescue');
+            if (goRescueEl) {
+                goRescueEl.textContent = rescueText;
+            }
+        }
+        
+        // Timer functions
+        function startPreox() {
+            if (S.preoxStart) return;
+            S.preoxStart = Date.now();
+            document.getElementById('preoxBox').classList.add('started', 'active');
+            document.getElementById('preoxStatus').textContent = 'Running';
+            S.preoxTimer = setInterval(updatePreox, 1000);
+            updatePreox();
+            syncToFirebase(); // Sync timer start to other devices
+        }
+        
+        function updatePreox() {
+            const elapsed = Math.floor((Date.now() - S.preoxStart) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('preoxTime').textContent = m + ':' + String(s).padStart(2,'0');
+            
+            const box = document.getElementById('preoxBox');
+            const status = document.getElementById('preoxStatus');
+            
+            if (elapsed >= 180 && !S.preoxDone) {
+                S.preoxDone = true;
+                box.classList.remove('active');
+                box.classList.add('ready');
+                status.textContent = 'Ready ✓';
+            }
+        }
+        
+        function startParalysis() {
+            if (S.paralysisStart) return;
+            S.paralysisStart = Date.now();
+            document.getElementById('paralysisBox').classList.add('started', 'active');
+            document.getElementById('paralysisStatus').textContent = 'Running';
+            S.paralysisTimer = setInterval(updateParalysis, 1000);
+            updateParalysis();
+            syncToFirebase(); // Sync timer start to other devices
+        }
+        
+        function updateParalysis() {
+            const elapsed = Math.floor((Date.now() - S.paralysisStart) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('paralysisTime').textContent = m + ':' + String(s).padStart(2,'0');
+            
+            // Turn green after 60 seconds
+            if (elapsed >= 60) {
+                document.getElementById('paralysisBox').classList.remove('active');
+                document.getElementById('paralysisBox').classList.add('ready');
+                document.getElementById('paralysisStatus').textContent = 'Ready';
+            }
+        }
+        
+        function updateGoSummary() {
+            // Check readiness
+            const alertEl = document.getElementById('readinessAlert');
+            const alertText = document.getElementById('readinessText');
+            const issueLinks = [];
+            if (S.checks < 9) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready');switchSubTab('checks')">${9 - S.checks} checks incomplete</a>`);
+            if (S.equip < 14) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set');switchSubTab('equip')">${14 - S.equip} equipment items not ready</a>`);
+            
+            if (issueLinks.length) {
+                alertText.innerHTML = issueLinks.join(', ');
+                alertEl.classList.add('visible');
+            } else {
+                alertEl.classList.remove('visible');
+            }
+            
+            // Update GO summary with full risk names and their mitigations
+            const riskConfig = {
+                aspiration: {name: 'Aspiration risk', chipIds: ['mc-aspiration']},
+                difficult: {name: 'Anatomical difficulty', chipIds: ['mc-difficult']},
+                haemo: {name: 'Haemodynamic instability', chipIds: ['mc-haemo']},
+                hypoxia: {name: 'Hypoxia risk', chipIds: ['mc-hypoxia']},
+                acidaemia: {name: 'Acidaemia', chipIds: ['mc-acidaemia']},
+                icp: {name: 'Raised ICP', chipIds: ['mc-icp']}
+            };
+            
+            // Build risks with their mitigations
+            let risksHtml = '';
+            let hasRisks = false;
+            
+            Object.entries(S.risks).forEach(([id, active]) => {
+                if (active) {
+                    hasRisks = true;
+                    const config = riskConfig[id];
+                    const mits = [];
+                    config.chipIds.forEach(chipId => {
+                        document.querySelectorAll(`#${chipId} .mit-chip.on`).forEach(chip => {
+                            mits.push(chip.textContent);
+                        });
+                    });
+                    risksHtml += `<div class="go-risk-item">
+                        <div class="go-risk-name">${config.name}</div>
+                        ${mits.length ? `<div class="go-risk-mits">${mits.join(', ')}</div>` : ''}
+                    </div>`;
+                }
+            });
+            
+            const risksContainer = document.getElementById('goRisksContainer');
+            if (hasRisks) {
+                risksContainer.innerHTML = risksHtml;
+                risksContainer.style.display = 'block';
+                document.getElementById('goRisksNone').style.display = 'none';
+            } else {
+                risksContainer.style.display = 'none';
+                document.getElementById('goRisksNone').style.display = 'block';
+            }
+            
+            const drugNames = S.selectedDrugs.map(id => DRUGS[id].name);
+            document.getElementById('goDrugs').textContent = drugNames.length ? drugNames.join(', ') : 'None selected';
+            
+            // Update airway plan based on current selections
+            updateAirwayPlan();
+        }
+        
+        // Disclaimer Modal
+        function acceptDisclaimer() {
+            document.getElementById('disclaimerModal').classList.remove('visible');
+        }
+        
+        // Difficulty Assessment Modal
+        function showDifficultyAssess() {
+            document.getElementById('difficultyModal').classList.add('visible');
+        }
+        
+        function hideDifficultyAssess() {
+            document.getElementById('difficultyModal').classList.remove('visible');
+        }
+        
+        function showBicarbInfo() {
+            document.getElementById('bicarbModal').classList.add('visible');
+        }
+        
+        function hideBicarbInfo() {
+            document.getElementById('bicarbModal').classList.remove('visible');
+        }
+        
+        function toggleAssess(row) {
+            const chk = row.querySelector('.chk');
+            chk.classList.toggle('on');
+            row.classList.toggle('on');
+            updateAssessCount();
+        }
+        
+        function updateAssessCount() {
+            const count = document.querySelectorAll('.assess-row .chk.on').length;
+            const result = document.getElementById('assessResult');
+            result.textContent = count + ' feature' + (count !== 1 ? 's' : '') + ' identified';
+            result.classList.toggle('warning', count > 0);
+            
+            // Auto-toggle difficult airway if features found
+            if (count > 0 && !S.risks.difficult) {
+                toggleRisk('difficult');
+            }
+        }
+        
+        // Post-intubation checklist
+        function togglePostIntub(row) {
+            const chk = row.querySelector('.chk');
+            chk.classList.toggle('on');
+            row.classList.toggle('done');
+        }
+        
+        function togglePostIntubSection() {
+            const hdr = document.querySelector('.section-hdr.collapsible');
+            const list = document.getElementById('postIntubList');
+            hdr.classList.toggle('open');
+            list.style.display = hdr.classList.contains('open') ? 'block' : 'none';
+        }
+        
+        function reset() {
+            if (!confirm('Reset all data?')) return;
+            clearInterval(S.preoxTimer);
+            clearInterval(S.paralysisTimer);
+            Object.assign(S, {
+                risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
+                checks:0, equip:0, selectedDrugs:[], planType:'standard',
+                airwayDevice:'vl-mac', airwayAdjunct:'none',
+                preoxStart:null, preoxTimer:null, preoxDone:false,
+                paralysisStart:null, paralysisTimer:null
+            });
+            
+            document.querySelectorAll('.toggle').forEach(t=>t.classList.remove('on'));
+            document.querySelectorAll('.mit-section').forEach(m=>m.classList.remove('visible'));
+            document.querySelectorAll('.mit-chip').forEach(c=>c.classList.remove('on'));
+            document.querySelectorAll('.chk').forEach(c=>c.classList.remove('on'));
+            document.querySelectorAll('.chk-row, .equip-row').forEach(r=>r.classList.remove('done'));
+            document.querySelectorAll('.drug-btn').forEach(b=>b.classList.remove('sel'));
+            document.querySelectorAll('.special-btn').forEach(b=>b.classList.remove('sel'));
+            
+            // Reset airway options
+            document.querySelectorAll('.airway-opt').forEach(b=>b.classList.remove('sel'));
+            document.querySelector('.airway-opt[onclick*="vl-mac"]')?.classList.add('sel');
+            document.querySelector('.airway-opt[onclick*="\'none\'"]')?.classList.add('sel');
+            updateAirwayPlan();
+            
+            document.getElementById('drugInfoCard').style.display='none';
+            document.getElementById('specialAlert').style.display='none';
+            document.getElementById('readinessAlert').classList.remove('visible');
+            
+            // Reset GO page
+            document.getElementById('goRisksContainer').style.display = 'none';
+            document.getElementById('goRisksContainer').innerHTML = '';
+            document.getElementById('goRisksNone').style.display = 'block';
+            document.getElementById('goDrugs').textContent = 'None selected';
+            document.getElementById('goPlanA').textContent = 'VL MAC';
+            document.getElementById('goRescue').textContent = 'Rescues: hyperangulated blade, bougie or stylet, or reposition';
+            
+            // Reset timers
+            document.getElementById('preoxTime').textContent = '0:00';
+            document.getElementById('preoxStatus').textContent = 'Tap to start';
+            document.getElementById('preoxBox').classList.remove('started', 'active', 'ready');
+            document.getElementById('paralysisTime').textContent = '0:00';
+            document.getElementById('paralysisStatus').textContent = 'Tap when given';
+            document.getElementById('paralysisBox').classList.remove('started', 'active', 'ready');
+            
+            // Reset post-intub section
+            document.querySelector('.section-hdr.collapsible').classList.remove('open');
+            document.getElementById('postIntubList').style.display = 'none';
+            
+            // Go back to home
+            currentPhase = null;
+            document.getElementById('phaseNav').style.display = 'none';
+            document.getElementById('homeBtn').style.display = 'none';
+            document.getElementById('navTitle').textContent = 'IntubAid';
+            
+            document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+            document.getElementById('home-panel').classList.add('active');
+            
+            // Reset collab UI
+            if (currentSession) endSession();
+        }
+        
+        // ==================== COLLABORATION ====================
+        
+        // Session state
+        let currentSession = null;
+        let sessionRef = null;
+        let sessionListener = null;
+        let deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
+        let isApplyingRemote = false;
+        
+        // Generate session code like "TUBE-4829"
+        function generateSessionCode() {
+            const num = Math.floor(1000 + Math.random() * 9000);
+            return 'TUBE' + num;
+        }
+        
+        // Open/close collaboration modal
+        function openCollabModal() {
+            document.getElementById('collabModal').classList.add('visible');
+            if (currentSession) {
+                showCollabConnected();
+            } else {
+                showCollabChoices();
+            }
+        }
+        
+        function closeCollabModal() {
+            document.getElementById('collabModal').classList.remove('visible');
+        }
+        
+        function showCollabChoices() {
+            document.getElementById('collabChoices').style.display = 'block';
+            document.getElementById('collabHosting').style.display = 'none';
+            document.getElementById('collabJoining').style.display = 'none';
+            document.getElementById('collabConnected').style.display = 'none';
+        }
+        
+        function showJoinSession() {
+            document.getElementById('collabChoices').style.display = 'none';
+            document.getElementById('collabJoining').style.display = 'block';
+            document.getElementById('joinCodeInput').value = '';
+            document.getElementById('joinCodeInput').focus();
+        }
+        
+        function showCollabConnected() {
+            document.getElementById('collabChoices').style.display = 'none';
+            document.getElementById('collabHosting').style.display = 'none';
+            document.getElementById('collabJoining').style.display = 'none';
+            document.getElementById('collabConnected').style.display = 'block';
+        }
+        
+        // Start a new session (host)
+        async function startSession() {
+            if (!window.firebaseDB) {
+                alert('Connection unavailable. Please check your internet connection.');
+                return;
+            }
+            
+            const code = generateSessionCode();
+            currentSession = code;
+            sessionRef = window.firebaseRef(window.firebaseDB, 'sessions/' + code);
+            
+            // Initialize session with current state
+            const sessionData = getShareableState();
+            sessionData.host = deviceId;
+            sessionData.devices = { [deviceId]: Date.now() };
+            sessionData.createdAt = Date.now();
+            
+            try {
+                await window.firebaseSet(sessionRef, sessionData);
+                
+                // Set up disconnect cleanup
+                const deviceRef = window.firebaseRef(window.firebaseDB, 'sessions/' + code + '/devices/' + deviceId);
+                window.firebaseOnDisconnect(deviceRef).remove();
+                
+                // Listen for changes
+                listenToSession(code);
+                
+                // Update UI
+                document.getElementById('sessionCode').textContent = code;
+                document.getElementById('collabChoices').style.display = 'none';
+                document.getElementById('collabHosting').style.display = 'block';
+                
+                // Show session indicator
+                document.getElementById('sessionIndicator').classList.add('visible');
+                document.getElementById('collabTrigger').classList.add('active');
+                
+            } catch (err) {
+                console.error('Failed to start session:', err);
+                alert('Failed to start session. Please try again.');
+                currentSession = null;
+            }
+        }
+        
+        // Join an existing session
+        async function joinSession() {
+            if (!window.firebaseDB) {
+                alert('Connection unavailable. Please check your internet connection.');
+                return;
+            }
+            
+            const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+            if (!code || code.length < 4) {
+                alert('Please enter a valid session code');
+                return;
+            }
+            
+            const testRef = window.firebaseRef(window.firebaseDB, 'sessions/' + code);
+            
+            // Check if session exists
+            window.firebaseOnValue(testRef, async (snapshot) => {
+                if (!snapshot.exists()) {
+                    alert('Session not found. Check the code and try again.');
+                    return;
+                }
+                
+                currentSession = code;
+                sessionRef = testRef;
+                
+                // Add ourselves to devices
+                const deviceRef = window.firebaseRef(window.firebaseDB, 'sessions/' + code + '/devices/' + deviceId);
+                await window.firebaseSet(deviceRef, Date.now());
+                window.firebaseOnDisconnect(deviceRef).remove();
+                
+                // Apply remote state
+                const data = snapshot.val();
+                applyRemoteState(data);
+                
+                // Listen for ongoing changes
+                listenToSession(code);
+                
+                // Show connected UI
+                showCollabConnected();
+                document.getElementById('sessionIndicator').classList.add('visible');
+                document.getElementById('collabTrigger').classList.add('active');
+                
+            }, { onlyOnce: true });
+        }
+        
+        // Listen to session changes
+        function listenToSession(code) {
+            if (sessionListener) {
+                // Already listening
+                return;
+            }
+            
+            const ref = window.firebaseRef(window.firebaseDB, 'sessions/' + code);
+            sessionListener = window.firebaseOnValue(ref, (snapshot) => {
+                if (!snapshot.exists()) {
+                    // Session was deleted
+                    handleSessionEnded();
+                    return;
+                }
+                
+                const data = snapshot.val();
+                
+                // Update device count
+                const deviceCount = data.devices ? Object.keys(data.devices).length : 1;
+                document.getElementById('connectedCount').textContent = deviceCount + ' device' + (deviceCount !== 1 ? 's' : '') + ' connected';
+                
+                // Update host status
+                const hostStatus = document.getElementById('hostStatus');
+                if (hostStatus && document.getElementById('collabHosting').style.display !== 'none') {
+                    if (deviceCount > 1) {
+                        hostStatus.innerHTML = '<span class="status-dot connected"></span><span>Teammate connected!</span>';
+                    } else {
+                        hostStatus.innerHTML = '<span class="status-dot waiting"></span><span>Waiting for teammate...</span>';
+                    }
+                }
+                
+                // Apply state changes (skip if we made them)
+                if (data.lastUpdatedBy !== deviceId) {
+                    applyRemoteState(data);
+                }
+            });
+        }
+        
+        // End session
+        async function endSession() {
+            if (!currentSession) return;
+            
+            // Remove our device (or whole session if we're host)
+            const sessionData = await new Promise((resolve) => {
+                window.firebaseOnValue(sessionRef, (snap) => resolve(snap.val()), { onlyOnce: true });
+            });
+            
+            if (sessionData && sessionData.host === deviceId) {
+                // We're host - delete entire session
+                await window.firebaseRemove(sessionRef);
+            } else {
+                // Just remove ourselves
+                const deviceRef = window.firebaseRef(window.firebaseDB, 'sessions/' + currentSession + '/devices/' + deviceId);
+                await window.firebaseRemove(deviceRef);
+            }
+            
+            handleSessionEnded();
+        }
+        
+        function handleSessionEnded() {
+            currentSession = null;
+            sessionRef = null;
+            sessionListener = null;
+            
+            document.getElementById('sessionIndicator').classList.remove('visible');
+            document.getElementById('collabTrigger').classList.remove('active');
+            showCollabChoices();
+            closeCollabModal();
+        }
+        
+        // Get state that can be shared
+        function getShareableState() {
+            // Collect mitigation states
+            const mitigations = {};
+            document.querySelectorAll('.mit-chip').forEach(chip => {
+                const riskRow = chip.closest('.risk-row');
+                if (riskRow) {
+                    const riskId = riskRow.querySelector('.toggle')?.id?.replace('t-', '');
+                    if (riskId) {
+                        if (!mitigations[riskId]) mitigations[riskId] = [];
+                        if (chip.classList.contains('on')) {
+                            mitigations[riskId].push(chip.textContent);
+                        }
+                    }
+                }
+            });
+            
+            // Collect check states
+            const checks = [];
+            document.querySelectorAll('#checks-panel .chk-row').forEach((row, i) => {
+                if (row.querySelector('.chk').classList.contains('on')) checks.push(i);
+            });
+            
+            // Collect equipment states
+            const equip = [];
+            document.querySelectorAll('#equip-panel .equip-row').forEach((row, i) => {
+                if (row.querySelector('.chk').classList.contains('on')) equip.push(i);
+            });
+            
+            // Collect special circumstances
+            const specials = [];
+            document.querySelectorAll('.special-btn.sel').forEach(btn => {
+                const match = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/);
+                if (match) specials.push(match[1]);
+            });
+            
+            return {
+                risks: { ...S.risks },
+                mitigations: mitigations,
+                checksIdx: checks,
+                equipIdx: equip,
+                selectedDrugs: [...S.selectedDrugs],
+                specials: specials,
+                planType: S.planType,
+                airwayDevice: S.airwayDevice,
+                airwayAdjunct: S.airwayAdjunct,
+                preoxStart: S.preoxStart,
+                paralysisStart: S.paralysisStart,
+                lastUpdatedBy: deviceId,
+                updatedAt: Date.now()
+            };
+        }
+        
+        // Apply state from remote
+        function applyRemoteState(data) {
+            if (!data || isApplyingRemote) return;
+            isApplyingRemote = true;
+            
+            try {
+                // Apply risks
+                if (data.risks) {
+                    Object.keys(data.risks).forEach(id => {
+                        if (S.risks[id] !== data.risks[id]) {
+                            S.risks[id] = data.risks[id];
+                            document.getElementById('t-' + id)?.classList.toggle('on', S.risks[id]);
+                            document.getElementById('mc-' + id)?.classList.toggle('visible', S.risks[id]);
+                        }
+                    });
+                }
+                
+                // Apply mitigations
+                if (data.mitigations) {
+                    document.querySelectorAll('.mit-chip').forEach(chip => {
+                        const riskRow = chip.closest('.risk-row');
+                        if (riskRow) {
+                            const riskId = riskRow.querySelector('.toggle')?.id?.replace('t-', '');
+                            if (riskId && data.mitigations[riskId]) {
+                                const shouldBeOn = data.mitigations[riskId].includes(chip.textContent);
+                                chip.classList.toggle('on', shouldBeOn);
+                            } else {
+                                chip.classList.remove('on');
+                            }
+                        }
+                    });
+                }
+                
+                // Apply checks
+                S.checks = 0;
+                document.querySelectorAll('#checks-panel .chk-row').forEach((row, i) => {
+                    const shouldBeOn = data.checksIdx && data.checksIdx.includes(i);
+                    row.querySelector('.chk').classList.toggle('on', shouldBeOn);
+                    row.classList.toggle('done', shouldBeOn);
+                    if (shouldBeOn) S.checks++;
+                });
+                
+                // Apply equipment
+                S.equip = 0;
+                document.querySelectorAll('#equip-panel .equip-row').forEach((row, i) => {
+                    const shouldBeOn = data.equipIdx && data.equipIdx.includes(i);
+                    row.querySelector('.chk').classList.toggle('on', shouldBeOn);
+                    row.classList.toggle('done', shouldBeOn);
+                    if (shouldBeOn) S.equip++;
+                });
+                
+                // Apply drugs
+                S.selectedDrugs = data.selectedDrugs || [];
+                document.querySelectorAll('.drug-btn').forEach(btn => {
+                    const match = btn.onclick.toString().match(/toggleDrug\('(\w+)'/);
+                    if (match) {
+                        btn.classList.toggle('sel', S.selectedDrugs.includes(match[1]));
+                    }
+                });
+                updateDrugInfo();
+                
+                // Apply special circumstances
+                document.querySelectorAll('.special-btn').forEach(btn => {
+                    const match = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/);
+                    if (match) {
+                        const shouldBeOn = data.specials && data.specials.includes(match[1]);
+                        btn.classList.toggle('sel', shouldBeOn);
+                    }
+                });
+                checkSpecialConflicts();
+                
+                // Apply plan type
+                if (data.planType) {
+                    S.planType = data.planType;
+                }
+                
+                // Apply airway selections
+                if (data.airwayDevice && data.airwayDevice !== S.airwayDevice) {
+                    S.airwayDevice = data.airwayDevice;
+                    document.querySelectorAll('#deviceGroup .airway-opt').forEach(btn => {
+                        const match = btn.onclick.toString().match(/selectAirwayDevice\('([^']+)'/);
+                        if (match) {
+                            btn.classList.toggle('sel', match[1] === S.airwayDevice);
+                        }
+                    });
+                }
+                
+                if (data.airwayAdjunct && data.airwayAdjunct !== S.airwayAdjunct) {
+                    S.airwayAdjunct = data.airwayAdjunct;
+                    document.querySelectorAll('#adjunctGroup .airway-opt').forEach(btn => {
+                        const match = btn.onclick.toString().match(/selectAirwayAdjunct\('([^']+)'/);
+                        if (match) {
+                            btn.classList.toggle('sel', match[1] === S.airwayAdjunct);
+                        }
+                    });
+                }
+                
+                if (data.airwayDevice || data.airwayAdjunct) {
+                    updateAirwayPlan();
+                }
+                
+                // Apply timer state (sync start times)
+                if (data.preoxStart && !S.preoxStart) {
+                    S.preoxStart = data.preoxStart;
+                    document.getElementById('preoxBox').classList.add('started', 'active');
+                    document.getElementById('preoxStatus').textContent = 'Running';
+                    if (!S.preoxTimer) {
+                        S.preoxTimer = setInterval(updatePreox, 1000);
+                        updatePreox();
+                    }
+                }
+                
+                if (data.paralysisStart && !S.paralysisStart) {
+                    S.paralysisStart = data.paralysisStart;
+                    document.getElementById('paralysisBox').classList.add('started', 'active');
+                    document.getElementById('paralysisStatus').textContent = 'Running';
+                    if (!S.paralysisTimer) {
+                        S.paralysisTimer = setInterval(updateParalysis, 1000);
+                        updateParalysis();
+                    }
+                }
+                
+                updateCounts();
+                
+            } finally {
+                isApplyingRemote = false;
+            }
+        }
+        
+        // Sync current state to Firebase
+        function syncToFirebase() {
+            if (!currentSession || isApplyingRemote) return;
+            
+            const data = getShareableState();
+            const updateRef = window.firebaseRef(window.firebaseDB, 'sessions/' + currentSession);
+            
+            // Use update to merge without overwriting host/devices/createdAt
+            window.firebaseUpdate(updateRef, data).catch(err => console.error('Sync error:', err));
+        }
+        
+        // Modify existing toggle functions to sync
+        const originalToggleRisk = toggleRisk;
+        toggleRisk = function(id) {
+            originalToggleRisk(id);
+            syncToFirebase();
+        };
+        
+        const originalToggleChk = toggleChk;
+        toggleChk = function(row, type) {
+            originalToggleChk(row, type);
+            syncToFirebase();
+        };
+        
+        const originalToggleDrug = toggleDrug;
+        toggleDrug = function(id, btn) {
+            originalToggleDrug(id, btn);
+            syncToFirebase();
+        };
+        
+        const originalToggleSpecial = toggleSpecial;
+        toggleSpecial = function(id, btn) {
+            originalToggleSpecial(id, btn);
+            syncToFirebase();
+        };
+        
+        // Also sync when mitigation chips are toggled
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('mit-chip')) {
+                // Small delay to let the toggle happen first
+                setTimeout(syncToFirebase, 10);
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => { updateCounts(); });
+    </script>
+</body>
+</html>
