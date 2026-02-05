@@ -344,9 +344,8 @@
             z-index: 50;
             max-width: 430px;
             margin: 0 auto;
-            display: none;
         }
-        
+
         /* Risk Row - Compact */
         .risk-row {
             display: flex;
@@ -2168,8 +2167,8 @@
             document.getElementById('phaseNav').style.display = 'block';
             document.getElementById('navTitle').textContent = 'IntubAid';
             document.getElementById('homeBtn').style.display = 'flex';
-            document.querySelector('.collab-footer').style.display = 'block';
-            
+            document.querySelector('.collab-footer').style.display = 'none';
+
             // Update phase step highlights
             document.querySelectorAll('.phase-step').forEach(s => s.classList.remove('active'));
             document.getElementById('phase' + phase.charAt(0).toUpperCase() + phase.slice(1)).classList.add('active');
@@ -2226,9 +2225,9 @@
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById('home-panel').classList.add('active');
             document.getElementById('navTitle').textContent = 'IntubAid';
-            document.querySelector('.collab-footer').style.display = 'none';
+            document.querySelector('.collab-footer').style.display = 'block';
         }
-        
+
         function toggleRisk(id) {
             S.risks[id] = !S.risks[id];
             document.getElementById('t-'+id).classList.toggle('on', S.risks[id]);
