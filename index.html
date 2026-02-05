@@ -344,6 +344,7 @@
             z-index: 50;
             max-width: 430px;
             margin: 0 auto;
+            display: none;
         }
         
         /* Risk Row - Compact */
@@ -2167,6 +2168,7 @@
             document.getElementById('phaseNav').style.display = 'block';
             document.getElementById('navTitle').textContent = 'IntubAid';
             document.getElementById('homeBtn').style.display = 'flex';
+            document.querySelector('.collab-footer').style.display = 'block';
             
             // Update phase step highlights
             document.querySelectorAll('.phase-step').forEach(s => s.classList.remove('active'));
@@ -2224,6 +2226,7 @@
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById('home-panel').classList.add('active');
             document.getElementById('navTitle').textContent = 'IntubAid';
+            document.querySelector('.collab-footer').style.display = 'none';
         }
         
         function toggleRisk(id) {
