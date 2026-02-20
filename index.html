@@ -1990,7 +1990,9 @@
                     <p><strong>For healthcare professionals only</strong></p>
                     <p>This application is intended as a cognitive aid and does not replace clinical judgement, training, or institutional protocols.</p>
                     <p>Always follow your institution's policies, guidelines, and checklists. This app is not a substitute for proper airway management training or competency assessment.</p>
-                    <p>The developers accept no liability for clinical decisions made using this tool. Use at your own discretion and risk.</p>
+                    <p>Critical Condition accepts no liability for clinical decisions made using this tool. Use at your own discretion and risk.</p>
+                    <p style="margin-top: 12px; font-size: 12px; opacity: 0.7;"><a href="https://www.criticalcondition.com.au" style="color: inherit;">www.criticalcondition.com.au</a></p>
+                    <p style="margin-top: 8px; font-size: 12px;"><a href="#" onclick="event.preventDefault(); showFullTerms();" style="color: var(--blue);">View Full Terms & Privacy Policy</a></p>
                 </div>
                 <button class="disclaimer-btn" onclick="acceptDisclaimer()">I understand</button>
             </div>
@@ -2073,8 +2075,91 @@
         <span class="status-dot connected"></span>
         <span id="indicatorText">2 synced</span>
     </div>
-    
+
+    <!-- Full Terms Modal -->
+    <div class="modal-overlay" id="fullTermsModal" onclick="if(event.target===this)hideFullTerms()">
+        <div class="modal" style="max-height: 90vh; width: 95%; max-width: 500px;">
+            <div class="modal-header">
+                <span class="modal-title">Terms of Use & Privacy Policy</span>
+                <button class="modal-close" onclick="hideFullTerms()">Done</button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: calc(90vh - 60px); padding: 16px; font-size: 13px; line-height: 1.5;">
+                <p style="color: var(--label-tertiary); margin-bottom: 16px;">Version 1.0 – February 2026</p>
+
+                <p style="background: var(--fill); padding: 12px; border-radius: 8px; margin-bottom: 16px;"><strong>IMPORTANT:</strong> Please read these terms carefully before using this application. By using IntubAid, you acknowledge that you have read, understood, and agree to be bound by these terms.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">1. Intended Users</h4>
+                <p>IntubAid is designed <strong>exclusively for use by qualified healthcare professionals</strong> who have received appropriate training in airway management. This includes physicians, nurses, paramedics, and other licensed medical practitioners.</p>
+                <p>This application is <strong>not intended for use by the general public</strong>. If you are not a qualified healthcare professional, do not use this application—call emergency services immediately.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">2. Purpose & Intended Use</h4>
+                <p>IntubAid is a <strong>cognitive aid and reference tool</strong> designed to assist qualified healthcare professionals during airway management procedures. The application provides:</p>
+                <p>• Checklists for preparation and equipment<br>• Reference information for drug dosages<br>• Risk assessment frameworks<br>• Procedural guidance</p>
+                <p>This application is intended to <strong>supplement—not replace—clinical training, professional judgment, and established protocols</strong>.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">3. Not Medical Advice</h4>
+                <p>The information provided in this application is for <strong>general informational and educational purposes only</strong>. It does not constitute medical advice, diagnosis, or treatment recommendations.</p>
+                <p><strong>Nothing in this application creates a physician-patient, provider-patient, or any other healthcare relationship</strong> between Critical Condition and any user or patient.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">4. Clinical Judgment Prevails</h4>
+                <p style="background: var(--fill); padding: 12px; border-radius: 8px;"><strong>Your professional clinical judgment must always take precedence over any information displayed in this application.</strong></p>
+                <p>Healthcare professionals are responsible for:</p>
+                <p>• Verifying all drug dosages before administration<br>• Assessing each patient individually<br>• Following their institution's protocols and policies<br>• Staying current with the latest guidelines</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">5. No Warranty</h4>
+                <p>This application is provided <strong>"AS IS" and "AS AVAILABLE"</strong> without warranty of any kind, including warranties of merchantability, fitness for a particular purpose, accuracy, or non-infringement.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">6. Limitation of Liability</h4>
+                <p><strong>To the maximum extent permitted by applicable law</strong>, Critical Condition, its contributors, and any affiliated parties shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to:</p>
+                <p>• Personal injury or death<br>• Loss of profits, data, or goodwill<br>• Medical malpractice claims<br>• Damages arising from reliance on the application<br>• Any other damages arising from the use or inability to use this application</p>
+                <p>This limitation applies regardless of the legal theory (contract, tort, negligence, strict liability, or otherwise), even if Critical Condition has been advised of the possibility of such damages.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">7. Assumption of Risk</h4>
+                <p>By using this application, you expressly acknowledge and agree that:</p>
+                <p>• You use this application <strong>entirely at your own risk</strong><br>• You are solely responsible for any clinical decisions made<br>• You will verify all information independently<br>• You accept full responsibility for patient outcomes</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">8. Indemnification</h4>
+                <p>You agree to <strong>indemnify, defend, and hold harmless</strong> Critical Condition and any affiliated parties from and against any and all claims, damages, losses, liabilities, costs, and expenses arising from your use of the application, including any medical malpractice or negligence claims.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">9. Not a Medical Device</h4>
+                <p>This application is <strong>not a medical device</strong> and has not been cleared or approved by the Therapeutic Goods Administration (TGA), Food and Drug Administration (FDA), or any other regulatory body. It does not diagnose, treat, cure, or prevent any disease, monitor vital signs, or make autonomous clinical decisions.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">10. Updates & Changes</h4>
+                <p>Medical guidelines evolve over time. Critical Condition makes no commitment to update the application and may modify or discontinue it at any time. It is your responsibility to verify that information aligns with current guidelines.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">11. Privacy Policy</h4>
+                <div style="background: var(--fill); padding: 12px; border-radius: 8px;">
+                    <p><strong>Data Collection:</strong> This application does not collect, store, transmit, or share any personal data, health information, or usage analytics.</p>
+                    <p style="margin-top: 8px;"><strong>Local Storage:</strong> All data is stored locally on your device only and is not accessible to Critical Condition or any third party.</p>
+                    <p style="margin-top: 8px;"><strong>Network Access:</strong> This application functions entirely offline except for optional collaboration features.</p>
+                </div>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">12. Intellectual Property</h4>
+                <p>© 2026 Critical Condition. All rights reserved.</p>
+                <p>The IntubAid name, design, and content are protected by copyright and other intellectual property laws.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">13. Governing Law</h4>
+                <p>These terms shall be governed by and construed in accordance with the laws of <strong>Victoria, Australia</strong>. Any disputes shall be subject to the exclusive jurisdiction of the courts of Victoria, Australia.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">14. Severability</h4>
+                <p>If any provision of these terms is found unenforceable, that provision shall be limited or eliminated to the minimum extent necessary so that these terms shall otherwise remain in full force and effect.</p>
+
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">15. Contact</h4>
+                <p>For questions about these terms: <strong><a href="mailto:support@criticalcondition.com.au" style="color: var(--blue);">support@criticalcondition.com.au</a></strong></p>
+                <p>Website: <strong><a href="https://www.criticalcondition.com.au" style="color: var(--blue);">www.criticalcondition.com.au</a></strong></p>
+
+                <p style="color: var(--label-tertiary); margin-top: 24px; text-align: center;">Last updated: February 2026</p>
+            </div>
+        </div>
+    </div>
+
     <script>
+        function showFullTerms() {
+            document.getElementById('fullTermsModal').classList.add('visible');
+        }
+        function hideFullTerms() {
+            document.getElementById('fullTermsModal').classList.remove('visible');
+        }
         const S = {
             risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
             checks: 0, equip: 0,
