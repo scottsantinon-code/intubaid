@@ -26,9 +26,9 @@
             --separator: rgba(0,0,0,0.08);
             --fill: rgba(118,118,128,0.12);
             --fill-secondary: rgba(118,118,128,0.08);
-            --blue: #0071e3;
+            --blue: #8B5CF6;
             --green: #30d158;
-            --orange: #ff9f0a;
+            --orange: #F59E0B;
             --red: #ff453a;
             --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
         }
@@ -73,7 +73,7 @@
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #1d1d1f 0%, #424245 100%);
+            background: linear-gradient(135deg, #1d1d1f 0%, #8B5CF6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -154,9 +154,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
-        .phase-step.ready { background: rgba(255, 149, 0, 0.12); }
+        .phase-step.ready { background: rgba(245, 158, 11, 0.12); }
         .phase-step.ready.active { background: var(--orange); }
-        .phase-step.set { background: rgba(0, 122, 255, 0.12); }
+        .phase-step.set { background: rgba(139, 92, 246, 0.12); }
         .phase-step.set.active { background: var(--blue); }
         .phase-step.go { background: rgba(52, 199, 89, 0.12); }
         .phase-step.go.active { background: var(--green); }
@@ -247,7 +247,7 @@
             font-size: 13px;
             color: var(--label-secondary);
             text-align: center;
-            padding: 8px 16px 12px;
+            padding: 0 16px 10px;
             font-style: italic;
         }
         
@@ -349,6 +349,7 @@
         /* Risk Row - Compact */
         .risk-row {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             padding: 12px 14px;
             min-height: 44px;
@@ -403,63 +404,119 @@
         /* Mitigation Section */
         .mit-section {
             display: none;
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: var(--fill-secondary);
-            border-radius: 8px;
+            margin-top: 4px;
+            padding-left: 60px;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.25s ease;
+            flex-basis: 100%;
         }
         
-        .mit-section.visible { display: block; }
+        .mit-section.visible {
+            display: block;
+            max-height: 500px;
+        }
+        
+        .mit-section.collapsed {
+            display: none;
+        }
         
         .mit-label {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--label-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            margin-bottom: 8px;
+            padding: 0 0 4px;
         }
         
-        /* Mitigation Chips */
+        /* Mitigation Checklist */
         .mit-chips {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
         }
         
         .mit-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             font-size: 14px;
-            font-weight: 500;
-            padding: 8px 14px;
-            background: var(--fill);
-            border-radius: 100px;
+            font-weight: 400;
+            padding: 7px 0;
             color: var(--label-secondary);
             cursor: pointer;
             transition: all 0.15s;
-            border: 1px solid transparent;
+            border: none;
+            background: none;
+            border-radius: 0;
         }
         
-        .mit-chip:active { transform: scale(0.96); }
+        .mit-chip + .mit-chip {
+            border-top: 0.5px solid var(--separator);
+        }
+        
+        .mit-chip::before {
+            display: none;
+        }
+        
+        .mit-chip::after {
+            content: '';
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid var(--label-quaternary);
+            flex-shrink: 0;
+            margin-left: 12px;
+            transition: all 0.15s;
+            box-sizing: border-box;
+        }
+        
+        .mit-chip:active { background: var(--fill-secondary); }
         
         .mit-chip.on {
+            color: var(--label);
+            font-weight: 500;
+        }
+        
+        .mit-chip.on::after {
             background: var(--green);
-            color: #fff;
+            border-color: transparent;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z' fill='white'/%3E%3C/svg%3E");
+            background-size: 13px;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         .mit-chip.has-info {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 4px;
         }
         
         .info-icon {
-            font-size: 11px;
-            opacity: 0.7;
+            font-size: 13px;
+            opacity: 0.5;
             cursor: pointer;
+            margin-left: 4px;
+            margin-right: auto;
         }
         
         .mit-chip.on .info-icon {
-            opacity: 0.9;
+            opacity: 0.7;
+        }
+        
+        /* Collapsed risk summary */
+        .mit-summary {
+            display: none;
+            font-size: 13px;
+            color: var(--label-tertiary);
+            margin-top: 2px;
+            padding-left: 60px;
+            line-height: 1.3;
+            flex-basis: 100%;
+        }
+        
+        .mit-summary.visible {
+            display: block;
         }
         
         /* Checkbox - Compact */
@@ -630,7 +687,7 @@
         .drug-btn.sel {
             background: var(--blue);
             color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.25);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.25);
         }
         
         /* Drug Info Card */
@@ -938,7 +995,7 @@
         .timer-box.started { cursor: default; }
         .timer-box.started:active { transform: none; }
         .timer-box.ready { background: rgba(52, 199, 89, 0.1); }
-        .timer-box.active { background: rgba(255, 149, 0, 0.1); }
+        .timer-box.active { background: rgba(245, 158, 11, 0.1); }
         
         .timer-label {
             font-size: 13px;
@@ -1225,7 +1282,7 @@
         }
         
         .info-caution {
-            background: rgba(255, 159, 10, 0.1);
+            background: rgba(245, 158, 11, 0.1);
             border-left: 3px solid var(--orange);
             padding: 12px 14px;
             border-radius: 0 8px 8px 0;
@@ -1627,7 +1684,7 @@
             
             <!-- Risks -->
             <div class="panel" id="risks-panel">
-                <div class="panel-instruction">Toggle risks that apply → select mitigations to employ</div>
+                <div class="panel-instruction">Toggle risks that apply → tick mitigations to employ</div>
                 <div class="card">
                     <div class="risk-row" onclick="toggleRisk('aspiration')">
                         <div class="toggle" id="t-aspiration"></div>
@@ -1635,14 +1692,15 @@
                             <div class="risk-header">
                                 <span class="risk-name">Aspiration</span>
                             </div>
-                            <div class="mit-section" id="mc-aspiration">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">2× yankauers</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">NGT + aspirate</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">RSI</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-aspiration"></div>
+                        <div class="mit-section" id="mc-aspiration">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">2× yankauers</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">NGT + aspirate</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">RSI</span>
                             </div>
                         </div>
                     </div>
@@ -1654,15 +1712,16 @@
                                 <span class="risk-name">Anatomical difficulty</span>
                                 <button class="assess-btn" onclick="event.stopPropagation();showDifficultyAssess()">Assess</button>
                             </div>
-                            <div class="mit-section" id="mc-difficult">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Anaes backup</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">AFOI / awake trache</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Double setup</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Mark neck</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-difficult"></div>
+                        <div class="mit-section" id="mc-difficult">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Anaes backup</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">AFOI / awake trache</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Double setup</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Mark neck</span>
                             </div>
                         </div>
                     </div>
@@ -1673,14 +1732,15 @@
                             <div class="risk-header">
                                 <span class="risk-name">Haemodynamic instability</span>
                             </div>
-                            <div class="mit-section" id="mc-haemo">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Art line</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Vasopressor running</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pads on</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">DSI</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-haemo"></div>
+                        <div class="mit-section" id="mc-haemo">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Art line</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Vasopressor running</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pads on</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">DSI</span>
                             </div>
                         </div>
                     </div>
@@ -1691,16 +1751,17 @@
                             <div class="risk-header">
                                 <span class="risk-name">Hypoxia</span>
                             </div>
-                            <div class="mit-section" id="mc-hypoxia">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pre-ox with NIV</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Diuresis</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">iNO</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">VV ECMO</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-hypoxia"></div>
+                        <div class="mit-section" id="mc-hypoxia">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pre-ox with NIV</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Diuresis</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">iNO</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">VV ECMO</span>
                             </div>
                         </div>
                     </div>
@@ -1711,12 +1772,13 @@
                             <div class="risk-header">
                                 <span class="risk-name">Acidaemia</span>
                             </div>
-                            <div class="mit-section" id="mc-acidaemia">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip has-info" onclick="event.stopPropagation();this.classList.toggle('on')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-acidaemia"></div>
+                        <div class="mit-section" id="mc-acidaemia">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip has-info" onclick="event.stopPropagation();this.classList.toggle('on')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
                             </div>
                         </div>
                     </div>
@@ -1727,13 +1789,14 @@
                             <div class="risk-header">
                                 <span class="risk-name">Raised ICP</span>
                             </div>
-                            <div class="mit-section" id="mc-icp">
-                                <div class="mit-label">Consider:</div>
-                                <div class="mit-chips">
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Target CPP</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
-                                    <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Osmotherapy</span>
-                                </div>
+                        </div>
+                        <div class="mit-summary" id="ms-icp"></div>
+                        <div class="mit-section" id="mc-icp">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Target CPP</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Osmotherapy</span>
                             </div>
                         </div>
                     </div>
@@ -2324,12 +2387,62 @@
         }
 
         function toggleRisk(id) {
-            S.risks[id] = !S.risks[id];
-            document.getElementById('t-'+id).classList.toggle('on', S.risks[id]);
-            document.getElementById('mc-'+id).classList.toggle('visible', S.risks[id]);
-            // Auto-select plan type for difficult airway
+            const isOn = S.risks[id];
+            const section = document.getElementById('mc-' + id);
+            const isExpanded = section.classList.contains('visible');
+            
+            if (!isOn) {
+                // Turn ON + expand + collapse siblings
+                S.risks[id] = true;
+                document.getElementById('t-' + id).classList.add('on');
+                expandRisk(id);
+            } else if (isExpanded) {
+                // Currently expanded → turn OFF + collapse + clear selections
+                S.risks[id] = false;
+                document.getElementById('t-' + id).classList.remove('on');
+                collapseRisk(id, true);
+            } else {
+                // ON but collapsed → re-expand (accordion)
+                expandRisk(id);
+            }
+            
             if (id === 'difficult') {
                 setPlanType(S.risks[id] ? 'difficult' : 'standard');
+            }
+        }
+        
+        function expandRisk(id) {
+            const allRisks = ['aspiration', 'difficult', 'haemo', 'hypoxia', 'acidaemia', 'icp'];
+            allRisks.forEach(rid => {
+                if (rid !== id && S.risks[rid]) {
+                    collapseRisk(rid, false);
+                }
+            });
+            document.getElementById('mc-' + id).classList.add('visible');
+            document.getElementById('ms-' + id).classList.remove('visible');
+        }
+        
+        function collapseRisk(id, clearSelections) {
+            const section = document.getElementById('mc-' + id);
+            const summary = document.getElementById('ms-' + id);
+            
+            section.classList.remove('visible');
+            
+            if (clearSelections) {
+                section.querySelectorAll('.mit-chip.on').forEach(c => c.classList.remove('on'));
+                summary.classList.remove('visible');
+                summary.textContent = '';
+            } else {
+                const selected = [];
+                section.querySelectorAll('.mit-chip.on').forEach(c => {
+                    selected.push(c.textContent.replace('ⓘ', '').trim());
+                });
+                if (selected.length) {
+                    summary.textContent = '✓ ' + selected.join(', ');
+                } else {
+                    summary.textContent = 'No mitigations selected';
+                }
+                summary.classList.add('visible');
             }
         }
         
