@@ -745,6 +745,12 @@
             border-radius: 6px;
             line-height: 1.4;
         }
+
+        .drug-info-evidence a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
         
         /* Special Circumstances */
         .special-circumstances {
@@ -1068,6 +1074,7 @@
             color: var(--blue);
             cursor: pointer;
             margin-top: 6px;
+            margin-left: auto;
         }
         
         .assess-btn:active { opacity: 0.7; }
@@ -2274,12 +2281,12 @@
             ketamine: {
                 pros: ['Haemodynamic stability', 'Bronchodilation', 'Maintains respiratory drive initially'],
                 cons: ['Emergence phenomena', 'Hypersalivation'],
-                evidence: 'FAKT (2022): Ketamine + fentanyl vs ketamine alone – fentanyl ↓ tachycardia/hypertension but ↑ risk of hypotension'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/35064992/" target="_blank" rel="noopener">FAKT (2022)</a>: Fentanyl co-induction ↓ hypertension (55% vs 69%) but ↑ hypotension (29% vs 16%)'
             },
             propofol: {
                 pros: ['Rapid onset', 'Smooth induction', 'Antiemetic'],
                 cons: ['Hypotension', 'Apnoea', 'No analgesic effect'],
-                evidence: 'INTUBE: Any dose of propofol associated with ↑ hypotension in critically ill.'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/35536310/" target="_blank" rel="noopener">INTUBE (2022)</a>: Propofol independently associated with peri-intubation cardiovascular collapse in critically ill (OR 1.23)'
             },
             midazolam: {
                 pros: ['Amnesia', 'Anxiolysis', 'Less hypotension than propofol'],
@@ -2289,7 +2296,7 @@
             fentanyl: {
                 pros: ['Blunts laryngoscopy response', 'Haemodynamic stability at low doses'],
                 cons: ['Chest wall rigidity', 'Slow onset'],
-                evidence: 'FAKT (2022): ↓ tachycardia/hypertension but ↑ risk of hypotension. Avoid in serotonin syndrome.'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/35064992/" target="_blank" rel="noopener">FAKT (2022)</a>: ↓ hypertension (55% vs 69%) but ↑ hypotension (29% vs 16%). Avoid in serotonin syndrome.'
             },
             morphine: {
                 pros: ['Not serotonergic – preferred in serotonin syndrome'],
