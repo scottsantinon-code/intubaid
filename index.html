@@ -2367,8 +2367,7 @@
             
             // Update sub-tabs for this phase
             const phaseConfig = PHASES[phase];
-            const subTabsEl = document.getElementById('subTabs');
-            
+
             // Hide sub-tabs if only one tab in phase
             if (phaseConfig.tabs.length === 1) {
                 subTabsEl.style.display = 'none';
@@ -2381,11 +2380,13 @@
                     return `<button class="sub-tab" data-tab="${tab}">${label}${countSpan}</button>`;
                 }).join('');
                 subTabsEl.innerHTML = subTabsHtml;
-                
-                // Rebind sub-tab click handlers
-                document.querySelectorAll('.sub-tab').forEach(tab => {
-                    tab.addEventListener('click', () => switchSubTab(tab.dataset.tab));
-                });
+
+                // Update cached references for dynamically created count elements
+                checksCountEl = document.getElementById('checksCount');
+                equipCountEl = document.getElementById('equipCount');
+                drugsCountEl = document.getElementById('drugsCount');
+
+                // Event delegation handles clicks - no need to rebind listeners
             }
             
             // Show default tab
@@ -2494,20 +2495,17 @@
         }
         
         function updateCounts() {
-            const checksEl = document.getElementById('checksCount');
-            const equipEl = document.getElementById('equipCount');
-            const drugsEl = document.getElementById('drugsCount');
-            
-            if (checksEl) {
-                checksEl.textContent = S.checks + '/' + TOTAL_CHECKS;
-                checksEl.classList.toggle('done', S.checks === TOTAL_CHECKS);
+            // Use cached element references (set when tabs are created in goToPhase)
+            if (checksCountEl) {
+                checksCountEl.textContent = S.checks + '/' + TOTAL_CHECKS;
+                checksCountEl.classList.toggle('done', S.checks === TOTAL_CHECKS);
             }
-            if (equipEl) {
-                equipEl.textContent = S.equip + '/' + TOTAL_EQUIP;
-                equipEl.classList.toggle('done', S.equip === TOTAL_EQUIP);
+            if (equipCountEl) {
+                equipCountEl.textContent = S.equip + '/' + TOTAL_EQUIP;
+                equipCountEl.classList.toggle('done', S.equip === TOTAL_EQUIP);
             }
-            if (drugsEl) {
-                drugsEl.textContent = S.selectedDrugs.length ? '' : '—';
+            if (drugsCountEl) {
+                drugsCountEl.textContent = S.selectedDrugs.length ? '' : '—';
             }
         }
         
@@ -2518,22 +2516,23 @@
             } else {
                 S.selectedDrugs = S.selectedDrugs.filter(d=>d!==id);
             }
-            
-            document.getElementById('drugsCount').textContent = S.selectedDrugs.length ? '' : '—';
-            
+
+            // Use cached element reference
+            if (drugsCountEl) {
+                drugsCountEl.textContent = S.selectedDrugs.length ? '' : '—';
+            }
+
             updateDrugInfo();
             checkSpecialConflicts();
         }
         
         function updateDrugInfo() {
-            const infoCard = document.getElementById('drugInfoCard');
-            const infoContent = document.getElementById('drugInfoContent');
-            
+            // Use cached element references
             if (!S.selectedDrugs.length) {
-                infoCard.style.display = 'none';
+                drugInfoCardEl.style.display = 'none';
                 return;
             }
-            
+
             let html = '';
             S.selectedDrugs.forEach(id => {
                 const info = DRUG_INFO[id];
@@ -2553,8 +2552,8 @@
                 </div>`;
             });
 
-            infoContent.innerHTML = html;
-            infoCard.style.display = 'block';
+            drugInfoContentEl.innerHTML = html;
+            drugInfoCardEl.style.display = 'block';
         }
         
         function toggleSpecial(id, btn) {
@@ -2563,8 +2562,7 @@
         }
         
         function checkSpecialConflicts() {
-            const alertEl = document.getElementById('specialAlert');
-            const alertText = document.getElementById('specialAlertText');
+            // Use cached element references
             const alerts = [];
 
             // Use data-special attribute instead of parsing onclick
@@ -2582,12 +2580,12 @@
                     }
                 }
             });
-            
+
             if (alerts.length) {
-                alertText.innerHTML = alerts.join('<br>');
-                alertEl.style.display = 'block';
+                specialAlertTextEl.innerHTML = alerts.join('<br>');
+                specialAlertEl.style.display = 'block';
             } else {
-                alertEl.style.display = 'none';
+                specialAlertEl.style.display = 'none';
             }
         }
         
@@ -2671,13 +2669,44 @@
             }
         }
         
-        // Timer functions - cache DOM elements to avoid repeated queries
+        // Cache frequently-accessed DOM elements to avoid repeated queries
         const preoxBoxEl = document.getElementById('preoxBox');
         const preoxTimeEl = document.getElementById('preoxTime');
         const preoxStatusEl = document.getElementById('preoxStatus');
         const paralysisBoxEl = document.getElementById('paralysisBox');
         const paralysisTimeEl = document.getElementById('paralysisTime');
         const paralysisStatusEl = document.getElementById('paralysisStatus');
+
+        // Cached elements for updateCounts (dynamically created, so we get fresh references)
+        let checksCountEl = null;
+        let equipCountEl = null;
+        let drugsCountEl = null;
+
+        // Cached elements for updateDrugInfo
+        const drugInfoCardEl = document.getElementById('drugInfoCard');
+        const drugInfoContentEl = document.getElementById('drugInfoContent');
+
+        // Cached elements for checkSpecialConflicts
+        const specialAlertEl = document.getElementById('specialAlert');
+        const specialAlertTextEl = document.getElementById('specialAlertText');
+
+        // Cached elements for updateGoSummary
+        const readinessAlertEl = document.getElementById('readinessAlert');
+        const readinessTextEl = document.getElementById('readinessText');
+        const goRisksContainerEl = document.getElementById('goRisksContainer');
+        const goRisksNoneEl = document.getElementById('goRisksNone');
+        const goDrugsEl = document.getElementById('goDrugs');
+
+        // Cached element for sub-tabs (for event delegation)
+        const subTabsEl = document.getElementById('subTabs');
+
+        // Set up event delegation for sub-tab clicks (avoids memory leaks from rebinding)
+        subTabsEl.addEventListener('click', (e) => {
+            const tab = e.target.closest('.sub-tab');
+            if (tab && tab.dataset.tab) {
+                switchSubTab(tab.dataset.tab);
+            }
+        });
 
         function startPreox() {
             if (S.preoxStart) return;
@@ -2738,20 +2767,18 @@
         }
         
         function updateGoSummary() {
-            // Check readiness
-            const alertEl = document.getElementById('readinessAlert');
-            const alertText = document.getElementById('readinessText');
+            // Check readiness - use cached element references
             const issueLinks = [];
             if (S.checks < TOTAL_CHECKS) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready');switchSubTab('checks')">${TOTAL_CHECKS - S.checks} checks incomplete</a>`);
             if (S.equip < TOTAL_EQUIP) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set');switchSubTab('equip')">${TOTAL_EQUIP - S.equip} equipment items not ready</a>`);
-            
+
             if (issueLinks.length) {
-                alertText.innerHTML = issueLinks.join(', ');
-                alertEl.classList.add('visible');
+                readinessTextEl.innerHTML = issueLinks.join(', ');
+                readinessAlertEl.classList.add('visible');
             } else {
-                alertEl.classList.remove('visible');
+                readinessAlertEl.classList.remove('visible');
             }
-            
+
             // Update GO summary with full risk names and their mitigations
             const riskConfig = {
                 aspiration: {name: 'Aspiration risk', chipIds: ['mc-aspiration']},
@@ -2761,11 +2788,11 @@
                 acidaemia: {name: 'Acidaemia', chipIds: ['mc-acidaemia']},
                 icp: {name: 'Raised ICP', chipIds: ['mc-icp']}
             };
-            
+
             // Build risks with their mitigations
             let risksHtml = '';
             let hasRisks = false;
-            
+
             Object.entries(S.risks).forEach(([id, active]) => {
                 if (active) {
                     hasRisks = true;
@@ -2782,20 +2809,20 @@
                     </div>`;
                 }
             });
-            
-            const risksContainer = document.getElementById('goRisksContainer');
+
+            // Use cached element references
             if (hasRisks) {
-                risksContainer.innerHTML = risksHtml;
-                risksContainer.style.display = 'block';
-                document.getElementById('goRisksNone').style.display = 'none';
+                goRisksContainerEl.innerHTML = risksHtml;
+                goRisksContainerEl.style.display = 'block';
+                goRisksNoneEl.style.display = 'none';
             } else {
-                risksContainer.style.display = 'none';
-                document.getElementById('goRisksNone').style.display = 'block';
+                goRisksContainerEl.style.display = 'none';
+                goRisksNoneEl.style.display = 'block';
             }
-            
+
             const drugNames = S.selectedDrugs.map(id => DRUGS[id].name);
-            document.getElementById('goDrugs').textContent = drugNames.length ? drugNames.join(', ') : 'None selected';
-            
+            goDrugsEl.textContent = drugNames.length ? drugNames.join(', ') : 'None selected';
+
             // Update airway plan based on current selections
             updateAirwayPlan();
         }
@@ -2881,15 +2908,16 @@
             document.querySelector('.airway-opt[data-adjunct="none"]')?.classList.add('sel');
             updateAirwayPlan();
             
-            document.getElementById('drugInfoCard').style.display='none';
-            document.getElementById('specialAlert').style.display='none';
-            document.getElementById('readinessAlert').classList.remove('visible');
-            
-            // Reset GO page
-            document.getElementById('goRisksContainer').style.display = 'none';
-            document.getElementById('goRisksContainer').innerHTML = '';
-            document.getElementById('goRisksNone').style.display = 'block';
-            document.getElementById('goDrugs').textContent = 'None selected';
+            // Use cached DOM elements
+            drugInfoCardEl.style.display='none';
+            specialAlertEl.style.display='none';
+            readinessAlertEl.classList.remove('visible');
+
+            // Reset GO page - use cached DOM elements
+            goRisksContainerEl.style.display = 'none';
+            goRisksContainerEl.innerHTML = '';
+            goRisksNoneEl.style.display = 'block';
+            goDrugsEl.textContent = 'None selected';
             document.getElementById('goPlanA').textContent = 'VL MAC';
             document.getElementById('goRescue').textContent = 'Rescues: hyperangulated blade, bougie or stylet, or reposition';
             
