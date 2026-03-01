@@ -1872,16 +1872,16 @@
                 <div class="drugs-two-col">
                     <div class="drugs-col">
                         <div class="drugs-col-hdr">Sedation / Analgesia</div>
-                        <button class="drug-btn" onclick="toggleDrug('ketamine',this)">Ketamine</button>
-                        <button class="drug-btn" onclick="toggleDrug('propofol',this)">Propofol</button>
-                        <button class="drug-btn" onclick="toggleDrug('midazolam',this)">Midazolam</button>
-                        <button class="drug-btn" onclick="toggleDrug('fentanyl',this)">Fentanyl</button>
-                        <button class="drug-btn" onclick="toggleDrug('morphine',this)">Morphine</button>
+                        <button class="drug-btn" data-drug="ketamine" onclick="toggleDrug('ketamine',this)">Ketamine</button>
+                        <button class="drug-btn" data-drug="propofol" onclick="toggleDrug('propofol',this)">Propofol</button>
+                        <button class="drug-btn" data-drug="midazolam" onclick="toggleDrug('midazolam',this)">Midazolam</button>
+                        <button class="drug-btn" data-drug="fentanyl" onclick="toggleDrug('fentanyl',this)">Fentanyl</button>
+                        <button class="drug-btn" data-drug="morphine" onclick="toggleDrug('morphine',this)">Morphine</button>
                     </div>
                     <div class="drugs-col">
                         <div class="drugs-col-hdr">Paralysis</div>
-                        <button class="drug-btn" onclick="toggleDrug('rocuronium',this)">Rocuronium</button>
-                        <button class="drug-btn" onclick="toggleDrug('suxamethonium',this)">Sux</button>
+                        <button class="drug-btn" data-drug="rocuronium" onclick="toggleDrug('rocuronium',this)">Rocuronium</button>
+                        <button class="drug-btn" data-drug="suxamethonium" onclick="toggleDrug('suxamethonium',this)">Sux</button>
                     </div>
                 </div>
                 
@@ -1900,18 +1900,18 @@
                         <div class="airway-option-group" id="deviceGroup">
                             <div class="airway-option-label">Device</div>
                             <div class="airway-options">
-                                <button class="airway-opt" onclick="selectAirwayDevice('direct', this)">Direct</button>
-                                <button class="airway-opt sel" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
-                                <button class="airway-opt" onclick="selectAirwayDevice('vl-hyper', this)">VL Hyperangulated</button>
+                                <button class="airway-opt" data-device="direct" onclick="selectAirwayDevice('direct', this)">Direct</button>
+                                <button class="airway-opt sel" data-device="vl-mac" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
+                                <button class="airway-opt" data-device="vl-hyper" onclick="selectAirwayDevice('vl-hyper', this)">VL Hyperangulated</button>
                             </div>
                         </div>
-                        
+
                         <div class="airway-option-group" id="adjunctGroup">
                             <div class="airway-option-label">Adjunct</div>
                             <div class="airway-options">
-                                <button class="airway-opt sel" onclick="selectAirwayAdjunct('none', this)">None</button>
-                                <button class="airway-opt" onclick="selectAirwayAdjunct('bougie', this)">Bougie</button>
-                                <button class="airway-opt" onclick="selectAirwayAdjunct('stylet', this)">Stylet</button>
+                                <button class="airway-opt sel" data-adjunct="none" onclick="selectAirwayAdjunct('none', this)">None</button>
+                                <button class="airway-opt" data-adjunct="bougie" onclick="selectAirwayAdjunct('bougie', this)">Bougie</button>
+                                <button class="airway-opt" data-adjunct="stylet" onclick="selectAirwayAdjunct('stylet', this)">Stylet</button>
                             </div>
                         </div>
                     </div>
@@ -2248,6 +2248,20 @@
     </div>
 
     <script>
+        // ==================== CONSTANTS ====================
+        const PREOX_READY_THRESHOLD = 180;    // 3 minutes in seconds
+        const PARALYSIS_READY_THRESHOLD = 60; // 60 seconds
+        const TOTAL_CHECKS = 9;
+        const TOTAL_EQUIP = 14;
+        const SESSION_CODE_PREFIX = 'TUBE';
+
+        // HTML escape function to prevent XSS when inserting text into innerHTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         function showFullTerms() {
             document.getElementById('fullTermsModal').classList.add('visible');
         }
@@ -2379,8 +2393,8 @@
         }
         
         function getCountText(tab) {
-            if (tab === 'checks') return S.checks + '/9';
-            if (tab === 'equip') return S.equip + '/14';
+            if (tab === 'checks') return S.checks + '/' + TOTAL_CHECKS;
+            if (tab === 'equip') return S.equip + '/' + TOTAL_EQUIP;
             if (tab === 'drugs') return S.selectedDrugs.length ? '' : '—';
             return '';
         }
@@ -2485,12 +2499,12 @@
             const drugsEl = document.getElementById('drugsCount');
             
             if (checksEl) {
-                checksEl.textContent = S.checks+'/9';
-                checksEl.classList.toggle('done', S.checks===9);
+                checksEl.textContent = S.checks + '/' + TOTAL_CHECKS;
+                checksEl.classList.toggle('done', S.checks === TOTAL_CHECKS);
             }
             if (equipEl) {
-                equipEl.textContent = S.equip+'/14';
-                equipEl.classList.toggle('done', S.equip===14);
+                equipEl.textContent = S.equip + '/' + TOTAL_EQUIP;
+                equipEl.classList.toggle('done', S.equip === TOTAL_EQUIP);
             }
             if (drugsEl) {
                 drugsEl.textContent = S.selectedDrugs.length ? '' : '—';
@@ -2525,15 +2539,20 @@
                 const info = DRUG_INFO[id];
                 const drug = DRUGS[id];
                 if (!info) return;
-                
+
+                // Escape text content to prevent XSS (evidence contains intentional HTML links)
+                const escapedName = escapeHtml(drug.name);
+                const escapedPros = info.pros.map(p => escapeHtml(p)).join(' • ');
+                const escapedCons = info.cons.map(c => escapeHtml(c)).join(' • ');
+
                 html += `<div class="drug-info-item">
-                    <div class="drug-info-name">${drug.name}</div>
-                    <div class="drug-info-pros"><span class="info-label">✓</span> ${info.pros.join(' • ')}</div>
-                    <div class="drug-info-cons"><span class="info-label">✗</span> ${info.cons.join(' • ')}</div>
+                    <div class="drug-info-name">${escapedName}</div>
+                    <div class="drug-info-pros"><span class="info-label">✓</span> ${escapedPros}</div>
+                    <div class="drug-info-cons"><span class="info-label">✗</span> ${escapedCons}</div>
                     ${info.evidence ? `<div class="drug-info-evidence">${info.evidence}</div>` : ''}
                 </div>`;
             });
-            
+
             infoContent.innerHTML = html;
             infoCard.style.display = 'block';
         }
@@ -2547,9 +2566,11 @@
             const alertEl = document.getElementById('specialAlert');
             const alertText = document.getElementById('specialAlertText');
             const alerts = [];
-            
+
+            // Use data-special attribute instead of parsing onclick
             document.querySelectorAll('.special-btn.sel').forEach(btn => {
-                const id = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/)[1];
+                const id = btn.dataset.special;
+                if (!id) return;
                 const circ = SPECIAL_CIRCUMSTANCES[id];
                 if (circ && circ.alert) {
                     // Check if any avoided drugs are selected
@@ -2575,14 +2596,14 @@
             document.querySelectorAll('#deviceGroup .airway-opt').forEach(b => b.classList.remove('sel'));
             btn.classList.add('sel');
             S.airwayDevice = device;
-            
+
             // Auto-select stylet when hyperangulated is chosen
             if (device === 'vl-hyper') {
                 document.querySelectorAll('#adjunctGroup .airway-opt').forEach(b => b.classList.remove('sel'));
-                document.querySelector('#adjunctGroup .airway-opt[onclick*="stylet"]').classList.add('sel');
+                document.querySelector('#adjunctGroup .airway-opt[data-adjunct="stylet"]').classList.add('sel');
                 S.airwayAdjunct = 'stylet';
             }
-            
+
             updateAirwayPlan();
             syncToFirebase();
         }
@@ -2650,55 +2671,69 @@
             }
         }
         
-        // Timer functions
+        // Timer functions - cache DOM elements to avoid repeated queries
+        const preoxBoxEl = document.getElementById('preoxBox');
+        const preoxTimeEl = document.getElementById('preoxTime');
+        const preoxStatusEl = document.getElementById('preoxStatus');
+        const paralysisBoxEl = document.getElementById('paralysisBox');
+        const paralysisTimeEl = document.getElementById('paralysisTime');
+        const paralysisStatusEl = document.getElementById('paralysisStatus');
+
         function startPreox() {
             if (S.preoxStart) return;
+            // Clear any existing interval to prevent stacking
+            if (S.preoxTimer) {
+                clearInterval(S.preoxTimer);
+                S.preoxTimer = null;
+            }
             S.preoxStart = Date.now();
-            document.getElementById('preoxBox').classList.add('started', 'active');
-            document.getElementById('preoxStatus').textContent = 'Running';
+            preoxBoxEl.classList.add('started', 'active');
+            preoxStatusEl.textContent = 'Running';
             S.preoxTimer = setInterval(updatePreox, 1000);
             updatePreox();
             syncToFirebase(); // Sync timer start to other devices
         }
-        
+
         function updatePreox() {
             const elapsed = Math.floor((Date.now() - S.preoxStart) / 1000);
             const m = Math.floor(elapsed / 60);
             const s = elapsed % 60;
-            document.getElementById('preoxTime').textContent = m + ':' + String(s).padStart(2,'0');
-            
-            const box = document.getElementById('preoxBox');
-            const status = document.getElementById('preoxStatus');
-            
-            if (elapsed >= 180 && !S.preoxDone) {
+            preoxTimeEl.textContent = m + ':' + String(s).padStart(2,'0');
+
+            if (elapsed >= PREOX_READY_THRESHOLD && !S.preoxDone) {
                 S.preoxDone = true;
-                box.classList.remove('active');
-                box.classList.add('ready');
-                status.textContent = 'Ready ✓';
+                preoxBoxEl.classList.remove('active');
+                preoxBoxEl.classList.add('ready');
+                preoxStatusEl.textContent = 'Ready ✓';
             }
         }
-        
+
         function startParalysis() {
             if (S.paralysisStart) return;
+            // Clear any existing interval to prevent stacking
+            if (S.paralysisTimer) {
+                clearInterval(S.paralysisTimer);
+                S.paralysisTimer = null;
+            }
             S.paralysisStart = Date.now();
-            document.getElementById('paralysisBox').classList.add('started', 'active');
-            document.getElementById('paralysisStatus').textContent = 'Running';
+            paralysisBoxEl.classList.add('started', 'active');
+            paralysisStatusEl.textContent = 'Running';
             S.paralysisTimer = setInterval(updateParalysis, 1000);
             updateParalysis();
             syncToFirebase(); // Sync timer start to other devices
         }
-        
+
         function updateParalysis() {
             const elapsed = Math.floor((Date.now() - S.paralysisStart) / 1000);
             const m = Math.floor(elapsed / 60);
             const s = elapsed % 60;
-            document.getElementById('paralysisTime').textContent = m + ':' + String(s).padStart(2,'0');
-            
-            // Turn green after 60 seconds
-            if (elapsed >= 60) {
-                document.getElementById('paralysisBox').classList.remove('active');
-                document.getElementById('paralysisBox').classList.add('ready');
-                document.getElementById('paralysisStatus').textContent = 'Ready';
+            paralysisTimeEl.textContent = m + ':' + String(s).padStart(2,'0');
+
+            // Turn green after threshold
+            if (elapsed >= PARALYSIS_READY_THRESHOLD) {
+                paralysisBoxEl.classList.remove('active');
+                paralysisBoxEl.classList.add('ready');
+                paralysisStatusEl.textContent = 'Ready';
             }
         }
         
@@ -2707,8 +2742,8 @@
             const alertEl = document.getElementById('readinessAlert');
             const alertText = document.getElementById('readinessText');
             const issueLinks = [];
-            if (S.checks < 9) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready');switchSubTab('checks')">${9 - S.checks} checks incomplete</a>`);
-            if (S.equip < 14) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set');switchSubTab('equip')">${14 - S.equip} equipment items not ready</a>`);
+            if (S.checks < TOTAL_CHECKS) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready');switchSubTab('checks')">${TOTAL_CHECKS - S.checks} checks incomplete</a>`);
+            if (S.equip < TOTAL_EQUIP) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set');switchSubTab('equip')">${TOTAL_EQUIP - S.equip} equipment items not ready</a>`);
             
             if (issueLinks.length) {
                 alertText.innerHTML = issueLinks.join(', ');
@@ -2738,11 +2773,11 @@
                     const mits = [];
                     config.chipIds.forEach(chipId => {
                         document.querySelectorAll(`#${chipId} .mit-chip.on`).forEach(chip => {
-                            mits.push(chip.textContent);
+                            mits.push(escapeHtml(chip.textContent));
                         });
                     });
                     risksHtml += `<div class="go-risk-item">
-                        <div class="go-risk-name">${config.name}</div>
+                        <div class="go-risk-name">${escapeHtml(config.name)}</div>
                         ${mits.length ? `<div class="go-risk-mits">${mits.join(', ')}</div>` : ''}
                     </div>`;
                 }
@@ -2840,10 +2875,10 @@
             document.querySelectorAll('.drug-btn').forEach(b=>b.classList.remove('sel'));
             document.querySelectorAll('.special-btn').forEach(b=>b.classList.remove('sel'));
             
-            // Reset airway options
+            // Reset airway options - use data attributes instead of onclick selectors
             document.querySelectorAll('.airway-opt').forEach(b=>b.classList.remove('sel'));
-            document.querySelector('.airway-opt[onclick*="vl-mac"]')?.classList.add('sel');
-            document.querySelector('.airway-opt[onclick*="\'none\'"]')?.classList.add('sel');
+            document.querySelector('.airway-opt[data-device="vl-mac"]')?.classList.add('sel');
+            document.querySelector('.airway-opt[data-adjunct="none"]')?.classList.add('sel');
             updateAirwayPlan();
             
             document.getElementById('drugInfoCard').style.display='none';
@@ -2858,13 +2893,13 @@
             document.getElementById('goPlanA').textContent = 'VL MAC';
             document.getElementById('goRescue').textContent = 'Rescues: hyperangulated blade, bougie or stylet, or reposition';
             
-            // Reset timers
-            document.getElementById('preoxTime').textContent = '0:00';
-            document.getElementById('preoxStatus').textContent = 'Tap to start';
-            document.getElementById('preoxBox').classList.remove('started', 'active', 'ready');
-            document.getElementById('paralysisTime').textContent = '0:00';
-            document.getElementById('paralysisStatus').textContent = 'Tap when given';
-            document.getElementById('paralysisBox').classList.remove('started', 'active', 'ready');
+            // Reset timers - use cached DOM elements
+            preoxTimeEl.textContent = '0:00';
+            preoxStatusEl.textContent = 'Tap to start';
+            preoxBoxEl.classList.remove('started', 'active', 'ready');
+            paralysisTimeEl.textContent = '0:00';
+            paralysisStatusEl.textContent = 'Tap when given';
+            paralysisBoxEl.classList.remove('started', 'active', 'ready');
             
             // Reset post-intub section
             document.querySelector('.section-hdr.collapsible').classList.remove('open');
@@ -2895,7 +2930,7 @@
         // Generate session code like "TUBE-4829"
         function generateSessionCode() {
             const num = Math.floor(1000 + Math.random() * 9000);
-            return 'TUBE' + num;
+            return SESSION_CODE_PREFIX + num;
         }
         
         // Open/close collaboration modal
@@ -3123,11 +3158,11 @@
                 if (row.querySelector('.chk').classList.contains('on')) equip.push(i);
             });
             
-            // Collect special circumstances
+            // Collect special circumstances - use data-special attribute instead of parsing onclick
             const specials = [];
             document.querySelectorAll('.special-btn.sel').forEach(btn => {
-                const match = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/);
-                if (match) specials.push(match[1]);
+                const specialId = btn.dataset.special;
+                if (specialId) specials.push(specialId);
             });
             
             return {
@@ -3198,48 +3233,49 @@
                     if (shouldBeOn) S.equip++;
                 });
                 
-                // Apply drugs
+                // Apply drugs - use data-drug attribute instead of parsing onclick
                 S.selectedDrugs = data.selectedDrugs || [];
                 document.querySelectorAll('.drug-btn').forEach(btn => {
-                    const match = btn.onclick.toString().match(/toggleDrug\('(\w+)'/);
-                    if (match) {
-                        btn.classList.toggle('sel', S.selectedDrugs.includes(match[1]));
+                    const drugId = btn.dataset.drug;
+                    if (drugId) {
+                        btn.classList.toggle('sel', S.selectedDrugs.includes(drugId));
                     }
                 });
                 updateDrugInfo();
-                
-                // Apply special circumstances
+
+                // Apply special circumstances - use data-special attribute instead of parsing onclick
                 document.querySelectorAll('.special-btn').forEach(btn => {
-                    const match = btn.onclick.toString().match(/toggleSpecial\('(\w+)'/);
-                    if (match) {
-                        const shouldBeOn = data.specials && data.specials.includes(match[1]);
+                    const specialId = btn.dataset.special;
+                    if (specialId) {
+                        const shouldBeOn = data.specials && data.specials.includes(specialId);
                         btn.classList.toggle('sel', shouldBeOn);
                     }
                 });
                 checkSpecialConflicts();
-                
+
                 // Apply plan type
                 if (data.planType) {
                     S.planType = data.planType;
                 }
-                
-                // Apply airway selections
+
+                // Apply airway selections - use data-device attribute instead of parsing onclick
                 if (data.airwayDevice && data.airwayDevice !== S.airwayDevice) {
                     S.airwayDevice = data.airwayDevice;
                     document.querySelectorAll('#deviceGroup .airway-opt').forEach(btn => {
-                        const match = btn.onclick.toString().match(/selectAirwayDevice\('([^']+)'/);
-                        if (match) {
-                            btn.classList.toggle('sel', match[1] === S.airwayDevice);
+                        const device = btn.dataset.device;
+                        if (device) {
+                            btn.classList.toggle('sel', device === S.airwayDevice);
                         }
                     });
                 }
-                
+
+                // Use data-adjunct attribute instead of parsing onclick
                 if (data.airwayAdjunct && data.airwayAdjunct !== S.airwayAdjunct) {
                     S.airwayAdjunct = data.airwayAdjunct;
                     document.querySelectorAll('#adjunctGroup .airway-opt').forEach(btn => {
-                        const match = btn.onclick.toString().match(/selectAirwayAdjunct\('([^']+)'/);
-                        if (match) {
-                            btn.classList.toggle('sel', match[1] === S.airwayAdjunct);
+                        const adjunct = btn.dataset.adjunct;
+                        if (adjunct) {
+                            btn.classList.toggle('sel', adjunct === S.airwayAdjunct);
                         }
                     });
                 }
@@ -3248,21 +3284,21 @@
                     updateAirwayPlan();
                 }
                 
-                // Apply timer state (sync start times)
+                // Apply timer state (sync start times) - use cached DOM elements
                 if (data.preoxStart && !S.preoxStart) {
                     S.preoxStart = data.preoxStart;
-                    document.getElementById('preoxBox').classList.add('started', 'active');
-                    document.getElementById('preoxStatus').textContent = 'Running';
+                    preoxBoxEl.classList.add('started', 'active');
+                    preoxStatusEl.textContent = 'Running';
                     if (!S.preoxTimer) {
                         S.preoxTimer = setInterval(updatePreox, 1000);
                         updatePreox();
                     }
                 }
-                
+
                 if (data.paralysisStart && !S.paralysisStart) {
                     S.paralysisStart = data.paralysisStart;
-                    document.getElementById('paralysisBox').classList.add('started', 'active');
-                    document.getElementById('paralysisStatus').textContent = 'Running';
+                    paralysisBoxEl.classList.add('started', 'active');
+                    paralysisStatusEl.textContent = 'Running';
                     if (!S.paralysisTimer) {
                         S.paralysisTimer = setInterval(updateParalysis, 1000);
                         updateParalysis();
@@ -3320,7 +3356,8 @@
             }
         });
         
-        document.addEventListener('DOMContentLoaded', () => { updateCounts(); });
+        // Call updateCounts directly since script is at end of body (DOM is already loaded)
+        updateCounts();
     </script>
 </body>
 </html>
