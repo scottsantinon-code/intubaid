@@ -1713,10 +1713,10 @@
                         <div class="mit-section" id="mc-aspiration">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">2× yankauers</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">NGT + aspirate</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">RSI</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">Head up 30°</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">2× yankauers</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">NGT + aspirate</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">RSI</span>
                             </div>
                         </div>
                     </div>
@@ -1733,11 +1733,11 @@
                         <div class="mit-section" id="mc-difficult">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Anaes backup</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">AFOI / awake trache</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Double setup</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Mark neck</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Anaes backup</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">AFOI / awake trache</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Double setup</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Mark neck</span>
                             </div>
                         </div>
                     </div>
@@ -1753,10 +1753,10 @@
                         <div class="mit-section" id="mc-haemo">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Art line</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Vasopressor running</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pads on</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">DSI</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Art line</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Vasopressor running</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Pads on</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">DSI</span>
                             </div>
                         </div>
                     </div>
@@ -1772,12 +1772,12 @@
                         <div class="mit-section" id="mc-hypoxia">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Head up 30°</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Pre-ox with NIV</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Diuresis</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">iNO</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">VV ECMO</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Apnoeic ventilation</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Head up 30°</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Pre-ox with NIV</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Diuresis</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">iNO</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">VV ECMO</span>
                             </div>
                         </div>
                     </div>
@@ -1793,8 +1793,8 @@
                         <div class="mit-section" id="mc-acidaemia">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip has-info" onclick="event.stopPropagation();this.classList.toggle('on')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Apnoeic ventilation</span>
+                                <span class="mit-chip has-info" onclick="toggleMitChip(this,'acidaemia')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'acidaemia')">Apnoeic ventilation</span>
                             </div>
                         </div>
                     </div>
@@ -1810,9 +1810,9 @@
                         <div class="mit-section" id="mc-icp">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Target CPP</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Hyperangulated blade</span>
-                                <span class="mit-chip" onclick="event.stopPropagation();this.classList.toggle('on')">Osmotherapy</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Target CPP</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Osmotherapy</span>
                             </div>
                         </div>
                     </div>
@@ -2262,14 +2262,24 @@
             return div.innerHTML;
         }
 
-        function showFullTerms() {
-            document.getElementById('fullTermsModal').classList.add('visible');
+        // Generic modal helpers
+        function showModal(id) {
+            document.getElementById(id).classList.add('visible');
         }
-        function hideFullTerms() {
-            document.getElementById('fullTermsModal').classList.remove('visible');
+        function hideModal(id) {
+            document.getElementById(id).classList.remove('visible');
         }
+        // Backward-compatible wrappers
+        function showFullTerms() { showModal('fullTermsModal'); }
+        function hideFullTerms() { hideModal('fullTermsModal'); }
+        function showDifficultyAssess() { showModal('difficultyModal'); }
+        function hideDifficultyAssess() { hideModal('difficultyModal'); }
+        function showBicarbInfo() { showModal('bicarbModal'); }
+        function hideBicarbInfo() { hideModal('bicarbModal'); }
+
         const S = {
             risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
+            mitigations: {}, // Cache for selected mitigations by risk id
             checks: 0, equip: 0,
             selectedDrugs: [],
             planType: 'standard',
@@ -2278,7 +2288,22 @@
             preoxStart: null, preoxTimer: null, preoxDone: false,
             paralysisStart: null, paralysisTimer: null
         };
-        
+
+        // Toggle mitigation chip and cache selection in state
+        function toggleMitChip(chip, riskId) {
+            event.stopPropagation();
+            chip.classList.toggle('on');
+            const mitText = chip.textContent.replace('ⓘ', '').trim(); // Remove info icon text
+            if (!S.mitigations[riskId]) {
+                S.mitigations[riskId] = new Set();
+            }
+            if (chip.classList.contains('on')) {
+                S.mitigations[riskId].add(mitText);
+            } else {
+                S.mitigations[riskId].delete(mitText);
+            }
+        }
+
         const DRUGS = {
             // Evidence-based IV pharmacokinetics (all times in seconds)
             // onset = clinical effect begins, peak = max effect, offset = effect wears off
@@ -2708,63 +2733,71 @@
             }
         });
 
-        function startPreox() {
-            if (S.preoxStart) return;
-            // Clear any existing interval to prevent stacking
-            if (S.preoxTimer) {
-                clearInterval(S.preoxTimer);
-                S.preoxTimer = null;
+        // Generic timer configuration
+        const TIMER_CONFIG = {
+            preox: {
+                boxEl: () => preoxBoxEl,
+                timeEl: () => preoxTimeEl,
+                statusEl: () => preoxStatusEl,
+                startKey: 'preoxStart',
+                timerKey: 'preoxTimer',
+                doneKey: 'preoxDone',
+                threshold: PREOX_READY_THRESHOLD,
+                readyText: 'Ready ✓'
+            },
+            paralysis: {
+                boxEl: () => paralysisBoxEl,
+                timeEl: () => paralysisTimeEl,
+                statusEl: () => paralysisStatusEl,
+                startKey: 'paralysisStart',
+                timerKey: 'paralysisTimer',
+                doneKey: null, // paralysis doesn't have a done flag
+                threshold: PARALYSIS_READY_THRESHOLD,
+                readyText: 'Ready'
             }
-            S.preoxStart = Date.now();
-            preoxBoxEl.classList.add('started', 'active');
-            preoxStatusEl.textContent = 'Running';
-            S.preoxTimer = setInterval(updatePreox, 1000);
-            updatePreox();
+        };
+
+        function startTimer(type) {
+            const cfg = TIMER_CONFIG[type];
+            if (S[cfg.startKey]) return;
+            // Clear any existing interval to prevent stacking
+            if (S[cfg.timerKey]) {
+                clearInterval(S[cfg.timerKey]);
+                S[cfg.timerKey] = null;
+            }
+            S[cfg.startKey] = Date.now();
+            cfg.boxEl().classList.add('started', 'active');
+            cfg.statusEl().textContent = 'Running';
+            S[cfg.timerKey] = setInterval(() => updateTimer(type), 1000);
+            updateTimer(type);
             syncToFirebase(); // Sync timer start to other devices
         }
 
-        function updatePreox() {
-            const elapsed = Math.floor((Date.now() - S.preoxStart) / 1000);
+        function updateTimer(type) {
+            const cfg = TIMER_CONFIG[type];
+            const elapsed = Math.floor((Date.now() - S[cfg.startKey]) / 1000);
             const m = Math.floor(elapsed / 60);
             const s = elapsed % 60;
-            preoxTimeEl.textContent = m + ':' + String(s).padStart(2,'0');
+            cfg.timeEl().textContent = m + ':' + String(s).padStart(2,'0');
 
-            if (elapsed >= PREOX_READY_THRESHOLD && !S.preoxDone) {
-                S.preoxDone = true;
-                preoxBoxEl.classList.remove('active');
-                preoxBoxEl.classList.add('ready');
-                preoxStatusEl.textContent = 'Ready ✓';
+            // Check threshold - only trigger once if doneKey exists
+            const shouldTriggerReady = cfg.doneKey
+                ? (elapsed >= cfg.threshold && !S[cfg.doneKey])
+                : (elapsed >= cfg.threshold && !cfg.boxEl().classList.contains('ready'));
+
+            if (shouldTriggerReady) {
+                if (cfg.doneKey) S[cfg.doneKey] = true;
+                cfg.boxEl().classList.remove('active');
+                cfg.boxEl().classList.add('ready');
+                cfg.statusEl().textContent = cfg.readyText;
             }
         }
 
-        function startParalysis() {
-            if (S.paralysisStart) return;
-            // Clear any existing interval to prevent stacking
-            if (S.paralysisTimer) {
-                clearInterval(S.paralysisTimer);
-                S.paralysisTimer = null;
-            }
-            S.paralysisStart = Date.now();
-            paralysisBoxEl.classList.add('started', 'active');
-            paralysisStatusEl.textContent = 'Running';
-            S.paralysisTimer = setInterval(updateParalysis, 1000);
-            updateParalysis();
-            syncToFirebase(); // Sync timer start to other devices
-        }
-
-        function updateParalysis() {
-            const elapsed = Math.floor((Date.now() - S.paralysisStart) / 1000);
-            const m = Math.floor(elapsed / 60);
-            const s = elapsed % 60;
-            paralysisTimeEl.textContent = m + ':' + String(s).padStart(2,'0');
-
-            // Turn green after threshold
-            if (elapsed >= PARALYSIS_READY_THRESHOLD) {
-                paralysisBoxEl.classList.remove('active');
-                paralysisBoxEl.classList.add('ready');
-                paralysisStatusEl.textContent = 'Ready';
-            }
-        }
+        // Backward-compatible wrappers
+        function startPreox() { startTimer('preox'); }
+        function updatePreox() { updateTimer('preox'); }
+        function startParalysis() { startTimer('paralysis'); }
+        function updateParalysis() { updateTimer('paralysis'); }
         
         function updateGoSummary() {
             // Check readiness - use cached element references
@@ -2781,15 +2814,15 @@
 
             // Update GO summary with full risk names and their mitigations
             const riskConfig = {
-                aspiration: {name: 'Aspiration risk', chipIds: ['mc-aspiration']},
-                difficult: {name: 'Anatomical difficulty', chipIds: ['mc-difficult']},
-                haemo: {name: 'Haemodynamic instability', chipIds: ['mc-haemo']},
-                hypoxia: {name: 'Hypoxia risk', chipIds: ['mc-hypoxia']},
-                acidaemia: {name: 'Acidaemia', chipIds: ['mc-acidaemia']},
-                icp: {name: 'Raised ICP', chipIds: ['mc-icp']}
+                aspiration: {name: 'Aspiration risk'},
+                difficult: {name: 'Anatomical difficulty'},
+                haemo: {name: 'Haemodynamic instability'},
+                hypoxia: {name: 'Hypoxia risk'},
+                acidaemia: {name: 'Acidaemia'},
+                icp: {name: 'Raised ICP'}
             };
 
-            // Build risks with their mitigations
+            // Build risks with their mitigations - read from cached S.mitigations instead of DOM
             let risksHtml = '';
             let hasRisks = false;
 
@@ -2797,12 +2830,8 @@
                 if (active) {
                     hasRisks = true;
                     const config = riskConfig[id];
-                    const mits = [];
-                    config.chipIds.forEach(chipId => {
-                        document.querySelectorAll(`#${chipId} .mit-chip.on`).forEach(chip => {
-                            mits.push(escapeHtml(chip.textContent));
-                        });
-                    });
+                    // Read mitigations from state cache instead of querying DOM (O(1) vs O(n))
+                    const mits = S.mitigations[id] ? Array.from(S.mitigations[id]).map(m => escapeHtml(m)) : [];
                     risksHtml += `<div class="go-risk-item">
                         <div class="go-risk-name">${escapeHtml(config.name)}</div>
                         ${mits.length ? `<div class="go-risk-mits">${mits.join(', ')}</div>` : ''}
@@ -2829,26 +2858,9 @@
         
         // Disclaimer Modal
         function acceptDisclaimer() {
-            document.getElementById('disclaimerModal').classList.remove('visible');
+            hideModal('disclaimerModal');
         }
-        
-        // Difficulty Assessment Modal
-        function showDifficultyAssess() {
-            document.getElementById('difficultyModal').classList.add('visible');
-        }
-        
-        function hideDifficultyAssess() {
-            document.getElementById('difficultyModal').classList.remove('visible');
-        }
-        
-        function showBicarbInfo() {
-            document.getElementById('bicarbModal').classList.add('visible');
-        }
-        
-        function hideBicarbInfo() {
-            document.getElementById('bicarbModal').classList.remove('visible');
-        }
-        
+
         function toggleAssess(row) {
             const chk = row.querySelector('.chk');
             chk.classList.toggle('on');
@@ -2888,6 +2900,7 @@
             clearInterval(S.paralysisTimer);
             Object.assign(S, {
                 risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
+                mitigations:{}, // Clear cached mitigation selections
                 checks:0, equip:0, selectedDrugs:[], planType:'standard',
                 airwayDevice:'vl-mac', airwayAdjunct:'none',
                 preoxStart:null, preoxTimer:null, preoxDone:false,
