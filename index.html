@@ -26,7 +26,7 @@
             --separator: rgba(0,0,0,0.08);
             --fill: rgba(118,118,128,0.12);
             --fill-secondary: rgba(118,118,128,0.08);
-            --blue: #8B5CF6;
+            --blue: #3B82F6;
             --green: #30d158;
             --orange: #F59E0B;
             --red: #ff453a;
@@ -73,7 +73,7 @@
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #1d1d1f 0%, #8B5CF6 100%);
+            background: linear-gradient(135deg, #1d1d1f 0%, #3B82F6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -156,7 +156,7 @@
 
         .phase-step.ready { background: rgba(245, 158, 11, 0.12); }
         .phase-step.ready.active { background: var(--orange); }
-        .phase-step.set { background: rgba(139, 92, 246, 0.12); }
+        .phase-step.set { background: rgba(59, 130, 246, 0.12); }
         .phase-step.set.active { background: var(--blue); }
         .phase-step.go { background: rgba(52, 199, 89, 0.12); }
         .phase-step.go.active { background: var(--green); }
@@ -687,7 +687,7 @@
         .drug-btn.sel {
             background: var(--blue);
             color: #fff;
-            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
         }
         
         /* Drug Info Card */
@@ -978,6 +978,15 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             margin-bottom: 6px;
+        }
+
+        .go-section-title.clickable {
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .go-section-title.clickable:active {
+            color: var(--blue);
         }
         
         .timer-grid {
@@ -1942,19 +1951,19 @@
                 </div>
                 
                 <div class="go-summary" id="goSummary">
-                    <div class="go-section-title">Risks & Mitigations</div>
+                    <div class="go-section-title clickable" onclick="goToPhase('ready'); switchSubTab('risks');">Risks & Mitigations ›</div>
                     <div class="go-risks-card">
                         <span id="goRisksNone" class="go-risks-none">None identified</span>
                         <div id="goRisksContainer" style="display:none;"></div>
                     </div>
                     
-                    <div class="go-section-title">Drugs</div>
+                    <div class="go-section-title clickable" onclick="goToPhase('set'); switchSubTab('drugs');">Drugs ›</div>
                     <div class="go-drugs-card">
                         <span id="goDrugs">None selected</span>
                     </div>
                 </div>
                 
-                <div class="go-section-title">Airway plan</div>
+                <div class="go-section-title clickable" onclick="goToPhase('set'); switchSubTab('airway');">Airway plan ›</div>
                 <div class="go-airway" id="goAirway">
                     <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
                     <div class="go-rescue-row" id="goRescue">Rescues: hyperangulated blade, bougie or stylet, or reposition</div>
