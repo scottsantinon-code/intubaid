@@ -2088,11 +2088,14 @@
                     <p><strong>For healthcare professionals only</strong></p>
                     <p>This application is intended as a cognitive aid and does not replace clinical judgement, training, or institutional protocols.</p>
                     <p>Always follow your institution's policies, guidelines, and checklists. This app is not a substitute for proper airway management training or competency assessment.</p>
-                    <p>Critical Condition accepts no liability for clinical decisions made using this tool. Use at your own discretion and risk.</p>
                     <p style="margin-top: 12px; font-size: 12px; opacity: 0.7;"><a href="https://www.criticalcondition.com.au" style="color: inherit;">www.criticalcondition.com.au</a></p>
                     <p style="margin-top: 8px; font-size: 12px;"><a href="#" onclick="event.preventDefault(); showFullTerms();" style="color: var(--blue);">View Full Terms & Privacy Policy</a></p>
                 </div>
-                <button class="disclaimer-btn" onclick="acceptDisclaimer()">I understand</button>
+                <label style="display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; cursor: pointer;">
+                    <input type="checkbox" id="disclaimerCheck" style="margin-top: 2px; width: 18px; height: 18px; flex-shrink: 0;">
+                    <span style="font-size: 12px; line-height: 1.4;">I am a healthcare professional and agree to the <strong>Terms of Use</strong></span>
+                </label>
+                <button class="disclaimer-btn" id="disclaimerAcceptBtn" onclick="acceptDisclaimer()" disabled style="opacity: 0.5; cursor: not-allowed;">Continue</button>
             </div>
         </div>
     </div>
@@ -2219,8 +2222,8 @@
                 <h4 style="font-size: 14px; margin: 16px 0 8px 0;">8. Indemnification</h4>
                 <p>You agree to <strong>indemnify, defend, and hold harmless</strong> Critical Condition and any affiliated parties from and against any and all claims, damages, losses, liabilities, costs, and expenses arising from your use of the application, including any medical malpractice or negligence claims.</p>
 
-                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">9. Not a Medical Device</h4>
-                <p>This application is <strong>not a medical device</strong> and has not been cleared or approved by the Therapeutic Goods Administration (TGA), Food and Drug Administration (FDA), or any other regulatory body. It does not diagnose, treat, cure, or prevent any disease, monitor vital signs, or make autonomous clinical decisions.</p>
+                <h4 style="font-size: 14px; margin: 16px 0 8px 0;">9. Intended Use & Regulatory Status</h4>
+                <p>This application is intended for education and clinical reasoning support. It is not intended to diagnose, treat, or replace clinical judgement. Regulatory status has not been determined; users must not rely on this tool for clinical decisions without independent verification.</p>
 
                 <h4 style="font-size: 14px; margin: 16px 0 8px 0;">10. Updates & Changes</h4>
                 <p>Medical guidelines evolve over time. Critical Condition makes no commitment to update the application and may modify or discontinue it at any time. It is your responsibility to verify that information aligns with current guidelines.</p>
@@ -2253,10 +2256,10 @@
                 <h4 style="font-size: 14px; margin: 16px 0 8px 0;">Our Apps</h4>
                 <p>Critical Condition develops clinical decision support tools for healthcare professionals:</p>
                 <p style="margin-top: 8px;">
-                    <strong>IntubAid</strong> – Airway management cognitive aid<br>
+                    <strong>LabLogic</strong> – Laboratory investigation interpreter<br>
+                    <strong>BloodGasPro</strong> – ABG interpretation<br>
                     <strong>CodeClock</strong> – Cardiac arrest timing & management<br>
-                    <strong>BloodGasPro</strong> – ABG interpretation (Traditional & Stewart)<br>
-                    <strong>METmate</strong> – Deteriorating patient assessment
+                    <strong>IntubAid</strong> – Airway management cognitive aid
                 </p>
                 <p style="margin-top: 8px;"><a href="https://www.criticalcondition.com.au" target="_blank" rel="noopener" style="color: var(--blue);">www.criticalcondition.com.au</a></p>
 
@@ -2888,7 +2891,30 @@
         }
         
         // Disclaimer Modal
+        const disclaimerCheck = document.getElementById('disclaimerCheck');
+        const disclaimerAcceptBtn = document.getElementById('disclaimerAcceptBtn');
+
+        disclaimerCheck.addEventListener('change', function() {
+            if (this.checked) {
+                disclaimerAcceptBtn.disabled = false;
+                disclaimerAcceptBtn.style.opacity = '1';
+                disclaimerAcceptBtn.style.cursor = 'pointer';
+            } else {
+                disclaimerAcceptBtn.disabled = true;
+                disclaimerAcceptBtn.style.opacity = '0.5';
+                disclaimerAcceptBtn.style.cursor = 'not-allowed';
+            }
+        });
+
         function acceptDisclaimer() {
+            if (!disclaimerCheck.checked) return;
+            localStorage.setItem('intubaid_terms_accepted', 'true');
+            localStorage.setItem('intubaid_terms_date', new Date().toISOString());
+            hideModal('disclaimerModal');
+        }
+
+        // Check if already accepted
+        if (localStorage.getItem('intubaid_terms_accepted') === 'true') {
             hideModal('disclaimerModal');
         }
 
