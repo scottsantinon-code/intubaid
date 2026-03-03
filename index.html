@@ -2282,8 +2282,6 @@
         // bougie, stylet, ETT x2, syringe, tape, LMA, suction, CICO kit
         const TOTAL_EQUIP = 14;
 
-        const SESSION_CODE_PREFIX = 'TUBE';
-
         // HTML escape function to prevent XSS when inserting text into innerHTML
         function escapeHtml(text) {
             const div = document.createElement('div');
@@ -3000,7 +2998,7 @@
         let deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
         let isApplyingRemote = false;
         
-        // Generate session code like "TUBE-48291" (5 digits for ~90K combinations)
+        // Generate 5-digit session code (e.g., "48291")
         function generateSessionCode() {
             let num;
             if (window.crypto && window.crypto.getRandomValues) {
@@ -3010,7 +3008,7 @@
             } else {
                 num = Math.floor(10000 + Math.random() * 90000);
             }
-            return SESSION_CODE_PREFIX + num;
+            return String(num);
         }
         
         // Open/close collaboration modal
@@ -3099,12 +3097,8 @@
                 return;
             }
             
-            let code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
-            // Allow entering just the 5 digits or full code with TUBE prefix
-            if (/^\d{5}$/.test(code)) {
-                code = SESSION_CODE_PREFIX + code;
-            }
-            if (!code || !/^TUBE\d{5}$/.test(code)) {
+            const code = document.getElementById('joinCodeInput').value.trim();
+            if (!code || !/^\d{5}$/.test(code)) {
                 alert('Please enter a valid 5-digit code (e.g., 12345)');
                 return;
             }
