@@ -1726,10 +1726,10 @@
                         <div class="mit-section" id="mc-aspiration">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">Head up 30°</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">2× yankauers</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">NGT + aspirate</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'aspiration')">RSI</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'aspiration')">Head up 30°</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'aspiration')">2× yankauers</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'aspiration')">NGT + aspirate</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'aspiration')">RSI</span>
                             </div>
                         </div>
                     </div>
@@ -1746,11 +1746,11 @@
                         <div class="mit-section" id="mc-difficult">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Hyperangulated blade</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Anaes backup</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">AFOI / awake trache</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Double setup</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'difficult')">Mark neck</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Anaes backup</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">AFOI / awake trache</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Double setup</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Mark neck</span>
                             </div>
                         </div>
                     </div>
@@ -1766,10 +1766,10 @@
                         <div class="mit-section" id="mc-haemo">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Art line</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Vasopressor running</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">Pads on</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'haemo')">DSI</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Art line</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Vasopressor running</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Pads on</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">DSI</span>
                             </div>
                         </div>
                     </div>
@@ -1785,12 +1785,12 @@
                         <div class="mit-section" id="mc-hypoxia">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Apnoeic ventilation</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Head up 30°</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Pre-ox with NIV</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">Diuresis</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">iNO</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'hypoxia')">VV ECMO</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">Apnoeic ventilation</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">Head up 30°</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">Pre-ox with NIV</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">Diuresis</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">iNO</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'hypoxia')">VV ECMO</span>
                             </div>
                         </div>
                     </div>
@@ -1806,8 +1806,8 @@
                         <div class="mit-section" id="mc-acidaemia">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip has-info" onclick="toggleMitChip(this,'acidaemia')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'acidaemia')">Apnoeic ventilation</span>
+                                <span class="mit-chip has-info" onclick="toggleMitChip(event,this,'acidaemia')">Bicarbonate<span class="info-icon" onclick="event.stopPropagation();showBicarbInfo()">ⓘ</span></span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'acidaemia')">Apnoeic ventilation</span>
                             </div>
                         </div>
                     </div>
@@ -1823,9 +1823,9 @@
                         <div class="mit-section" id="mc-icp">
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
-                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Target CPP</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Hyperangulated blade</span>
-                                <span class="mit-chip" onclick="toggleMitChip(this,'icp')">Osmotherapy</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'icp')">Target CPP</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'icp')">Hyperangulated blade</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'icp')">Osmotherapy</span>
                             </div>
                         </div>
                     </div>
@@ -1901,9 +1901,13 @@
                 <div class="drug-info-card" id="drugInfoCard" style="display:none;">
                     <div class="drug-info-content" id="drugInfoContent"></div>
                 </div>
-                
+
+                <div class="special-alert" id="specialAlert" style="display:none;">
+                    <div class="special-alert-text" id="specialAlertText"></div>
+                </div>
+
             </div>
-            
+
             <!-- Airway -->
             <div class="panel" id="airway-panel">
                 <div class="card" style="padding: 16px;">
@@ -2262,10 +2266,22 @@
 
     <script>
         // ==================== CONSTANTS ====================
-        const PREOX_READY_THRESHOLD = 180;    // 3 minutes in seconds
-        const PARALYSIS_READY_THRESHOLD = 60; // 60 seconds
+        // Pre-oxygenation: 3 minutes of high-flow O2 achieves adequate nitrogen washout
+        // and oxygen reservoir in functional residual capacity (DAS/AAGBI guidelines)
+        const PREOX_READY_THRESHOLD = 180;
+
+        // Paralysis onset: Rocuronium ~60s, Suxamethonium ~45s for optimal intubating conditions
+        // Using 60s as safe minimum for either agent
+        const PARALYSIS_READY_THRESHOLD = 60;
+
+        // Pre-intubation safety checks (9 items): roles, PPE, allergies, comorbidities,
+        // positioning, monitoring, EtCO2, IV access, post-intubation sedation
         const TOTAL_CHECKS = 9;
+
+        // Equipment items (14 items): bed position, BMV/PEEP, OPA, laryngoscopes (3 types),
+        // bougie, stylet, ETT x2, syringe, tape, LMA, suction, CICO kit
         const TOTAL_EQUIP = 14;
+
         const SESSION_CODE_PREFIX = 'TUBE';
 
         // HTML escape function to prevent XSS when inserting text into innerHTML
@@ -2303,7 +2319,7 @@
         };
 
         // Toggle mitigation chip and cache selection in state
-        function toggleMitChip(chip, riskId) {
+        function toggleMitChip(event, chip, riskId) {
             event.stopPropagation();
             chip.classList.toggle('on');
             const mitText = chip.textContent.replace('ⓘ', '').trim(); // Remove info icon text
@@ -2380,9 +2396,9 @@
         
         // Phase configuration
         const PHASES = {
-            ready: {tabs: ['risks', 'checks'], defaultTab: 'risks'},
-            set: {tabs: ['equip', 'drugs', 'airway'], defaultTab: 'equip'},
-            go: {tabs: ['timer'], defaultTab: 'timer'}
+            ready: {tabs: ['risks', 'checks'], defaultTab: 'risks', stepId: 'phaseReady'},
+            set: {tabs: ['equip', 'drugs', 'airway'], defaultTab: 'equip', stepId: 'phaseSet'},
+            go: {tabs: ['timer'], defaultTab: 'timer', stepId: 'phaseGo'}
         };
         
         let currentPhase = null;
@@ -2390,6 +2406,8 @@
         
         function goToPhase(phase, targetTab) {
             currentPhase = phase;
+            const phaseConfig = PHASES[phase];
+
             document.getElementById('home-panel').classList.remove('active');
             document.getElementById('phaseNav').style.display = 'block';
             document.getElementById('navTitle').textContent = 'IntubAid';
@@ -2398,10 +2416,7 @@
 
             // Update phase step highlights
             document.querySelectorAll('.phase-step').forEach(s => s.classList.remove('active'));
-            document.getElementById('phase' + phase.charAt(0).toUpperCase() + phase.slice(1)).classList.add('active');
-
-            // Update sub-tabs for this phase
-            const phaseConfig = PHASES[phase];
+            document.getElementById(phaseConfig.stepId).classList.add('active');
 
             // Hide sub-tabs if only one tab in phase
             if (phaseConfig.tabs.length === 1) {
@@ -2911,7 +2926,7 @@
             list.style.display = hdr.classList.contains('open') ? 'block' : 'none';
         }
         
-        function reset() {
+        async function reset() {
             if (!confirm('Reset all data?')) return;
             clearInterval(S.preoxTimer);
             clearInterval(S.paralysisTimer);
@@ -2973,7 +2988,7 @@
             document.getElementById('home-panel').classList.add('active');
             
             // Reset collab UI
-            if (currentSession) endSession();
+            if (currentSession) await endSession();
         }
         
         // ==================== COLLABORATION ====================
@@ -2985,9 +3000,16 @@
         let deviceId = 'dev_' + Math.random().toString(36).substr(2, 9);
         let isApplyingRemote = false;
         
-        // Generate session code like "TUBE-4829"
+        // Generate session code like "TUBE-482916" (6 digits for ~1M combinations)
         function generateSessionCode() {
-            const num = Math.floor(1000 + Math.random() * 9000);
+            let num;
+            if (window.crypto && window.crypto.getRandomValues) {
+                const arr = new Uint32Array(1);
+                window.crypto.getRandomValues(arr);
+                num = 100000 + (arr[0] % 900000); // 100000-999999
+            } else {
+                num = Math.floor(100000 + Math.random() * 900000);
+            }
             return SESSION_CODE_PREFIX + num;
         }
         
@@ -3122,8 +3144,9 @@
                 // Already listening
                 return;
             }
-            
+
             const ref = window.firebaseRef(window.firebaseDB, 'sessions/' + code);
+            // Store the unsubscribe function returned by onValue
             sessionListener = window.firebaseOnValue(ref, (snapshot) => {
                 if (!snapshot.exists()) {
                     // Session was deleted
@@ -3176,10 +3199,14 @@
         }
         
         function handleSessionEnded() {
+            // Unsubscribe from Firebase listener to prevent memory leaks
+            if (sessionListener && typeof sessionListener === 'function') {
+                sessionListener();
+            }
             currentSession = null;
             sessionRef = null;
             sessionListener = null;
-            
+
             document.getElementById('sessionIndicator').classList.remove('visible');
             document.getElementById('collabTrigger').classList.remove('active');
             document.getElementById('collabTriggerFixed').classList.remove('active');
@@ -3222,7 +3249,13 @@
                 const specialId = btn.dataset.special;
                 if (specialId) specials.push(specialId);
             });
-            
+
+            // Collect post-intubation checklist states
+            const postIntub = [];
+            document.querySelectorAll('#postIntubList .equip-row').forEach((row, i) => {
+                if (row.querySelector('.chk').classList.contains('on')) postIntub.push(i);
+            });
+
             return {
                 risks: { ...S.risks },
                 mitigations: mitigations,
@@ -3235,6 +3268,7 @@
                 airwayAdjunct: S.airwayAdjunct,
                 preoxStart: S.preoxStart,
                 paralysisStart: S.paralysisStart,
+                postIntubIdx: postIntub,
                 lastUpdatedBy: deviceId,
                 updatedAt: Date.now()
             };
@@ -3257,17 +3291,46 @@
                     });
                 }
                 
-                // Apply mitigations
+                // Apply mitigations and rebuild S.mitigations cache
+                S.mitigations = {};
                 if (data.mitigations) {
+                    // Rebuild S.mitigations from remote data
+                    Object.keys(data.mitigations).forEach(riskId => {
+                        S.mitigations[riskId] = new Set(data.mitigations[riskId]);
+                    });
+
+                    // Update DOM chips
                     document.querySelectorAll('.mit-chip').forEach(chip => {
                         const riskRow = chip.closest('.risk-row');
                         if (riskRow) {
                             const riskId = riskRow.querySelector('.toggle')?.id?.replace('t-', '');
                             if (riskId && data.mitigations[riskId]) {
-                                const shouldBeOn = data.mitigations[riskId].includes(chip.textContent);
+                                const mitText = chip.textContent.replace('ⓘ', '').trim();
+                                const shouldBeOn = data.mitigations[riskId].includes(mitText);
                                 chip.classList.toggle('on', shouldBeOn);
                             } else {
                                 chip.classList.remove('on');
+                            }
+                        }
+                    });
+
+                    // Rebuild mitigation summaries for active risks
+                    Object.keys(S.risks).forEach(riskId => {
+                        if (S.risks[riskId]) {
+                            const section = document.getElementById('mc-' + riskId);
+                            const summary = document.getElementById('ms-' + riskId);
+                            if (section && summary) {
+                                const selected = [];
+                                section.querySelectorAll('.mit-chip.on').forEach(c => {
+                                    selected.push(c.textContent.replace('ⓘ', '').trim());
+                                });
+                                if (selected.length) {
+                                    summary.textContent = '✓ ' + selected.join(', ');
+                                    summary.classList.add('visible');
+                                } else {
+                                    summary.textContent = 'No mitigations selected';
+                                    summary.classList.add('visible');
+                                }
                             }
                         }
                     });
@@ -3362,7 +3425,14 @@
                         updateParalysis();
                     }
                 }
-                
+
+                // Apply post-intubation checklist
+                document.querySelectorAll('#postIntubList .equip-row').forEach((row, i) => {
+                    const shouldBeOn = data.postIntubIdx && data.postIntubIdx.includes(i);
+                    row.querySelector('.chk').classList.toggle('on', shouldBeOn);
+                    row.classList.toggle('done', shouldBeOn);
+                });
+
                 updateCounts();
                 
             } finally {
@@ -3403,6 +3473,12 @@
         const originalToggleSpecial = toggleSpecial;
         toggleSpecial = function(id, btn) {
             originalToggleSpecial(id, btn);
+            syncToFirebase();
+        };
+
+        const originalTogglePostIntub = togglePostIntub;
+        togglePostIntub = function(row) {
+            originalTogglePostIntub(row);
             syncToFirebase();
         };
         
