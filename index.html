@@ -1951,19 +1951,19 @@
                 </div>
                 
                 <div class="go-summary" id="goSummary">
-                    <div class="go-section-title clickable" onclick="goToPhase('ready'); switchSubTab('risks');">Risks & Mitigations ›</div>
+                    <div class="go-section-title clickable" onclick="goToPhase('ready', 'risks')">Risks & Mitigations ›</div>
                     <div class="go-risks-card">
                         <span id="goRisksNone" class="go-risks-none">None identified</span>
                         <div id="goRisksContainer" style="display:none;"></div>
                     </div>
                     
-                    <div class="go-section-title clickable" onclick="goToPhase('set'); switchSubTab('drugs');">Drugs ›</div>
+                    <div class="go-section-title clickable" onclick="goToPhase('set', 'drugs')">Drugs ›</div>
                     <div class="go-drugs-card">
                         <span id="goDrugs">None selected</span>
                     </div>
                 </div>
                 
-                <div class="go-section-title clickable" onclick="goToPhase('set'); switchSubTab('airway');">Airway plan ›</div>
+                <div class="go-section-title clickable" onclick="goToPhase('set', 'airway')">Airway plan ›</div>
                 <div class="go-airway" id="goAirway">
                     <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
                     <div class="go-rescue-row" id="goRescue">Rescues: hyperangulated blade, bougie or stylet, or reposition</div>
@@ -2384,7 +2384,7 @@
         let currentPhase = null;
         
         
-        function goToPhase(phase) {
+        function goToPhase(phase, targetTab) {
             currentPhase = phase;
             document.getElementById('home-panel').classList.remove('active');
             document.getElementById('phaseNav').style.display = 'block';
@@ -2395,7 +2395,7 @@
             // Update phase step highlights
             document.querySelectorAll('.phase-step').forEach(s => s.classList.remove('active'));
             document.getElementById('phase' + phase.charAt(0).toUpperCase() + phase.slice(1)).classList.add('active');
-            
+
             // Update sub-tabs for this phase
             const phaseConfig = PHASES[phase];
 
@@ -2419,9 +2419,9 @@
 
                 // Event delegation handles clicks - no need to rebind listeners
             }
-            
-            // Show default tab
-            switchSubTab(phaseConfig.defaultTab);
+
+            // Show target tab or default
+            switchSubTab(targetTab || phaseConfig.defaultTab);
         }
         
         function getCountText(tab) {
@@ -2523,6 +2523,13 @@
             row.classList.toggle('done');
             S[type] += was ? -1 : 1;
             updateCounts();
+
+            // Auto-progress when section is complete
+            if (type === 'checks' && S.checks === TOTAL_CHECKS) {
+                setTimeout(() => goToPhase('set', 'equip'), 300);
+            } else if (type === 'equip' && S.equip === TOTAL_EQUIP) {
+                setTimeout(() => goToPhase('set', 'drugs'), 300);
+            }
         }
         
         function updateCounts() {
@@ -2808,8 +2815,8 @@
         function updateGoSummary() {
             // Check readiness - use cached element references
             const issueLinks = [];
-            if (S.checks < TOTAL_CHECKS) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready');switchSubTab('checks')">${TOTAL_CHECKS - S.checks} checks incomplete</a>`);
-            if (S.equip < TOTAL_EQUIP) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set');switchSubTab('equip')">${TOTAL_EQUIP - S.equip} equipment items not ready</a>`);
+            if (S.checks < TOTAL_CHECKS) issueLinks.push(`<a class="alert-link" onclick="goToPhase('ready', 'checks')">${TOTAL_CHECKS - S.checks} checks incomplete</a>`);
+            if (S.equip < TOTAL_EQUIP) issueLinks.push(`<a class="alert-link" onclick="goToPhase('set', 'equip')">${TOTAL_EQUIP - S.equip} equipment items not ready</a>`);
 
             if (issueLinks.length) {
                 readinessTextEl.innerHTML = issueLinks.join(', ');
