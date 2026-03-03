@@ -980,13 +980,17 @@
             margin-bottom: 6px;
         }
 
-        .go-section-title.clickable {
+        .go-risks-card.clickable,
+        .go-drugs-card.clickable,
+        .go-airway.clickable {
             cursor: pointer;
-            transition: color 0.15s;
+            transition: opacity 0.15s;
         }
 
-        .go-section-title.clickable:active {
-            color: var(--blue);
+        .go-risks-card.clickable:active,
+        .go-drugs-card.clickable:active,
+        .go-airway.clickable:active {
+            opacity: 0.7;
         }
         
         .timer-grid {
@@ -1951,20 +1955,20 @@
                 </div>
                 
                 <div class="go-summary" id="goSummary">
-                    <div class="go-section-title clickable" onclick="goToPhase('ready', 'risks')">Risks & Mitigations ›</div>
-                    <div class="go-risks-card">
+                    <div class="go-section-title">Risks & Mitigations</div>
+                    <div class="go-risks-card clickable" onclick="goToPhase('ready', 'risks')">
                         <span id="goRisksNone" class="go-risks-none">None identified</span>
                         <div id="goRisksContainer" style="display:none;"></div>
                     </div>
                     
-                    <div class="go-section-title clickable" onclick="goToPhase('set', 'drugs')">Drugs ›</div>
-                    <div class="go-drugs-card">
+                    <div class="go-section-title">Drugs</div>
+                    <div class="go-drugs-card clickable" onclick="goToPhase('set', 'drugs')">
                         <span id="goDrugs">None selected</span>
                     </div>
                 </div>
                 
-                <div class="go-section-title clickable" onclick="goToPhase('set', 'airway')">Airway plan ›</div>
-                <div class="go-airway" id="goAirway">
+                <div class="go-section-title">Airway plan</div>
+                <div class="go-airway clickable" id="goAirway" onclick="goToPhase('set', 'airway')">
                     <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
                     <div class="go-rescue-row" id="goRescue">Rescues: hyperangulated blade, bougie or stylet, or reposition</div>
                     <div class="go-plan-row"><span class="go-plan-label">B</span><span class="go-plan-text">LMA <span class="go-plan-sub">(+/- fibreoptic intubation)</span></span></div>
