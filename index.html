@@ -1771,6 +1771,184 @@
             stroke-width: 2;
             fill: none;
         }
+
+        .preox-cards { }
+
+        .preox-card {
+            background: var(--bg-grouped);
+            border-radius: 10px;
+            border: 1.5px solid var(--separator);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+
+        .preox-card.sel { border-color: var(--blue); }
+
+        .preox-hdr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preox-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--label-quaternary);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .preox-card.sel .preox-radio {
+            border-color: var(--blue);
+            background: var(--blue);
+        }
+
+        .preox-card.sel .preox-radio::after {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .preox-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--label);
+            flex: 1;
+        }
+
+        .preox-card.sel .preox-title { color: var(--blue); }
+
+        .preox-body {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 0.5px solid var(--separator);
+        }
+
+        .preox-card.sel .preox-body { display: block; }
+
+        .preox-phases-hdr {
+            display: flex;
+            padding-left: 72px;
+            margin-bottom: 6px;
+        }
+
+        .preox-phases-hdr span {
+            flex: 1;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--label-tertiary);
+        }
+
+        .preox-lane {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .preox-label {
+            width: 64px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--label-secondary);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .preox-label-sm { font-size: 10px; }
+
+        .preox-track {
+            flex: 1;
+            height: 20px;
+            background: var(--fill);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preox-bar {
+            position: absolute;
+            top: 2px;
+            bottom: 2px;
+            left: 0;
+            border-radius: 3px;
+        }
+
+        .preox-bar.blue { background: var(--blue); }
+        .preox-bar.green { background: var(--green); }
+
+        .preox-pearl {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--label-secondary);
+            padding: 8px 10px;
+            background: var(--fill-secondary);
+            border-radius: 6px;
+        }
+
+        .preox-warn {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--orange);
+            padding: 6px 10px;
+            background: rgba(245, 158, 11, 0.08);
+            border-radius: 6px;
+        }
+
+        .preox-np-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 100px;
+            background: var(--fill);
+            cursor: pointer;
+        }
+
+        .preox-np-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--label-tertiary);
+        }
+
+        .preox-np-toggle.on .preox-np-label { color: #248A3D; }
+
+        .preox-tog-track {
+            width: 32px;
+            height: 18px;
+            border-radius: 9px;
+            background: var(--label-quaternary);
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .preox-tog-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #fff;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+
+        .preox-np-toggle.on .preox-tog-track { background: var(--green); }
+        .preox-np-toggle.on .preox-tog-thumb { left: 16px; }
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -2057,6 +2235,78 @@
                         <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">LMA</span></div>
                         <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Suction</span></div>
                         <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">CICO kit</span></div>
+                    </div>
+                </div>
+                <div class="next-btn-container">
+                    <button class="next-btn" onclick="switchSubTab('preox')">Next <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+                </div>
+            </div>
+
+            <!-- Pre-oxygenation -->
+            <div class="panel" id="preox-panel">
+                <div class="preox-cards">
+                    <div class="preox-card" onclick="selectPreox('np-nrb', this)">
+                        <div class="preox-hdr">
+                            <div class="preox-radio"></div>
+                            <span class="preox-title">NP + NRB</span>
+                        </div>
+                        <div class="preox-body">
+                            <div class="preox-timeline">
+                                <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
+                                <div class="preox-lane"><span class="preox-label">NRB</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
+                                <div class="preox-lane"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar green" style="width:100%"></div></div></div>
+                            </div>
+                            <div class="preox-pearl">No PEEP. Early desat in a well-preoxygenated patient is usually shunt from atelectasis, not low PAO₂.</div>
+                        </div>
+                    </div>
+
+                    <div class="preox-card" onclick="selectPreox('bvm', this)">
+                        <div class="preox-hdr">
+                            <div class="preox-radio"></div>
+                            <span class="preox-title">BVM</span>
+                            <div class="preox-np-toggle" onclick="event.stopPropagation();togglePreoxNP(this)">
+                                <span class="preox-np-label">+ NP</span>
+                                <div class="preox-tog-track"><div class="preox-tog-thumb"></div></div>
+                            </div>
+                        </div>
+                        <div class="preox-body">
+                            <div class="preox-timeline">
+                                <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
+                                <div class="preox-lane"><span class="preox-label">BVM+PEEP</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
+                                <div class="preox-lane preox-np-lane" style="display:none"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar green" style="width:100%"></div></div></div>
+                            </div>
+                            <div class="preox-pearl">Feel lung compliance before committing to paralysis. Casey 2019: BVM during apnoea reduced hypoxia, no increase in aspiration.</div>
+                        </div>
+                    </div>
+
+                    <div class="preox-card" onclick="selectPreox('hfnp', this)">
+                        <div class="preox-hdr">
+                            <div class="preox-radio"></div>
+                            <span class="preox-title">HFNP throughout</span>
+                        </div>
+                        <div class="preox-body">
+                            <div class="preox-timeline">
+                                <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
+                                <div class="preox-lane"><span class="preox-label">HFNP 60 L</span><div class="preox-track"><div class="preox-bar green" style="width:100%"></div></div></div>
+                            </div>
+                            <div class="preox-pearl">Only strategy with no device transitions. Sjöblom 2021: Equivalent to anaesthetic circuit. FLORALI-II: NIV only superior when P/F &lt;200.</div>
+                        </div>
+                    </div>
+
+                    <div class="preox-card" onclick="selectPreox('niv', this)">
+                        <div class="preox-hdr">
+                            <div class="preox-radio"></div>
+                            <span class="preox-title">NIV</span>
+                        </div>
+                        <div class="preox-body">
+                            <div class="preox-timeline">
+                                <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
+                                <div class="preox-lane"><span class="preox-label">NIV</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
+                                <div class="preox-lane"><span class="preox-label preox-label-sm">EPAP ≥5 · IPAP ≥10 · RR ≥10 · FiO₂ 1.0</span></div>
+                            </div>
+                            <div class="preox-warn">No oxygenation during attempt. Must remove mask to laryngoscope.</div>
+                            <div class="preox-pearl">PREOXI 2024 (NEJM): NIV vs O₂ mask — hypoxia 9% vs 19% (NNT ~10), less cardiac arrest, no increase in aspiration. PIP &lt;25 to minimise gastric insufflation.</div>
+                        </div>
                     </div>
                 </div>
                 <div class="next-btn-container">
@@ -2686,6 +2936,7 @@
             planType: 'standard',
             airwayDevice: 'vl-mac',
             airwayAdjunct: 'none',
+            preoxPlan: null,
             preoxStart: null, preoxTimer: null, preoxDone: false,
             paralysisStart: null, paralysisTimer: null
         };
@@ -2769,7 +3020,7 @@
         // Phase configuration
         const PHASES = {
             ready: {tabs: ['risks', 'checks'], defaultTab: 'risks', stepId: 'phaseReady'},
-            set: {tabs: ['equip', 'drugs', 'airway'], defaultTab: 'equip', stepId: 'phaseSet'},
+            set: {tabs: ['equip', 'preox', 'drugs', 'airway'], defaultTab: 'equip', stepId: 'phaseSet'},
             go: {tabs: ['timer'], defaultTab: 'timer', stepId: 'phaseGo'}
         };
         
@@ -2798,7 +3049,8 @@
                 const subTabsHtml = phaseConfig.tabs.map(tab => {
                     const countId = tab === 'checks' ? 'checksCount' : (tab === 'equip' ? 'equipCount' : (tab === 'drugs' ? 'drugsCount' : ''));
                     const countSpan = countId ? ` <span class="sub-count" id="${countId}">${getCountText(tab)}</span>` : '';
-                    const label = tab.charAt(0).toUpperCase() + tab.slice(1);
+                    const labelMap = {equip:'Equip', preox:'Pre-ox', drugs:'Drugs', airway:'Airway', risks:'Risks', checks:'Checks', timer:'Timer'};
+                    const label = labelMap[tab] || tab.charAt(0).toUpperCase() + tab.slice(1);
                     return `<button class="sub-tab" data-tab="${tab}">${label}${countSpan}</button>`;
                 }).join('');
                 subTabsEl.innerHTML = subTabsHtml;
@@ -2819,6 +3071,7 @@
             if (tab === 'checks') return S.checks + '/' + TOTAL_CHECKS;
             if (tab === 'equip') return S.equip + '/' + TOTAL_EQUIP;
             if (tab === 'drugs') return S.selectedDrugs.length ? '' : '—';
+            if (tab === 'preox') return S.preoxPlan ? '' : '—';
             return '';
         }
         
@@ -3010,7 +3263,34 @@
                 specialAlertEl.style.display = 'none';
             }
         }
-        
+
+        // Pre-ox functions
+        function selectPreox(plan, card) {
+            const wasSelected = card.classList.contains('sel');
+            document.querySelectorAll('.preox-card').forEach(c => c.classList.remove('sel'));
+            if (!wasSelected) {
+                card.classList.add('sel');
+                S.preoxPlan = plan;
+            } else {
+                S.preoxPlan = null;
+            }
+            syncToFirebase();
+        }
+
+        function togglePreoxNP(tog) {
+            tog.classList.toggle('on');
+            const card = tog.closest('.preox-card');
+            const npLane = card.querySelector('.preox-np-lane');
+            if (npLane) {
+                npLane.style.display = tog.classList.contains('on') ? 'flex' : 'none';
+            }
+            // Update the plan name to reflect NP choice
+            if (S.preoxPlan === 'bvm' || S.preoxPlan === 'bvm-np') {
+                S.preoxPlan = tog.classList.contains('on') ? 'bvm-np' : 'bvm';
+            }
+            syncToFirebase();
+        }
+
         // Airway plan functions
         function selectAirwayDevice(device, btn) {
             document.querySelectorAll('#deviceGroup .airway-opt').forEach(b => b.classList.remove('sel'));
@@ -3705,6 +3985,7 @@
                 planType: S.planType,
                 airwayDevice: S.airwayDevice,
                 airwayAdjunct: S.airwayAdjunct,
+                preoxPlan: S.preoxPlan,
                 preoxStart: S.preoxStart,
                 paralysisStart: S.paralysisStart,
                 postIntubIdx: postIntub,
@@ -3843,7 +4124,31 @@
                 if (data.airwayDevice || data.airwayAdjunct) {
                     updateAirwayPlan();
                 }
-                
+
+                // Apply preox plan
+                if (data.preoxPlan !== undefined) {
+                    S.preoxPlan = data.preoxPlan;
+                    document.querySelectorAll('.preox-card').forEach(c => c.classList.remove('sel'));
+                    if (S.preoxPlan) {
+                        // Find and select the matching card
+                        const planKey = S.preoxPlan.replace('-np', '');
+                        const cards = document.querySelectorAll('.preox-card');
+                        const planMap = ['np-nrb', 'bvm', 'hfnp', 'niv'];
+                        const idx = planMap.indexOf(planKey);
+                        if (idx >= 0 && cards[idx]) {
+                            cards[idx].classList.add('sel');
+                            if (S.preoxPlan === 'bvm-np') {
+                                const tog = cards[idx].querySelector('.preox-np-toggle');
+                                if (tog) {
+                                    tog.classList.add('on');
+                                    const npLane = cards[idx].querySelector('.preox-np-lane');
+                                    if (npLane) npLane.style.display = 'flex';
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Apply timer state (sync start times) - use cached DOM elements
                 if (data.preoxStart && !S.preoxStart) {
                     S.preoxStart = data.preoxStart;
