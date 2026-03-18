@@ -2237,9 +2237,6 @@
             <!-- Equipment -->
             <div class="panel" id="equip-panel">
                 <div class="card equip-card">
-                    <div class="equip-section-hdr">Positioning</div>
-                    <div class="equip-row equip-full" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">Bed height + controls accessible</span></div>
-                    
                     <div class="equip-section-hdr">Oxygenation</div>
                     <div class="equip-grid">
                         <div class="equip-row" onclick="toggleChk(this,'equip')"><div class="chk"></div><span class="chk-text">BVM + PEEP valve</span></div>
@@ -2940,9 +2937,9 @@
         // positioning, monitoring, EtCO2, IV access, post-intubation sedation
         const TOTAL_CHECKS = 9;
 
-        // Equipment items (14 items): bed position, BMV/PEEP, OPA, laryngoscopes (3 types),
+        // Equipment items (13 items): BMV/PEEP, OPA, laryngoscopes (3 types),
         // bougie, stylet, ETT x2, syringe, tape, LMA, suction, CICO kit
-        const TOTAL_EQUIP = 14;
+        const TOTAL_EQUIP = 13;
 
         // HTML escape function to prevent XSS when inserting text into innerHTML
         function escapeHtml(text) {
@@ -3644,6 +3641,10 @@
             hideModal('disclaimerModal');
         }
 
+        function hideDisclaimer() {
+            // Do nothing - user must accept terms to proceed
+        }
+
         // Check if already accepted
         if (localStorage.getItem('intubaid_terms_accepted') === 'true') {
             hideModal('disclaimerModal');
@@ -3760,10 +3761,6 @@
             document.querySelector('.airway-opt[data-device="vl-mac"]')?.classList.add('sel');
             // No default adjunct - force active choice
             updateAirwayPlan();
-
-            // Show adjunct nudge on reset
-            const adjunctNudge = document.getElementById('adjunctNudge');
-            if (adjunctNudge) adjunctNudge.style.display = 'block';
 
             // Reset pre-ox selection
             document.querySelectorAll('.preox-card').forEach(c => c.classList.remove('sel'));
