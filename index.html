@@ -2423,8 +2423,13 @@
                     <div class="go-drugs-card clickable" onclick="goToPhase('set', 'drugs')">
                         <span id="goDrugs">None selected</span>
                     </div>
+
+                    <div class="go-section-title">Pre-ox plan</div>
+                    <div class="go-drugs-card clickable" onclick="goToPhase('set', 'preox')">
+                        <span id="goPreox">None selected</span>
+                    </div>
                 </div>
-                
+
                 <div class="go-section-title">Airway plan</div>
                 <div class="go-airway clickable" id="goAirway" onclick="goToPhase('set', 'airway')">
                     <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
@@ -3563,6 +3568,20 @@
 
             const drugNames = S.selectedDrugs.map(id => DRUGS[id].name);
             goDrugsEl.textContent = drugNames.length ? drugNames.join(', ') : 'None selected';
+
+            // Update pre-ox plan
+            const goPreox = document.getElementById('goPreox');
+            if (goPreox) {
+                const preoxLabels = {
+                    'np-nrb': 'NP + NRB',
+                    'bvm': 'BVM',
+                    'bvm-np': 'BVM + NP',
+                    'hfnp': 'HFNP throughout',
+                    'niv': 'NIV'
+                };
+                goPreox.textContent = S.preoxPlan ? preoxLabels[S.preoxPlan] || S.preoxPlan : 'None selected';
+                goPreox.style.color = S.preoxPlan ? '' : 'var(--orange)';
+            }
 
             // Update airway plan based on current selections
             updateAirwayPlan();
