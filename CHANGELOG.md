@@ -14,3 +14,7 @@
 - 2026-03-18: Added evidence nudges on airway tab — gentle prompts when user selects direct laryngoscopy (DEVICE 2023) or no adjunct (STYLETO 2021)
 - 2026-03-18: Added pre-ox plan display to GO phase summary
 - 2026-03-18: Updated reset to clear pre-ox selection and evidence nudges
+- 2026-03-18: Removed instructional text from risks panel
+- 2026-03-18: Removed default adjunct selection — requires explicit selection (human factors)
+- 2026-03-18: Reordered GO summary: Risks → Pre-ox → Drugs → Airway (clinical briefing sequence)
+- 2026-03-18: Updated post-intubation checklist wording; clarified Plan C/D labels

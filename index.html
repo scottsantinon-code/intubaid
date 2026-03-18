@@ -2415,8 +2415,8 @@
                     <div class="airway-fixed">
                         <div class="airway-section-title">Plans B–D</div>
                         <div class="airway-plan-row"><span class="airway-plan-label">B</span><span>LMA (+/- fibreoptic intubation)</span></div>
-                        <div class="airway-plan-row"><span class="airway-plan-label">C</span><span>2-handed BMV + OPA</span></div>
-                        <div class="airway-plan-row"><span class="airway-plan-label">D</span><span>eFONA</span></div>
+                        <div class="airway-plan-row"><span class="airway-plan-label">C</span><span>2-person BMV + OPA</span></div>
+                        <div class="airway-plan-row"><span class="airway-plan-label">D</span><span>eFONA (front of neck access)</span></div>
                     </div>
                 </div>
                 <div class="next-btn-container">
@@ -2438,15 +2438,15 @@
                         <div id="goRisksContainer" style="display:none;"></div>
                     </div>
                     
-                    <div class="go-section-title">Drugs</div>
-                    <div class="go-drugs-card clickable" onclick="goToPhase('set', 'drugs')">
-                        <span id="goDrugs">None selected</span>
-                    </div>
-
                     <div class="go-section-title">Pre-ox plan</div>
                     <div class="go-drugs-card clickable" onclick="goToPhase('set', 'preox')">
                         <span id="goPreox">None selected</span>
                         <div class="go-warn" id="goPreoxWarn" style="display:none;">Hypoxia risk flagged — select a pre-ox strategy</div>
+                    </div>
+
+                    <div class="go-section-title">Drugs</div>
+                    <div class="go-drugs-card clickable" onclick="goToPhase('set', 'drugs')">
+                        <span id="goDrugs">None selected</span>
                     </div>
                 </div>
 
@@ -2455,8 +2455,8 @@
                     <div class="go-plan-row"><span class="go-plan-label">A</span><span class="go-plan-text"><span id="goPlanA">VL MAC</span></span></div>
                     <div class="go-rescue-row" id="goRescue">Rescues: hyperangulated blade, bougie or stylet, or reposition</div>
                     <div class="go-plan-row"><span class="go-plan-label">B</span><span class="go-plan-text">LMA <span class="go-plan-sub">(+/- fibreoptic intubation)</span></span></div>
-                    <div class="go-plan-row"><span class="go-plan-label">C</span><span class="go-plan-text">2-handed BMV + OPA</span></div>
-                    <div class="go-plan-row"><span class="go-plan-label">D</span><span class="go-plan-text">eFONA</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">C</span><span class="go-plan-text">2-person BMV + OPA</span></div>
+                    <div class="go-plan-row"><span class="go-plan-label">D</span><span class="go-plan-text">eFONA (front of neck access)</span></div>
                 </div>
                 
                 <div class="go-section-title">Timers</div>
@@ -2481,7 +2481,7 @@
                     <div class="post-intub-list" id="postIntubList" style="display:none;">
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
-                            <span class="chk-text">ETCO2 confirmed</span>
+                            <span class="chk-text">EtCO₂</span>
                         </div>
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
@@ -2489,7 +2489,7 @@
                         </div>
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
-                            <span class="chk-text">Tube depth checked</span>
+                            <span class="chk-text">ETT depth at teeth</span>
                         </div>
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
@@ -2497,11 +2497,11 @@
                         </div>
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
-                            <span class="chk-text">Ventilator settings confirmed</span>
+                            <span class="chk-text">Ventilator connected + settings confirmed</span>
                         </div>
                         <div class="equip-row" onclick="togglePostIntub(this)">
                             <div class="chk"></div>
-                            <span class="chk-text">CXR ordered</span>
+                            <span class="chk-text">CXR ordered · ABG sent</span>
                         </div>
                     </div>
                 </div>
