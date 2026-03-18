@@ -847,7 +847,15 @@
             background: var(--blue);
             color: #fff;
         }
-        
+
+        .airway-nudge {
+            font-size: 12px;
+            color: var(--orange);
+            line-height: 1.4;
+            padding: 8px 0 0;
+            font-style: italic;
+        }
+
         .airway-rescue {
             padding: 8px 0;
         }
@@ -2362,6 +2370,7 @@
                                 <button class="airway-opt sel" data-device="vl-mac" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
                                 <button class="airway-opt" data-device="vl-hyper" onclick="selectAirwayDevice('vl-hyper', this)">VL Hyperangulated</button>
                             </div>
+                            <div class="airway-nudge" id="deviceNudge" style="display:none;"></div>
                         </div>
 
                         <div class="airway-option-group" id="adjunctGroup">
@@ -2371,6 +2380,7 @@
                                 <button class="airway-opt" data-adjunct="bougie" onclick="selectAirwayAdjunct('bougie', this)">Bougie</button>
                                 <button class="airway-opt" data-adjunct="stylet" onclick="selectAirwayAdjunct('stylet', this)">Stylet</button>
                             </div>
+                            <div class="airway-nudge" id="adjunctNudge" style="display:none;"></div>
                         </div>
                     </div>
                     
@@ -3306,16 +3316,37 @@
                 document.querySelectorAll('#adjunctGroup .airway-opt').forEach(b => b.classList.remove('sel'));
                 document.querySelector('#adjunctGroup .airway-opt[data-adjunct="stylet"]').classList.add('sel');
                 S.airwayAdjunct = 'stylet';
+                const adjunctNudge = document.getElementById('adjunctNudge');
+                if (adjunctNudge) adjunctNudge.style.display = 'none';
+            }
+
+            // Show evidence nudge for direct laryngoscopy
+            const deviceNudge = document.getElementById('deviceNudge');
+            if (device === 'direct') {
+                deviceNudge.textContent = 'DEVICE 2023: VL had 85% vs 71% first-pass success in ED/ICU. Consider VL if available.';
+                deviceNudge.style.display = 'block';
+            } else {
+                deviceNudge.style.display = 'none';
             }
 
             updateAirwayPlan();
             syncToFirebase();
         }
-        
+
         function selectAirwayAdjunct(adjunct, btn) {
             document.querySelectorAll('#adjunctGroup .airway-opt').forEach(b => b.classList.remove('sel'));
             btn.classList.add('sel');
             S.airwayAdjunct = adjunct;
+
+            // Show evidence nudge for no adjunct
+            const adjunctNudge = document.getElementById('adjunctNudge');
+            if (adjunct === 'none') {
+                adjunctNudge.textContent = 'STYLETO 2021: Routine stylet use improved first-pass success vs tube alone in ICU.';
+                adjunctNudge.style.display = 'block';
+            } else {
+                adjunctNudge.style.display = 'none';
+            }
+
             updateAirwayPlan();
             syncToFirebase();
         }
