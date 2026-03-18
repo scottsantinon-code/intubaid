@@ -3700,6 +3700,7 @@
                 mitigations:{}, // Clear cached mitigation selections
                 checks:0, equip:0, selectedDrugs:[], planType:'standard',
                 airwayDevice:'vl-mac', airwayAdjunct:'none',
+                preoxPlan:null,
                 preoxStart:null, preoxTimer:null, preoxDone:false,
                 paralysisStart:null, paralysisTimer:null
             });
@@ -3717,7 +3718,21 @@
             document.querySelector('.airway-opt[data-device="vl-mac"]')?.classList.add('sel');
             document.querySelector('.airway-opt[data-adjunct="none"]')?.classList.add('sel');
             updateAirwayPlan();
-            
+
+            // Reset pre-ox selection
+            document.querySelectorAll('.preox-card').forEach(c => c.classList.remove('sel'));
+            document.querySelectorAll('.preox-np-toggle').forEach(t => {
+                t.classList.remove('on');
+                const lane = t.closest('.preox-card')?.querySelector('.preox-np-lane');
+                if (lane) lane.style.display = 'none';
+            });
+
+            // Reset evidence nudges
+            const deviceNudge = document.getElementById('deviceNudge');
+            if (deviceNudge) deviceNudge.style.display = 'none';
+            const adjunctNudge = document.getElementById('adjunctNudge');
+            if (adjunctNudge) adjunctNudge.style.display = 'none';
+
             // Use cached DOM elements
             drugInfoCardEl.style.display='none';
             specialAlertEl.style.display='none';
