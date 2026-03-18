@@ -3561,7 +3561,8 @@
                 haemo: {name: 'Haemodynamic instability'},
                 hypoxia: {name: 'Hypoxia risk'},
                 acidaemia: {name: 'Acidaemia'},
-                icp: {name: 'Raised ICP'}
+                icp: {name: 'Raised ICP'},
+                agitated: {name: 'Agitated/uncooperative'}
             };
 
             // Build risks with their mitigations - read from cached S.mitigations instead of DOM
@@ -3571,7 +3572,7 @@
             Object.entries(S.risks).forEach(([id, active]) => {
                 if (active) {
                     hasRisks = true;
-                    const config = riskConfig[id];
+                    const config = riskConfig[id] || {name: id};
                     // Read mitigations from state cache instead of querying DOM (O(1) vs O(n))
                     const mits = S.mitigations[id] ? Array.from(S.mitigations[id]).map(m => escapeHtml(m)) : [];
                     risksHtml += `<div class="go-risk-item">
