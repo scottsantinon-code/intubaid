@@ -1988,6 +1988,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="risk-row" onclick="toggleRisk('agitated')">
+                        <div class="toggle" id="t-agitated"></div>
+                        <div class="risk-content">
+                            <div class="risk-header">
+                                <span class="risk-name">Agitated / uncooperative</span>
+                            </div>
+                        </div>
+                        <div class="mit-summary" id="ms-agitated"></div>
+                        <div class="mit-section" id="mc-agitated">
+                            <div class="mit-label">Mitigations</div>
+                            <div class="mit-chips">
+                                <span class="mit-chip has-info" onclick="toggleMitChip(event,this,'agitated')">DSI<span class="info-icon" onclick="event.stopPropagation();showDsiInfo()">ⓘ</span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="next-btn-container">
                     <button class="next-btn" onclick="switchSubTab('checks')">Next <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -2452,6 +2468,24 @@
         </div>
     </div>
 
+    <!-- DSI Info Modal -->
+    <div class="modal-overlay" id="dsiModal" onclick="if(event.target===this)hideDsiInfo()">
+        <div class="modal info-modal">
+            <div class="modal-header">
+                <span class="modal-title">Delayed Sequence Intubation</span>
+                <button class="modal-close" onclick="hideDsiInfo()">Done</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <p><strong>Procedural sedation for preoxygenation</strong></p>
+                    <p>Dissociative-dose ketamine to enable preoxygenation in patients who can't cooperate. Induce dissociation, then preoxygenate, then paralyse.</p>
+                    <p style="margin-top:12px"><strong>Evidence</strong></p>
+                    <p>Bandyopadhyay 2023: DSI vs RSI in agitated trauma patients — less hypoxia (8% vs 35%), higher first-pass success (83% vs 69%). Single-centre, DL only.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Collaboration Modal -->
     <div class="modal-overlay" id="collabModal" onclick="if(event.target===this)hideCollab()">
         <div class="modal collab-modal">
@@ -2641,6 +2675,8 @@
         function hideBicarbInfo() { hideModal('bicarbModal'); }
         function showAfoiInfo() { showModal('afoiModal'); }
         function hideAfoiInfo() { hideModal('afoiModal'); }
+        function showDsiInfo() { showModal('dsiModal'); }
+        function hideDsiInfo() { hideModal('dsiModal'); }
 
         const S = {
             risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
@@ -3326,7 +3362,7 @@
             clearInterval(S.preoxTimer);
             clearInterval(S.paralysisTimer);
             Object.assign(S, {
-                risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
+                risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false,agitated:false},
                 mitigations:{}, // Clear cached mitigation selections
                 checks:0, equip:0, selectedDrugs:[], planType:'standard',
                 airwayDevice:'vl-mac', airwayAdjunct:'none',
