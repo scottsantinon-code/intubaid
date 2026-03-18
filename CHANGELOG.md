@@ -23,3 +23,4 @@
 - 2026-03-18: Removed FAKT trial from ketamine info — reference kept on fentanyl only
 - 2026-03-18: Removed default device selection on airway tab — user must actively choose
 - 2026-03-18: STYLETO nudge only shows when user explicitly selects "None" for adjunct
+- 2026-03-18: Compressed difficult airway assessment modal — subtexts now hidden until item toggled, removed intro text, tightened row padding
