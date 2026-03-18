@@ -18,3 +18,8 @@
 - 2026-03-18: Removed default adjunct selection — requires explicit selection (human factors)
 - 2026-03-18: Reordered GO summary: Risks → Pre-ox → Drugs → Airway (clinical briefing sequence)
 - 2026-03-18: Updated post-intubation checklist wording; clarified Plan C/D labels
+- 2026-03-18: Standardised pre-ox timeline bars to blue
+- 2026-03-18: Moved pre-ox evidence behind info buttons with structured pros/cons (green ✓ / red ✗) — cleaner default card view
+- 2026-03-18: Removed FAKT trial from ketamine info — reference kept on fentanyl only
+- 2026-03-18: Removed default device selection on airway tab — user must actively choose
+- 2026-03-18: STYLETO nudge only shows when user explicitly selects "None" for adjunct
