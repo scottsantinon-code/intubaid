@@ -1916,15 +1916,21 @@
 
         .preox-bar.blue { background: var(--blue); }
 
-        .preox-pearl {
-            margin-top: 10px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: var(--label-secondary);
-            padding: 8px 10px;
-            background: var(--fill-secondary);
-            border-radius: 6px;
+        .preox-info-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--fill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--blue);
+            cursor: pointer;
+            flex-shrink: 0;
         }
+
+        .preox-info-btn:active { opacity: 0.6; }
 
         .preox-warn {
             margin-top: 8px;
@@ -2273,6 +2279,7 @@
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
                             <span class="preox-title">NP + NRB</span>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('np-nrb')">ⓘ</span>
                         </div>
                         <div class="preox-body">
                             <div class="preox-timeline">
@@ -2280,7 +2287,6 @@
                                 <div class="preox-lane"><span class="preox-label">NRB</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
                                 <div class="preox-lane"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar blue" style="width:100%"></div></div></div>
                             </div>
-                            <div class="preox-pearl">No PEEP. Early desat in a well-preoxygenated patient is usually shunt from atelectasis, not low PAO₂.</div>
                         </div>
                     </div>
 
@@ -2288,6 +2294,7 @@
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
                             <span class="preox-title">BVM</span>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('bvm')">ⓘ</span>
                             <div class="preox-np-toggle" onclick="event.stopPropagation();togglePreoxNP(this)">
                                 <span class="preox-np-label">+ NP</span>
                                 <div class="preox-tog-track"><div class="preox-tog-thumb"></div></div>
@@ -2299,7 +2306,6 @@
                                 <div class="preox-lane"><span class="preox-label">BVM+PEEP</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
                                 <div class="preox-lane preox-np-lane" style="display:none"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar blue" style="width:100%"></div></div></div>
                             </div>
-                            <div class="preox-pearl">Feel lung compliance before committing to paralysis. <a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" style="color:inherit">Casey 2019</a>: BVM during apnoea reduced hypoxia, no increase in aspiration.</div>
                         </div>
                     </div>
 
@@ -2307,13 +2313,13 @@
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
                             <span class="preox-title">HFNP</span>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('hfnp')">ⓘ</span>
                         </div>
                         <div class="preox-body">
                             <div class="preox-timeline">
                                 <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
                                 <div class="preox-lane"><span class="preox-label">HFNP 60 L</span><div class="preox-track"><div class="preox-bar blue" style="width:100%"></div></div></div>
                             </div>
-                            <div class="preox-pearl">Only strategy with no device transitions. <a href="https://pubmed.ncbi.nlm.nih.gov/33878297/" target="_blank" style="color:inherit">Sjöblom 2021</a>: Equivalent to anaesthetic circuit. <a href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" style="color:inherit">FLORALI-II</a>: NIV only superior when P/F &lt;200.</div>
                         </div>
                     </div>
 
@@ -2321,6 +2327,7 @@
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
                             <span class="preox-title">NIV</span>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('niv')">ⓘ</span>
                         </div>
                         <div class="preox-body">
                             <div class="preox-timeline">
@@ -2328,7 +2335,7 @@
                                 <div class="preox-lane"><span class="preox-label">NIV</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
                                 <div class="preox-lane"><span class="preox-label preox-label-sm">EPAP ≥5 · IPAP ≥10 · RR ≥10 · FiO₂ 1.0</span></div>
                             </div>
-                            <div class="preox-pearl"><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" style="color:inherit">PREOXI 2024</a> (NEJM): NIV vs O₂ mask — hypoxia 9% vs 19% (NNT ~10), less cardiac arrest, no increase in aspiration. PIP &lt;25 to minimise gastric insufflation.</div>
+                            <div class="preox-warn">No oxygenation during laryngoscopy attempt</div>
                         </div>
                     </div>
                 </div>
@@ -2774,6 +2781,19 @@
         </div>
     </div>
 
+    <!-- Pre-ox Info Modal -->
+    <div class="modal-overlay" id="preoxInfoModal" onclick="if(event.target===this)hidePreoxInfo()">
+        <div class="modal info-modal">
+            <div class="modal-header">
+                <span class="modal-title" id="preoxInfoTitle"></span>
+                <button class="modal-close" onclick="hidePreoxInfo()">Done</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content" id="preoxInfoContent"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Collaboration Modal -->
     <div class="modal-overlay" id="collabModal" onclick="if(event.target===this)hideCollab()">
         <div class="modal collab-modal">
@@ -2965,6 +2985,85 @@
         function hideAfoiInfo() { hideModal('afoiModal'); }
         function showDsiInfo() { showModal('dsiModal'); }
         function hideDsiInfo() { hideModal('dsiModal'); }
+
+        const PREOX_INFO = {
+            'np-nrb': {
+                title: 'NP + NRB',
+                pros: [
+                    'Simple setup, universally available',
+                    'NP provides apnoeic oxygenation through all phases'
+                ],
+                cons: [
+                    'No PEEP — no alveolar recruitment',
+                    'Early desat in well-preoxygenated patient is usually shunt from atelectasis, not low PAO₂'
+                ],
+                evidence: null
+            },
+            'bvm': {
+                title: 'BVM',
+                pros: [
+                    'Provides PEEP (with valve) — alveolar recruitment',
+                    'Allows assessment of lung compliance before paralysis',
+                    'Familiar to all operators'
+                ],
+                cons: [
+                    'PEEP only on expiration (not continuous)',
+                    'Requires good mask seal',
+                    'Must remove to laryngoscope'
+                ],
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" rel="noopener" style="color:var(--blue)">Casey 2019</a>: BVM during apnoea reduced hypoxia with no increase in aspiration.'
+            },
+            'hfnp': {
+                title: 'HFNP',
+                pros: [
+                    'No device transitions — continuous through all phases',
+                    'Stays on during laryngoscopy'
+                ],
+                cons: [
+                    'Requires HFNP equipment at bedside',
+                    'NIV may be superior when P/F <200'
+                ],
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/33878297/" target="_blank" rel="noopener" style="color:var(--blue)">Sjöblom 2021</a>: Equivalent to anaesthetic circuit. <a href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener" style="color:var(--blue)">FLORALI-II</a>: NIV only superior when P/F <200.'
+            },
+            'niv': {
+                title: 'NIV',
+                pros: [
+                    'Best evidence for reducing peri-intubation hypoxia',
+                    'Provides PEEP + pressure support — best denitrogenation',
+                    'Allows apnoeic ventilation after induction'
+                ],
+                cons: [
+                    'No oxygenation during laryngoscopy attempt',
+                    'Must remove mask to laryngoscope',
+                    'Requires NIV equipment + setup time'
+                ],
+                evidence: '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" rel="noopener" style="color:var(--blue)">PREOXI 2024</a> (NEJM): NIV vs O₂ mask — hypoxia 9% vs 19% (NNT ~10), less cardiac arrest, no increase in aspiration. Settings: EPAP ≥5, IPAP ≥10, RR ≥10, FiO₂ 1.0. PIP <25 to minimise gastric insufflation.'
+            }
+        };
+
+        function showPreoxInfo(plan) {
+            const info = PREOX_INFO[plan];
+            if (!info) return;
+            document.getElementById('preoxInfoTitle').textContent = info.title;
+
+            let html = '<div style="margin-bottom: 12px;">';
+            info.pros.forEach(p => {
+                html += '<div style="display:flex;gap:8px;margin-bottom:6px;"><span style="color:var(--green);font-size:14px;flex-shrink:0;">✓</span><span style="font-size:14px;">' + p + '</span></div>';
+            });
+            html += '</div><div style="margin-bottom: 12px;">';
+            info.cons.forEach(c => {
+                html += '<div style="display:flex;gap:8px;margin-bottom:6px;"><span style="color:var(--red);font-size:14px;flex-shrink:0;">✗</span><span style="font-size:14px;">' + c + '</span></div>';
+            });
+            html += '</div>';
+            if (info.evidence) {
+                html += '<div style="padding-top:10px;border-top:0.5px solid var(--separator);font-size:13px;color:var(--label-secondary);line-height:1.5;">' + info.evidence + '</div>';
+            }
+
+            document.getElementById('preoxInfoContent').innerHTML = html;
+            showModal('preoxInfoModal');
+        }
+
+        function hidePreoxInfo() { hideModal('preoxInfoModal'); }
 
         const S = {
             risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false,agitated:false},
