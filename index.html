@@ -1669,12 +1669,11 @@
         }
 
         .score-bar {
-            position: sticky;
-            bottom: 0;
-            background: var(--bg-grouped);
+            background: var(--bg);
             border-top: 0.5px solid var(--separator);
-            padding: 12px 16px 16px;
-            margin: 0 -16px -16px;
+            padding: 12px 16px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            flex-shrink: 0;
         }
 
         .score-track {
@@ -2225,7 +2224,7 @@
                 <span class="modal-title">Difficult Airway Assessment</span>
                 <button class="modal-close" onclick="hideDifficultyAssess()">✕</button>
             </div>
-            <div class="modal-body" style="padding-bottom: 100px;">
+            <div class="modal-body">
                 <p style="font-size: 12px; color: var(--label-tertiary); margin: 0 0 12px; line-height: 1.4;">Tap findings present. Items marked <span class="macocha-badge">M</span> contribute to the MACOCHA score.</p>
 
                 <div class="assess-card">
@@ -2373,26 +2372,26 @@
                         <p style="margin-top:8px"><strong>Limitations:</strong> Both the MACOCHA score and the JAMA likelihood ratios were validated using direct laryngoscopy. Video laryngoscopy substantially reduces difficulty rates and may alter the predictive value of individual findings. The three risk bands (low / moderate / high) shown below are a clinical interpretation of the score range — the original study validated a single cutoff of ≥3.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Sticky score bar -->
-                <div class="score-bar" id="macScoreBar">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div>
-                            <span style="font-size: 13px; color: var(--label-secondary);">MACOCHA score</span>
-                            <span id="macScoreNum" style="font-size: 22px; font-weight: 700; margin-left: 8px;">0</span>
-                            <span style="font-size: 13px; color: var(--label-tertiary);">/12</span>
-                        </div>
-                        <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
+            <!-- Score bar (fixed footer) -->
+            <div class="score-bar" id="macScoreBar">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <span style="font-size: 13px; color: var(--label-secondary);">MACOCHA score</span>
+                        <span id="macScoreNum" style="font-size: 22px; font-weight: 700; margin-left: 8px;">0</span>
+                        <span style="font-size: 13px; color: var(--label-tertiary);">/12</span>
                     </div>
-                    <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
-                    <div class="score-track">
-                        <div class="score-track-fill" id="macTrackFill"></div>
-                    </div>
+                    <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
+                </div>
+                <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
+                <div class="score-track">
+                    <div class="score-track-fill" id="macTrackFill"></div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="modal-overlay visible" id="disclaimerModal" onclick="if(event.target===this)hideDisclaimer()">
         <div class="modal disclaimer-modal">
             <div class="modal-header">
