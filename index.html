@@ -475,7 +475,6 @@
         
         .mit-chip.on {
             color: var(--label);
-            font-weight: 500;
         }
         
         .mit-chip.on::after {
@@ -1592,14 +1591,14 @@
             color: var(--label-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            padding: 12px 14px 6px;
+            padding: 8px 14px 5px;
             background: var(--fill-secondary);
         }
-        
+
         .assess-row {
             display: flex;
             align-items: center;
-            padding: 10px 14px;
+            padding: 8px 14px;
             min-height: 42px;
             cursor: pointer;
         }
@@ -1630,11 +1629,15 @@
         }
 
         .assess-subtext {
-            display: block;
+            display: none;
             font-size: 12px;
             color: var(--label-tertiary);
             margin-top: 2px;
             line-height: 1.3;
+        }
+
+        .assess-row.on .assess-subtext {
+            display: block;
         }
 
         .macocha-badge {
@@ -1671,7 +1674,7 @@
             color: #7C3AED;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            padding: 10px 14px 6px;
+            padding: 8px 14px 5px;
             background: rgba(139, 92, 246, 0.08);
         }
 
@@ -2533,8 +2536,6 @@
                 <button class="modal-close" onclick="hideDifficultyAssess()">✕</button>
             </div>
             <div class="modal-body">
-                <p style="font-size: 12px; color: var(--label-tertiary); margin: 0 0 12px; line-height: 1.4;">Items marked <span class="macocha-badge">M</span> contribute to the MACOCHA score.</p>
-
                 <div class="assess-card">
                     <div class="assess-section-hdr">Look externally</div>
                     <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
