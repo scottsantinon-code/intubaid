@@ -934,7 +934,14 @@
             font-size: 16px;
             color: var(--label);
         }
-        
+
+        .go-warn {
+            font-size: 12px;
+            color: var(--orange);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
         .go-airway {
             background: var(--bg-grouped);
             border-radius: 10px;
@@ -1716,6 +1723,20 @@
             margin-top: 4px;
         }
 
+        .mac-prompt {
+            font-size: 12px;
+            color: var(--blue);
+            margin-top: 6px;
+            padding: 6px 10px;
+            background: rgba(0, 122, 255, 0.08);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .mac-prompt:active {
+            background: rgba(0, 122, 255, 0.15);
+        }
+
         .about-score {
             margin-top: 16px;
             padding: 12px 14px;
@@ -2426,6 +2447,7 @@
                     <div class="go-section-title">Pre-ox plan</div>
                     <div class="go-drugs-card clickable" onclick="goToPhase('set', 'preox')">
                         <span id="goPreox">None selected</span>
+                        <div class="go-warn" id="goPreoxWarn" style="display:none;">Hypoxia risk flagged — select a pre-ox strategy</div>
                     </div>
                 </div>
 
@@ -2669,6 +2691,9 @@
                     <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
                 </div>
                 <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
+                <div class="mac-prompt" id="macPrompt" style="display:none;" onclick="toggleRisk('difficult');this.style.display='none';">
+                    Tap to flag "Anatomical difficulty" on checklist →
+                </div>
                 <div class="score-track">
                     <div class="score-track-fill" id="macTrackFill"></div>
                 </div>
@@ -3580,6 +3605,12 @@
                 };
                 goPreox.textContent = S.preoxPlan ? preoxLabels[S.preoxPlan] || S.preoxPlan : 'None selected';
                 goPreox.style.color = S.preoxPlan ? '' : 'var(--orange)';
+
+                // Show warning if hypoxia risk flagged but no pre-ox plan
+                const goPreoxWarn = document.getElementById('goPreoxWarn');
+                if (goPreoxWarn) {
+                    goPreoxWarn.style.display = (S.risks.hypoxia && !S.preoxPlan) ? 'block' : 'none';
+                }
             }
 
             // Update airway plan based on current selections
@@ -3670,8 +3701,16 @@
                 ctx.textContent = 'MACOCHA ≥7. Strongly consider awake technique, anaesthesia backup, or surgical airway standby.';
             }
 
-            // Auto-toggle the difficult airway risk on the main screen if any features identified
-            if (totalFeatures > 0 && !S.risks.difficult) {
+            // Show prompt to flag difficult airway risk if MACOCHA ≥3 and not already flagged
+            const macPrompt = document.getElementById('macPrompt');
+            if (macScore >= 3 && !S.risks.difficult) {
+                macPrompt.style.display = 'block';
+            } else {
+                macPrompt.style.display = 'none';
+            }
+
+            // Auto-toggle for non-MACOCHA features (e.g., facial trauma, stridor)
+            if (totalFeatures > 0 && macScore < 3 && !S.risks.difficult) {
                 toggleRisk('difficult');
             }
         }
