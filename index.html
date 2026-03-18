@@ -2225,7 +2225,7 @@
                 <span class="modal-title">Difficult Airway Assessment</span>
                 <button class="modal-close" onclick="hideDifficultyAssess()">✕</button>
             </div>
-            <div class="modal-body" style="padding-bottom: 120px;">
+            <div class="modal-body" style="padding-bottom: 100px;">
                 <p style="font-size: 12px; color: var(--label-tertiary); margin: 0 0 12px; line-height: 1.4;">Tap findings present. Items marked <span class="macocha-badge">M</span> contribute to the MACOCHA score.</p>
 
                 <div class="assess-card">
@@ -2384,23 +2384,20 @@
                     </div>
                 </div>
 
-                <!-- Spacer for sticky score bar -->
-                <div style="height: 20px;"></div>
-            </div>
-
-            <!-- Sticky score bar -->
-            <div class="score-bar" id="macScoreBar">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div>
-                        <span style="font-size: 13px; color: var(--label-secondary);">MACOCHA score</span>
-                        <span id="macScoreNum" style="font-size: 22px; font-weight: 700; margin-left: 8px;">0</span>
-                        <span style="font-size: 13px; color: var(--label-tertiary);">/12</span>
+                <!-- Sticky score bar -->
+                <div class="score-bar" id="macScoreBar">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 13px; color: var(--label-secondary);">MACOCHA score</span>
+                            <span id="macScoreNum" style="font-size: 22px; font-weight: 700; margin-left: 8px;">0</span>
+                            <span style="font-size: 13px; color: var(--label-tertiary);">/12</span>
+                        </div>
+                        <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
                     </div>
-                    <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
-                </div>
-                <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
-                <div class="score-track">
-                    <div class="score-track-fill" id="macTrackFill"></div>
+                    <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
+                    <div class="score-track">
+                        <div class="score-track-fill" id="macTrackFill"></div>
+                    </div>
                 </div>
             </div>
         </div>
