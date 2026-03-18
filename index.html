@@ -1784,13 +1784,13 @@
                             <div class="mit-chips">
                                 <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Hyperangulated blade</span>
                                 <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Anaes backup</span>
-                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">AFOI / awake trache</span>
-                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Double setup</span>
-                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Mark neck</span>
+                                <span class="mit-chip has-info" onclick="toggleMitChip(event,this,'difficult')">AFOI / VAFI<span class="info-icon" onclick="event.stopPropagation();showAfoiInfo()">ⓘ</span></span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Awake tracheostomy</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'difficult')">Double setup / mark neck</span>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="risk-row" onclick="toggleRisk('haemo')">
                         <div class="toggle" id="t-haemo"></div>
                         <div class="risk-content">
@@ -1803,7 +1803,7 @@
                             <div class="mit-label">Mitigations</div>
                             <div class="mit-chips">
                                 <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Art line</span>
-                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Vasopressor running</span>
+                                <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Inotrope/vasopressor running</span>
                                 <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">Pads on</span>
                                 <span class="mit-chip" onclick="toggleMitChip(event,this,'haemo')">DSI</span>
                             </div>
@@ -2169,7 +2169,25 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- AFOI/VAFI Info Modal -->
+    <div class="modal-overlay" id="afoiModal" onclick="if(event.target===this)hideAfoiInfo()">
+        <div class="modal info-modal">
+            <div class="modal-header">
+                <span class="modal-title">AFOI / VAFI</span>
+                <button class="modal-close" onclick="hideAfoiInfo()">Done</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <p><strong>AFOI — Awake Fibreoptic Intubation</strong></p>
+                    <p>Flexible bronchoscope passed nasally or orally in a topicalised, spontaneously breathing patient. Gold standard for predicted difficult airway when time permits.</p>
+                    <p style="margin-top:12px"><strong>VAFI — Video Assisted Fibreoptic Intubation</strong></p>
+                    <p>Combines videolaryngoscopy with flexible bronchoscope — VL provides jaw lift and visualisation while the scope navigates to the glottis. Useful when anatomy is distorted or direct AFOI view is poor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Collaboration Modal -->
     <div class="modal-overlay" id="collabModal" onclick="if(event.target===this)hideCollab()">
         <div class="modal collab-modal">
@@ -2357,6 +2375,8 @@
         function hideDifficultyAssess() { hideModal('difficultyModal'); }
         function showBicarbInfo() { showModal('bicarbModal'); }
         function hideBicarbInfo() { hideModal('bicarbModal'); }
+        function showAfoiInfo() { showModal('afoiModal'); }
+        function hideAfoiInfo() { hideModal('afoiModal'); }
 
         const S = {
             risks: {aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false},
@@ -3293,7 +3313,7 @@
                     if (riskId) {
                         if (!mitigations[riskId]) mitigations[riskId] = [];
                         if (chip.classList.contains('on')) {
-                            mitigations[riskId].push(chip.textContent);
+                            mitigations[riskId].push(chip.textContent.replace('ⓘ', '').trim());
                         }
                     }
                 }
@@ -3549,14 +3569,12 @@
             originalTogglePostIntub(row);
             syncToFirebase();
         };
-        
-        // Also sync when mitigation chips are toggled
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('mit-chip')) {
-                // Small delay to let the toggle happen first
-                setTimeout(syncToFirebase, 10);
-            }
-        });
+
+        const originalToggleMitChip = toggleMitChip;
+        toggleMitChip = function(event, chip, riskId) {
+            originalToggleMitChip(event, chip, riskId);
+            syncToFirebase();
+        };
         
         // Call updateCounts directly since script is at end of body (DOM is already loaded)
         updateCounts();
