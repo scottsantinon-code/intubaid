@@ -1614,6 +1614,130 @@
             color: var(--orange);
         }
 
+        .assess-subtext {
+            display: block;
+            font-size: 12px;
+            color: var(--label-tertiary);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .macocha-badge {
+            font-size: 10px;
+            padding: 1px 6px;
+            background: rgba(139, 92, 246, 0.12);
+            color: #7C3AED;
+            border-radius: 4px;
+            font-weight: 600;
+            flex-shrink: 0;
+            letter-spacing: 0.2px;
+        }
+
+        .assess-row.on .macocha-badge {
+            background: #7C3AED;
+            color: #fff;
+        }
+
+        .assess-context {
+            font-size: 12px;
+            color: var(--orange);
+            margin-top: 4px;
+            line-height: 1.3;
+            display: none;
+        }
+
+        .assess-row.on .assess-context {
+            display: block;
+        }
+
+        .macocha-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: #7C3AED;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 10px 14px 6px;
+            background: rgba(139, 92, 246, 0.08);
+        }
+
+        .macocha-header-sub {
+            font-size: 10px;
+            font-weight: 400;
+            text-transform: none;
+            color: rgba(124, 58, 237, 0.6);
+            margin-left: 6px;
+        }
+
+        .score-bar {
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-grouped);
+            border-top: 0.5px solid var(--separator);
+            padding: 12px 16px 16px;
+            margin: 0 -16px -16px;
+        }
+
+        .score-track {
+            height: 4px;
+            background: var(--fill);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .score-track-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            background: var(--label-tertiary);
+        }
+
+        .risk-badge {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 100px;
+            transition: all 0.2s;
+        }
+
+        .score-context {
+            font-size: 13px;
+            color: var(--label-secondary);
+            line-height: 1.4;
+            min-height: 18px;
+            margin-top: 4px;
+        }
+
+        .about-score {
+            margin-top: 16px;
+            padding: 12px 14px;
+            background: var(--fill-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .about-score-hdr {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--label-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .about-score-body {
+            display: none;
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--label-tertiary);
+        }
+
+        .about-score.open .about-score-body {
+            display: block;
+        }
+
         .next-btn-container {
             display: flex;
             justify-content: flex-end;
@@ -2098,32 +2222,186 @@
     <div class="modal-overlay" id="difficultyModal" onclick="if(event.target===this)hideDifficultyAssess()">
         <div class="modal">
             <div class="modal-header">
-                <span class="modal-title">Difficult Airway Features</span>
+                <span class="modal-title">Difficult Airway Assessment</span>
                 <button class="modal-close" onclick="hideDifficultyAssess()">✕</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding-bottom: 120px;">
+                <p style="font-size: 12px; color: var(--label-tertiary); margin: 0 0 12px; line-height: 1.4;">Tap findings present. Items marked <span class="macocha-badge">M</span> contribute to the MACOCHA score.</p>
+
                 <div class="assess-card">
                     <div class="assess-section-hdr">Look externally</div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Facial trauma / burns</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Large beard</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Obesity / large neck</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Short thyromental distance</span></div>
-                    
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1"><span class="chk-text">Facial trauma / burns</span></div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1"><span class="chk-text">Large beard</span></div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Obesity / large neck</span>
+                            <span class="assess-context">Rapid desaturation. Consider ramped positioning and NIV preoxygenation.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Short thyro/hyomental distance</span>
+                            <span class="assess-subtext">Hyomental distance LR+ 6.4 for difficult intubation (Detsky 2019)</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Retrognathia</span>
+                            <span class="assess-subtext">LR+ 6.0 for difficult intubation</span>
+                        </div>
+                    </div>
+
                     <div class="assess-section-hdr">Look in mouth</div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mouth opening &lt;3 fingers</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Mallampati III or IV</span></div>
-                    
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="mouth" data-pts="1">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Mouth opening &lt;3 fingers</span>
+                                <span class="macocha-badge">M +1</span>
+                            </div>
+                            <span class="assess-subtext">LR+ 3.6. MACOCHA uses &lt;3 cm threshold.</span>
+                            <span class="assess-context">MACOCHA +1. Consider smaller blade or hyperangulated VL.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="mallampati" data-pts="5">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Mallampati III or IV</span>
+                                <span class="macocha-badge">M +5</span>
+                            </div>
+                            <span class="assess-subtext">LR+ 4.1 — heaviest MACOCHA weighting</span>
+                            <span class="assess-context">MACOCHA +5. Strongest anatomical predictor. VL as primary device.</span>
+                        </div>
+                    </div>
+
                     <div class="assess-section-hdr">Neck mobility</div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">C-spine immobilisation</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Ankylosing spondylitis / RA</span></div>
-                    
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="cspine" data-pts="1">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Reduced cervical mobility</span>
+                                <span class="macocha-badge">M +1</span>
+                            </div>
+                            <span class="assess-subtext">C-spine immobilisation, AS, RA, prior surgery. LR+ 4.2.</span>
+                            <span class="assess-context">MACOCHA +1. Hyperangulated blade or VAFI recommended.</span>
+                        </div>
+                    </div>
+
                     <div class="assess-section-hdr">Obstruction / pathology</div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Stridor / hoarse voice</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Neck mass / radiation</span></div>
-                    <div class="assess-row" onclick="toggleAssess(this)"><div class="chk"></div><span class="chk-text">Epiglottitis / angioedema</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Stridor / hoarse voice</span>
+                            <span class="assess-context">May indicate supraglottic obstruction. Consider awake technique.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1"><span class="chk-text">Neck mass / radiation</span></div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Epiglottitis / angioedema</span>
+                            <span class="assess-context">Dynamic obstruction — consider awake technique or double setup.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="" data-pts="0">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <span class="chk-text">Previous difficult intubation</span>
+                            <span class="assess-subtext">LR+ 16–19 — strongest single predictor of all</span>
+                            <span class="assess-context">Strongest predictor. Review previous anaesthetic records if available.</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="assess-result" id="assessResult">0 features identified</div>
-                <button class="modal-done-btn" onclick="hideDifficultyAssess()">Done</button>
+
+                <!-- MACOCHA clinical context section -->
+                <div class="assess-card" style="margin-top: 16px;">
+                    <div class="macocha-header">MACOCHA — clinical context <span class="macocha-header-sub">auto-scored from above where applicable</span></div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="osa" data-pts="2">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Obstructive sleep apnoea</span>
+                                <span class="macocha-badge">M +2</span>
+                            </div>
+                            <span class="assess-context">MACOCHA +2. Rapid desaturation on apnoea. Maximise preoxygenation.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="coma" data-pts="1">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Coma (GCS &lt;8)</span>
+                                <span class="macocha-badge">M +1</span>
+                            </div>
+                            <span class="assess-context">MACOCHA +1. Cannot cooperate with positioning or assessment.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="hypoxia" data-pts="1">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Severe hypoxia (SpO₂ &lt;80%)</span>
+                                <span class="macocha-badge">M +1</span>
+                            </div>
+                            <span class="assess-context">MACOCHA +1. Minimal safe apnoea time. Apnoeic oxygenation essential.</span>
+                        </div>
+                    </div>
+                    <div class="assess-row" onclick="toggleAssess(this)" data-macocha="operator" data-pts="1">
+                        <div class="chk"></div>
+                        <div style="flex:1">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <span class="chk-text">Non-anaesthesiologist operator</span>
+                                <span class="macocha-badge">M +1</span>
+                            </div>
+                            <span class="assess-context">MACOCHA +1. Consider requesting anaesthesia support.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About this score -->
+                <div class="about-score" onclick="this.classList.toggle('open')">
+                    <div class="about-score-hdr">
+                        <span>About this score</span>
+                        <span style="font-size: 12px;">▾</span>
+                    </div>
+                    <div class="about-score-body">
+                        <p><strong>MACOCHA score</strong> — De Jong et al. 2013. Developed from 1,000 consecutive ICU intubations across 42 centres, validated in 400 from 18 centres. AUC 0.89. At a cutoff of ≥3: sensitivity 73%, specificity 89%, NPV 98%, PPV 36%.</p>
+                        <p style="margin-top:8px"><strong>Likelihood ratios</strong> — Detsky et al. JAMA 2019. Systematic review of 62 studies (n=33,559). All LR+ values derived from direct laryngoscopy in operating room settings.</p>
+                        <p style="margin-top:8px"><strong>Limitations:</strong> Both the MACOCHA score and the JAMA likelihood ratios were validated using direct laryngoscopy. Video laryngoscopy substantially reduces difficulty rates and may alter the predictive value of individual findings. The three risk bands (low / moderate / high) shown below are a clinical interpretation of the score range — the original study validated a single cutoff of ≥3.</p>
+                    </div>
+                </div>
+
+                <!-- Spacer for sticky score bar -->
+                <div style="height: 20px;"></div>
+            </div>
+
+            <!-- Sticky score bar -->
+            <div class="score-bar" id="macScoreBar">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <span style="font-size: 13px; color: var(--label-secondary);">MACOCHA score</span>
+                        <span id="macScoreNum" style="font-size: 22px; font-weight: 700; margin-left: 8px;">0</span>
+                        <span style="font-size: 13px; color: var(--label-tertiary);">/12</span>
+                    </div>
+                    <span class="risk-badge" id="macRiskBadge" style="background: var(--fill); color: var(--label-secondary);">Low risk</span>
+                </div>
+                <div class="score-context" id="macContext">Score &lt;3: NPV 97–98% — difficult intubation unlikely</div>
+                <div class="score-track">
+                    <div class="score-track-fill" id="macTrackFill"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -2981,21 +3259,64 @@
             hideModal('disclaimerModal');
         }
 
+        // MACOCHA scoring state
+        const macScoreItems = {};
+
         function toggleAssess(row) {
             const chk = row.querySelector('.chk');
             chk.classList.toggle('on');
             row.classList.toggle('on');
-            updateAssessCount();
+
+            // Update MACOCHA score if this row contributes
+            const macKey = row.dataset.macocha;
+            const pts = parseInt(row.dataset.pts) || 0;
+            if (macKey && pts > 0) {
+                macScoreItems[macKey] = chk.classList.contains('on') ? pts : 0;
+            }
+
+            updateMacScore();
         }
-        
-        function updateAssessCount() {
-            const count = document.querySelectorAll('.assess-row .chk.on').length;
-            const result = document.getElementById('assessResult');
-            result.textContent = count + ' feature' + (count !== 1 ? 's' : '') + ' identified';
-            result.classList.toggle('warning', count > 0);
-            
-            // Auto-toggle difficult airway if features found
-            if (count > 0 && !S.risks.difficult) {
+
+        function updateMacScore() {
+            const macScore = Object.values(macScoreItems).reduce((a, b) => a + b, 0);
+            const totalFeatures = document.querySelectorAll('#difficultyModal .assess-row .chk.on').length;
+
+            document.getElementById('macScoreNum').textContent = macScore;
+
+            const badge = document.getElementById('macRiskBadge');
+            const track = document.getElementById('macTrackFill');
+            const ctx = document.getElementById('macContext');
+
+            track.style.width = Math.round((macScore / 12) * 100) + '%';
+
+            if (macScore === 0 && totalFeatures === 0) {
+                badge.textContent = 'Low risk';
+                badge.style.background = 'var(--fill)';
+                badge.style.color = 'var(--label-secondary)';
+                track.style.background = 'var(--label-tertiary)';
+                ctx.textContent = 'Score <3: NPV 97–98% — difficult intubation unlikely';
+            } else if (macScore < 3) {
+                badge.textContent = 'Low risk';
+                badge.style.background = 'rgba(48, 209, 88, 0.12)';
+                badge.style.color = '#248A3D';
+                track.style.background = 'var(--green)';
+                ctx.textContent = totalFeatures + ' feature' + (totalFeatures !== 1 ? 's' : '') + ' identified. MACOCHA <3: NPV 97–98%. Standard preparation usually sufficient.';
+            } else if (macScore <= 6) {
+                badge.textContent = 'Moderate risk';
+                badge.style.background = 'rgba(245, 158, 11, 0.12)';
+                badge.style.color = '#946800';
+                track.style.background = 'var(--orange)';
+                ctx.textContent = 'MACOCHA ≥3. Plan for difficulty: VL as primary device, experienced operator, double setup.';
+            } else {
+                badge.textContent = 'High risk';
+                badge.style.background = 'rgba(255, 69, 58, 0.12)';
+                badge.style.color = '#D70015';
+                track.style.background = 'var(--red)';
+                ctx.textContent = 'MACOCHA ≥7. Strongly consider awake technique, anaesthesia backup, or surgical airway standby.';
+            }
+
+            // Auto-toggle the difficult airway risk on the main screen if any features identified
+            if (totalFeatures > 0 && !S.risks.difficult) {
                 toggleRisk('difficult');
             }
         }
@@ -3065,7 +3386,15 @@
             // Reset post-intub section
             document.querySelector('.section-hdr.collapsible').classList.remove('open');
             document.getElementById('postIntubList').style.display = 'none';
-            
+
+            // Reset MACOCHA score state
+            Object.keys(macScoreItems).forEach(k => macScoreItems[k] = 0);
+            document.querySelectorAll('#difficultyModal .assess-row').forEach(row => {
+                row.classList.remove('on');
+                row.querySelector('.chk').classList.remove('on');
+            });
+            updateMacScore();
+
             // Go back to home
             currentPhase = null;
             document.getElementById('phaseNav').style.display = 'none';
