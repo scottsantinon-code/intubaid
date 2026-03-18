@@ -2395,11 +2395,11 @@
                         <div class="airway-option-group" id="adjunctGroup">
                             <div class="airway-option-label">Adjunct</div>
                             <div class="airway-options">
-                                <button class="airway-opt sel" data-adjunct="none" onclick="selectAirwayAdjunct('none', this)">None</button>
+                                <button class="airway-opt" data-adjunct="none" onclick="selectAirwayAdjunct('none', this)">None</button>
                                 <button class="airway-opt" data-adjunct="bougie" onclick="selectAirwayAdjunct('bougie', this)">Bougie</button>
                                 <button class="airway-opt" data-adjunct="stylet" onclick="selectAirwayAdjunct('stylet', this)">Stylet</button>
                             </div>
-                            <div class="airway-nudge" id="adjunctNudge" style="display:none;"></div>
+                            <div class="airway-nudge" id="adjunctNudge"><a href="https://pubmed.ncbi.nlm.nih.gov/34388392/" target="_blank" style="color:inherit">STYLETO 2021</a>: Routine stylet use improved first-pass success vs tube alone in ICU.</div>
                         </div>
                     </div>
                     
@@ -2977,7 +2977,7 @@
             selectedDrugs: [],
             planType: 'standard',
             airwayDevice: 'vl-mac',
-            airwayAdjunct: 'none',
+            airwayAdjunct: null,
             preoxPlan: null,
             preoxStart: null, preoxTimer: null, preoxDone: false,
             paralysisStart: null, paralysisTimer: null
@@ -3387,24 +3387,29 @@
                 'vl-hyper': 'VL Hyperangulated'
             };
             const adjunctNames = {
-                'none': '',
+                'none': ' (no adjunct)',
                 'bougie': ' + bougie',
                 'stylet': ' + stylet'
             };
-            
-            const planAText = deviceNames[S.airwayDevice] + adjunctNames[S.airwayAdjunct];
+
+            let planAText = deviceNames[S.airwayDevice] || 'VL MAC';
+            if (S.airwayAdjunct === null) {
+                planAText += ' — adjunct not selected';
+            } else {
+                planAText += adjunctNames[S.airwayAdjunct] || '';
+            }
             document.getElementById('goPlanA').textContent = planAText;
-            
+
             // Build rescue options
             const rescueOptions = [];
-            
+
             // If not using hyperangulated, it's a rescue option
             if (S.airwayDevice !== 'vl-hyper') {
                 rescueOptions.push('hyperangulated blade');
             }
-            
+
             // If not using bougie or stylet, they're rescue options
-            if (S.airwayAdjunct === 'none') {
+            if (S.airwayAdjunct === 'none' || S.airwayAdjunct === null) {
                 rescueOptions.push('bougie or stylet');
             } else if (S.airwayAdjunct === 'bougie') {
                 rescueOptions.push('stylet');
@@ -3736,12 +3741,12 @@
                 risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false,agitated:false},
                 mitigations:{}, // Clear cached mitigation selections
                 checks:0, equip:0, selectedDrugs:[], planType:'standard',
-                airwayDevice:'vl-mac', airwayAdjunct:'none',
+                airwayDevice:'vl-mac', airwayAdjunct:null,
                 preoxPlan:null,
                 preoxStart:null, preoxTimer:null, preoxDone:false,
                 paralysisStart:null, paralysisTimer:null
             });
-            
+
             document.querySelectorAll('.toggle').forEach(t=>t.classList.remove('on'));
             document.querySelectorAll('.mit-section').forEach(m=>m.classList.remove('visible'));
             document.querySelectorAll('.mit-chip').forEach(c=>c.classList.remove('on'));
@@ -3749,12 +3754,16 @@
             document.querySelectorAll('.chk-row, .equip-row').forEach(r=>r.classList.remove('done'));
             document.querySelectorAll('.drug-btn').forEach(b=>b.classList.remove('sel'));
             document.querySelectorAll('.special-btn').forEach(b=>b.classList.remove('sel'));
-            
+
             // Reset airway options - use data attributes instead of onclick selectors
             document.querySelectorAll('.airway-opt').forEach(b=>b.classList.remove('sel'));
             document.querySelector('.airway-opt[data-device="vl-mac"]')?.classList.add('sel');
-            document.querySelector('.airway-opt[data-adjunct="none"]')?.classList.add('sel');
+            // No default adjunct - force active choice
             updateAirwayPlan();
+
+            // Show adjunct nudge on reset
+            const adjunctNudge = document.getElementById('adjunctNudge');
+            if (adjunctNudge) adjunctNudge.style.display = 'block';
 
             // Reset pre-ox selection
             document.querySelectorAll('.preox-card').forEach(c => c.classList.remove('sel'));
