@@ -2389,7 +2389,7 @@
                             <div class="airway-option-label">Device</div>
                             <div class="airway-options">
                                 <button class="airway-opt" data-device="direct" onclick="selectAirwayDevice('direct', this)">Direct</button>
-                                <button class="airway-opt sel" data-device="vl-mac" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
+                                <button class="airway-opt" data-device="vl-mac" onclick="selectAirwayDevice('vl-mac', this)">VL MAC</button>
                                 <button class="airway-opt" data-device="vl-hyper" onclick="selectAirwayDevice('vl-hyper', this)">VL Hyperangulated</button>
                             </div>
                             <div class="airway-nudge" id="deviceNudge" style="display:none;"></div>
@@ -3071,7 +3071,7 @@
             checks: 0, equip: 0,
             selectedDrugs: [],
             planType: 'standard',
-            airwayDevice: 'vl-mac',
+            airwayDevice: null,
             airwayAdjunct: null,
             preoxPlan: null,
             preoxStart: null, preoxTimer: null, preoxDone: false,
@@ -3487,13 +3487,20 @@
                 'stylet': ' + stylet'
             };
 
-            let planAText = deviceNames[S.airwayDevice] || 'VL MAC';
-            if (S.airwayAdjunct === null) {
-                planAText += ' — adjunct not selected';
+            const goPlanAEl = document.getElementById('goPlanA');
+            if (S.airwayDevice === null) {
+                goPlanAEl.textContent = 'Not selected';
+                goPlanAEl.style.color = 'var(--orange)';
             } else {
-                planAText += adjunctNames[S.airwayAdjunct] || '';
+                let planAText = deviceNames[S.airwayDevice] || S.airwayDevice;
+                if (S.airwayAdjunct === null) {
+                    planAText += ' — adjunct not selected';
+                } else {
+                    planAText += adjunctNames[S.airwayAdjunct] || '';
+                }
+                goPlanAEl.textContent = planAText;
+                goPlanAEl.style.color = '';
             }
-            document.getElementById('goPlanA').textContent = planAText;
 
             // Build rescue options
             const rescueOptions = [];
@@ -3841,7 +3848,7 @@
                 risks:{aspiration:false,difficult:false,haemo:false,hypoxia:false,acidaemia:false,icp:false,agitated:false},
                 mitigations:{}, // Clear cached mitigation selections
                 checks:0, equip:0, selectedDrugs:[], planType:'standard',
-                airwayDevice:'vl-mac', airwayAdjunct:null,
+                airwayDevice:null, airwayAdjunct:null,
                 preoxPlan:null,
                 preoxStart:null, preoxTimer:null, preoxDone:false,
                 paralysisStart:null, paralysisTimer:null
@@ -3855,10 +3862,8 @@
             document.querySelectorAll('.drug-btn').forEach(b=>b.classList.remove('sel'));
             document.querySelectorAll('.special-btn').forEach(b=>b.classList.remove('sel'));
 
-            // Reset airway options - use data attributes instead of onclick selectors
+            // Reset airway options - no defaults, force active choice
             document.querySelectorAll('.airway-opt').forEach(b=>b.classList.remove('sel'));
-            document.querySelector('.airway-opt[data-device="vl-mac"]')?.classList.add('sel');
-            // No default adjunct - force active choice
             updateAirwayPlan();
 
             // Reset pre-ox selection
