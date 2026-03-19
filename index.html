@@ -1180,6 +1180,7 @@
             max-height: 85vh;
             display: flex;
             flex-direction: column;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
         .modal-header {
@@ -3000,40 +3001,35 @@
                 pros: [
                     'Provides PEEP (with valve)',
                     'Confirm patient can be BVM ventilated and feel lung compliance before paralysis',
-                    'Familiar to all operators'
+                    'Familiar'
                 ],
                 cons: [
                     'PEEP only on expiration (not continuous)',
-                    'Requires good mask seal',
-                    'Must remove to laryngoscope'
+                    'Requires good mask seal'
                 ],
-                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" rel="noopener" style="color:var(--blue)">Casey 2019</a>: BVM during apnoea reduced hypoxia with no increase in aspiration.'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" rel="noopener" style="color:var(--blue)">Casey 2019</a> (NEJM): RCT of 401 ICU intubations. BVM ventilation during RSI vs no ventilation. BVM group had lower rates of severe hypoxia (SpO₂ <80%): 11% vs 23%. No difference in aspiration rates.'
             },
             'hfnp': {
                 title: 'HFNP',
                 pros: [
-                    'No device transitions — continuous through all phases',
-                    'Stays on during laryngoscopy'
+                    'No device transitions — continuous through all phases'
                 ],
                 cons: [
-                    'Requires HFNP equipment at bedside',
                     'NIV may be superior when P/F <200'
                 ],
-                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/33878297/" target="_blank" rel="noopener" style="color:var(--blue)">Sjöblom 2021</a>: Equivalent to anaesthetic circuit. <a href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener" style="color:var(--blue)">FLORALI-II</a>: NIV only superior when P/F <200.'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/33878297/" target="_blank" rel="noopener" style="color:var(--blue)">Sjöblom 2021</a>: RCT comparing HFNP vs anaesthetic circuit for preoxygenation. Equivalent EtO₂ achieved; HFNP is a valid alternative.<br><br><a href="https://pubmed.ncbi.nlm.nih.gov/31577153/" target="_blank" rel="noopener" style="color:var(--blue)">FLORALI-II 2019</a>: RCT of 313 ICU intubations. HFNP vs NIV showed no overall difference, but NIV was superior in the subgroup with P/F <200.'
             },
             'niv': {
                 title: 'NIV',
                 pros: [
                     'Best evidence for reducing peri-intubation hypoxia',
-                    'Provides PEEP + pressure support — best denitrogenation',
+                    'Provides PEEP + pressure support',
                     'Allows apnoeic ventilation after induction'
                 ],
                 cons: [
-                    'No oxygenation during laryngoscopy attempt',
-                    'Must remove mask to laryngoscope',
                     'Requires NIV equipment + setup time'
                 ],
-                evidence: '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" rel="noopener" style="color:var(--blue)">PREOXI 2024</a> (NEJM): NIV vs O₂ mask — hypoxia 9% vs 19% (NNT ~10), less cardiac arrest, no increase in aspiration. Settings: EPAP ≥5, IPAP ≥10, RR ≥10, FiO₂ 1.0. PIP <25 to minimise gastric insufflation.'
+                evidence: '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" rel="noopener" style="color:var(--blue)">PREOXI 2024</a> (NEJM): RCT of 1,301 ICU intubations. NIV preoxygenation vs oxygen mask. NIV reduced severe hypoxia (SpO₂ <85%): 9% vs 19% (NNT 10). Also reduced cardiac arrest. No increase in aspiration. Settings: EPAP ≥5, IPAP ≥10, RR ≥10, FiO₂ 1.0.'
             }
         };
 
