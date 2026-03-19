@@ -3797,24 +3797,24 @@
             track.style.width = Math.round((macScore / 12) * 100) + '%';
 
             if (macScore === 0 && totalFeatures === 0) {
-                badge.textContent = 'Low risk';
-                badge.style.background = 'var(--fill)';
-                badge.style.color = 'var(--label-secondary)';
+                badge.style.display = 'none';
                 track.style.background = 'var(--label-tertiary)';
                 ctx.textContent = 'Score <3: NPV 97–98% — difficult intubation unlikely';
             } else if (macScore < 3) {
-                badge.textContent = 'Low risk';
-                badge.style.background = 'rgba(48, 209, 88, 0.12)';
-                badge.style.color = '#248A3D';
-                track.style.background = 'var(--green)';
-                ctx.textContent = totalFeatures + ' feature' + (totalFeatures !== 1 ? 's' : '') + ' identified. MACOCHA <3: NPV 97–98%. Standard preparation usually sufficient.';
+                badge.style.display = 'none';
+                track.style.background = totalFeatures > 0 ? 'var(--green)' : 'var(--label-tertiary)';
+                ctx.textContent = totalFeatures > 0
+                    ? totalFeatures + ' feature' + (totalFeatures !== 1 ? 's' : '') + ' identified. MACOCHA <3: NPV 97–98%. Standard preparation usually sufficient.'
+                    : 'Score <3: NPV 97–98% — difficult intubation unlikely';
             } else if (macScore <= 6) {
+                badge.style.display = '';
                 badge.textContent = 'Moderate risk';
                 badge.style.background = 'rgba(245, 158, 11, 0.12)';
                 badge.style.color = '#946800';
                 track.style.background = 'var(--orange)';
                 ctx.textContent = 'MACOCHA ≥3. Plan for difficulty: VL as primary device, experienced operator, double setup.';
             } else {
+                badge.style.display = '';
                 badge.textContent = 'High risk';
                 badge.style.background = 'rgba(255, 69, 58, 0.12)';
                 badge.style.color = '#D70015';
