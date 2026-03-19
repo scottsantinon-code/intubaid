@@ -1548,7 +1548,17 @@
             height: 8px;
             background: #fff;
         }
-        
+
+        .session-indicator.sync-error {
+            background: rgba(255, 69, 58, 0.95);
+            animation: syncErrorPulse 0.3s ease-in-out 2;
+        }
+
+        @keyframes syncErrorPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         /* Work Together button */
         .collab-trigger {
             display: flex;
@@ -3251,7 +3261,7 @@
         }
         
         function expandRisk(id) {
-            const allRisks = ['aspiration', 'difficult', 'haemo', 'hypoxia', 'acidaemia', 'icp'];
+            const allRisks = ['aspiration', 'difficult', 'haemo', 'hypoxia', 'acidaemia', 'icp', 'agitated'];
             allRisks.forEach(rid => {
                 if (rid !== id && S.risks[rid]) {
                     collapseRisk(rid, false);
@@ -3455,11 +3465,13 @@
 
             // Show evidence nudge for no adjunct
             const adjunctNudge = document.getElementById('adjunctNudge');
-            if (adjunct === 'none') {
-                adjunctNudge.innerHTML = '<a href="https://pubmed.ncbi.nlm.nih.gov/34388392/" target="_blank" style="color:inherit">STYLETO 2021</a>: Routine stylet use improved first-pass success vs tube alone in ICU.';
-                adjunctNudge.style.display = 'block';
-            } else {
-                adjunctNudge.style.display = 'none';
+            if (adjunctNudge) {
+                if (adjunct === 'none') {
+                    adjunctNudge.innerHTML = '<a href="https://pubmed.ncbi.nlm.nih.gov/34388392/" target="_blank" style="color:inherit">STYLETO 2021</a>: Routine stylet use improved first-pass success vs tube alone in ICU.';
+                    adjunctNudge.style.display = 'block';
+                } else {
+                    adjunctNudge.style.display = 'none';
+                }
             }
 
             updateAirwayPlan();
@@ -3524,7 +3536,13 @@
             
             // Update airway tab rescue text
             const rescueEl = document.getElementById('airwayRescueText');
-            rescueEl.textContent = 'If first attempt fails: ' + rescueOptions.slice(0, -1).join(', ') + ', or ' + rescueOptions[rescueOptions.length - 1];
+            if (rescueEl) {
+                if (rescueOptions.length > 1) {
+                    rescueEl.textContent = 'If first attempt fails: ' + rescueOptions.slice(0, -1).join(', ') + ', or ' + rescueOptions[rescueOptions.length - 1];
+                } else {
+                    rescueEl.textContent = 'If first attempt fails: ' + rescueOptions[0];
+                }
+            }
             
             // Update GO page rescue text
             const goRescueEl = document.getElementById('goRescue');
@@ -4397,14 +4415,37 @@
         }
         
         // Sync current state to Firebase
+        let syncRetryCount = 0;
+        const MAX_SYNC_RETRIES = 3;
+
         function syncToFirebase() {
             if (!currentSession || isApplyingRemote) return;
-            
+
             const data = getShareableState();
             const updateRef = window.firebaseRef(window.firebaseDB, 'sessions/' + currentSession);
-            
+
             // Use update to merge without overwriting host/devices/createdAt
-            window.firebaseUpdate(updateRef, data).catch(err => console.error('Sync error:', err));
+            window.firebaseUpdate(updateRef, data)
+                .then(() => {
+                    syncRetryCount = 0; // Reset on success
+                })
+                .catch(err => {
+                    console.error('Sync error:', err);
+                    syncRetryCount++;
+
+                    // Retry logic for transient failures
+                    if (syncRetryCount <= MAX_SYNC_RETRIES) {
+                        setTimeout(() => syncToFirebase(), 1000 * syncRetryCount);
+                    } else {
+                        // Show user feedback after multiple failures
+                        const indicator = document.getElementById('sessionIndicator');
+                        if (indicator) {
+                            indicator.classList.add('sync-error');
+                            setTimeout(() => indicator.classList.remove('sync-error'), 3000);
+                        }
+                        syncRetryCount = 0;
+                    }
+                });
         }
         
         // Modify existing toggle functions to sync
