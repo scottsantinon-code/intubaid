@@ -1853,7 +1853,6 @@
             font-size: 16px;
             font-weight: 500;
             color: var(--label);
-            flex: 1;
         }
 
         .preox-card.sel .preox-title { color: var(--blue); }
@@ -1920,17 +1919,14 @@
         .preox-bar.blue { background: var(--blue); }
 
         .preox-info-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--fill);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 20px;
             color: var(--blue);
             cursor: pointer;
             flex-shrink: 0;
+            margin-left: auto;
         }
 
         .preox-info-btn:active { opacity: 0.6; }
@@ -2297,11 +2293,11 @@
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
                             <span class="preox-title">BVM</span>
-                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('bvm')">ⓘ</span>
                             <div class="preox-np-toggle" onclick="event.stopPropagation();togglePreoxNP(this)">
                                 <span class="preox-np-label">+ NP</span>
                                 <div class="preox-tog-track"><div class="preox-tog-thumb"></div></div>
                             </div>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('bvm')">ⓘ</span>
                         </div>
                         <div class="preox-body">
                             <div class="preox-timeline">
@@ -2995,16 +2991,15 @@
                     'NP provides apnoeic oxygenation through all phases'
                 ],
                 cons: [
-                    'No PEEP — no alveolar recruitment',
-                    'Early desat in well-preoxygenated patient is usually shunt from atelectasis, not low PAO₂'
+                    'No PEEP — no alveolar recruitment'
                 ],
                 evidence: null
             },
             'bvm': {
                 title: 'BVM',
                 pros: [
-                    'Provides PEEP (with valve) — alveolar recruitment',
-                    'Allows assessment of lung compliance before paralysis',
+                    'Provides PEEP (with valve)',
+                    'Confirm patient can be BVM ventilated and feel lung compliance before paralysis',
                     'Familiar to all operators'
                 ],
                 cons: [
