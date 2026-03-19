@@ -689,60 +689,56 @@
             box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);
         }
         
-        /* Drug Info Card */
+        /* Drug Info Card - subtle styling */
         .drug-info-card {
-            background: var(--bg-grouped);
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-top: 12px;
-            box-shadow: 0 0 0 0.5px rgba(0,0,0,0.04);
+            border-left: 2px solid var(--separator);
+            padding: 8px 0 8px 12px;
+            margin-top: 10px;
+            margin-left: 4px;
         }
-        
+
         .drug-info-item {
-            padding: 8px 0;
+            padding: 4px 0;
         }
-        
+
         .drug-info-item + .drug-info-item {
             border-top: 0.5px solid var(--separator);
             margin-top: 4px;
-            padding-top: 10px;
+            padding-top: 6px;
         }
-        
+
         .drug-info-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--label);
-            margin-bottom: 4px;
-        }
-        
-        .drug-info-pros, .drug-info-cons {
-            font-size: 14px;
-            line-height: 1.4;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--label-secondary);
             margin-bottom: 2px;
         }
-        
-        .drug-info-pros {
-            color: var(--green);
+
+        .drug-info-pros, .drug-info-cons {
+            font-size: 12px;
+            line-height: 1.35;
+            margin-bottom: 1px;
         }
-        
+
+        .drug-info-pros {
+            color: var(--label-secondary);
+        }
+
         .drug-info-cons {
-            color: var(--red);
+            color: var(--label-tertiary);
         }
         
         .info-label {
-            font-weight: 600;
-            margin-right: 3px;
+            font-weight: 500;
+            margin-right: 2px;
         }
         
         .drug-info-evidence {
-            font-size: 13px;
-            color: var(--label-secondary);
+            font-size: 11px;
+            color: var(--label-tertiary);
             font-style: italic;
-            margin-top: 4px;
-            padding: 8px;
-            background: var(--fill);
-            border-radius: 6px;
-            line-height: 1.4;
+            margin-top: 3px;
+            line-height: 1.35;
         }
 
         .drug-info-evidence a {
@@ -2345,7 +2341,6 @@
                                 <div class="preox-lane"><span class="preox-label">NIV</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
                                 <div class="preox-lane"><span class="preox-label preox-label-sm">EPAP ≥5 · IPAP ≥10 · RR ≥10 · FiO₂ 1.0</span></div>
                             </div>
-                            <div class="preox-warn">No oxygenation during laryngoscopy attempt</div>
                         </div>
                     </div>
                 </div>
@@ -2393,7 +2388,7 @@
             <div class="panel" id="airway-panel">
                 <div class="card" style="padding: 16px;">
                     <div class="airway-section">
-                        <div class="airway-section-title">Plan A — First attempt</div>
+                        <div class="airway-section-title">Plan A</div>
                         
                         <div class="airway-option-group" id="deviceGroup">
                             <div class="airway-option-label">Device</div>
@@ -2417,7 +2412,7 @@
                     </div>
                     
                     <div class="airway-rescue" id="airwayRescue">
-                        <div class="airway-section-title">Plan A rescue</div>
+                        <div class="airway-option-label">Rescue</div>
                         <div class="airway-rescue-text" id="airwayRescueText">
                             If first attempt fails: hyperangulated blade, bougie or stylet, or reposition
                         </div>
@@ -3033,13 +3028,13 @@
                 title: 'NIV',
                 pros: [
                     'Best evidence for reducing peri-intubation hypoxia',
-                    'Provides PEEP + pressure support',
-                    'Allows apnoeic ventilation after induction'
+                    'Provides PEEP + pressure support during pre-oxygenation',
+                    'Continues mandatory ventilation through apnoea until laryngoscopy'
                 ],
                 cons: [
                     'Requires NIV equipment + setup time'
                 ],
-                evidence: '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" rel="noopener" style="color:var(--blue)">PREOXI 2024</a> (NEJM): RCT of 1,301 ICU intubations. NIV preoxygenation vs oxygen mask. NIV reduced severe hypoxia (SpO₂ <85%): 9% vs 19% (NNT 10). Also reduced cardiac arrest. No increase in aspiration. Settings: EPAP ≥5, IPAP ≥10, RR ≥10, FiO₂ 1.0.'
+                evidence: '<a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2303564" target="_blank" rel="noopener" style="color:var(--blue)">PREOXI 2024</a> (NEJM): RCT of 1,301 ICU intubations. NIV vs mask during pre-oxygenation and apnoea. NIV reduced severe hypoxia (SpO₂ <85%): 9% vs 19% (NNT 10). Also reduced cardiac arrest. No increase in aspiration. Protocol: EPAP ≥5, IPAP ≥10, backup RR ≥10, FiO₂ 1.0 — maintained through apnoea until mask removal for laryngoscopy.'
             }
         };
 
