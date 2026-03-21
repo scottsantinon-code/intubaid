@@ -1905,6 +1905,7 @@
         }
 
         .preox-label-sm { font-size: 10px; }
+        .preox-label-full { width: 100%; text-align: center; }
 
         .preox-track {
             flex: 1;
@@ -2281,17 +2282,21 @@
             <!-- Pre-oxygenation -->
             <div class="panel" id="preox-panel">
                 <div class="preox-cards">
-                    <div class="preox-card" onclick="selectPreox('np-nrb', this)">
+                    <div class="preox-card" onclick="selectPreox('nrb', this)">
                         <div class="preox-hdr">
                             <div class="preox-radio"></div>
-                            <span class="preox-title">NP + NRB</span>
-                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('np-nrb')">ⓘ</span>
+                            <span class="preox-title">NRB</span>
+                            <div class="preox-np-toggle" onclick="event.stopPropagation();togglePreoxNP(this)">
+                                <span class="preox-np-label">+ NP</span>
+                                <div class="preox-tog-track"><div class="preox-tog-thumb"></div></div>
+                            </div>
+                            <span class="preox-info-btn" onclick="event.stopPropagation();showPreoxInfo('nrb')">ⓘ</span>
                         </div>
                         <div class="preox-body">
                             <div class="preox-timeline">
                                 <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
                                 <div class="preox-lane"><span class="preox-label">NRB</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
-                                <div class="preox-lane"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar blue" style="width:100%"></div></div></div>
+                                <div class="preox-lane preox-np-lane" style="display:none"><span class="preox-label">NP 15 L</span><div class="preox-track"><div class="preox-bar blue" style="width:100%"></div></div></div>
                             </div>
                         </div>
                     </div>
@@ -2339,7 +2344,7 @@
                             <div class="preox-timeline">
                                 <div class="preox-phases-hdr"><span>Pre-ox</span><span>Apnoea</span><span>Attempt</span></div>
                                 <div class="preox-lane"><span class="preox-label">NIV</span><div class="preox-track"><div class="preox-bar blue" style="width:66.6%"></div></div></div>
-                                <div class="preox-lane"><span class="preox-label preox-label-sm">EPAP ≥5 · IPAP ≥10 · RR ≥10 · FiO₂ 1.0</span></div>
+                                <div class="preox-lane"><span class="preox-label preox-label-sm preox-label-full">EPAP ≥5 · IPAP ≥10 · RR ≥10 · FiO₂ 1.0</span></div>
                             </div>
                         </div>
                     </div>
@@ -2990,11 +2995,11 @@
         function hideDsiInfo() { hideModal('dsiModal'); }
 
         const PREOX_INFO = {
-            'np-nrb': {
-                title: 'NP + NRB',
+            'nrb': {
+                title: 'Non-Rebreather Mask',
                 pros: [
                     'Simple setup, universally available',
-                    'NP provides apnoeic oxygenation through all phases'
+                    'Add nasal prongs for apnoeic oxygenation through all phases'
                 ],
                 cons: [
                     'No PEEP — no alveolar recruitment'
@@ -3005,14 +3010,14 @@
                 title: 'BVM',
                 pros: [
                     'Provides PEEP (with valve)',
-                    'Confirm patient can be BVM ventilated and feel lung compliance before paralysis',
+                    'Opportunity to assess mask seal and ventilation before committing to paralysis',
                     'Familiar'
                 ],
                 cons: [
                     'PEEP only on expiration (not continuous)',
                     'Requires good mask seal'
                 ],
-                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" rel="noopener" style="color:var(--blue)">Casey 2019</a> (NEJM): RCT of 401 ICU intubations. BVM ventilation during RSI vs no ventilation. BVM group had lower rates of severe hypoxia (SpO₂ <80%): 11% vs 23%. No difference in aspiration rates.'
+                evidence: '<a href="https://pubmed.ncbi.nlm.nih.gov/30721296/" target="_blank" rel="noopener" style="color:var(--blue)">Casey 2019</a> (NEJM): RCT of 401 ICU intubations. BVM ventilation during RSI vs no ventilation. BVM group had lower rates of severe hypoxia (SpO₂ <80%): 11% vs 23%. No difference in aspiration rates.<br><br><em>Note: Study excluded patients at highest aspiration risk (active vomiting, bowel obstruction, upper GI bleeding).</em>'
             },
             'hfnp': {
                 title: 'HFNP',
@@ -3421,6 +3426,8 @@
             // Update the plan name to reflect NP choice
             if (S.preoxPlan === 'bvm' || S.preoxPlan === 'bvm-np') {
                 S.preoxPlan = tog.classList.contains('on') ? 'bvm-np' : 'bvm';
+            } else if (S.preoxPlan === 'nrb' || S.preoxPlan === 'nrb-np') {
+                S.preoxPlan = tog.classList.contains('on') ? 'nrb-np' : 'nrb';
             }
             syncToFirebase();
         }
@@ -3709,7 +3716,8 @@
             const goPreox = document.getElementById('goPreox');
             if (goPreox) {
                 const preoxLabels = {
-                    'np-nrb': 'NP + NRB',
+                    'nrb': 'NRB',
+                    'nrb-np': 'NRB + NP',
                     'bvm': 'BVM',
                     'bvm-np': 'BVM + NP',
                     'hfnp': 'HFNP',
@@ -4358,11 +4366,11 @@
                         // Find and select the matching card
                         const planKey = S.preoxPlan.replace('-np', '');
                         const cards = document.querySelectorAll('.preox-card');
-                        const planMap = ['np-nrb', 'bvm', 'hfnp', 'niv'];
+                        const planMap = ['nrb', 'bvm', 'hfnp', 'niv'];
                         const idx = planMap.indexOf(planKey);
                         if (idx >= 0 && cards[idx]) {
                             cards[idx].classList.add('sel');
-                            if (S.preoxPlan === 'bvm-np') {
+                            if (S.preoxPlan === 'bvm-np' || S.preoxPlan === 'nrb-np') {
                                 const tog = cards[idx].querySelector('.preox-np-toggle');
                                 if (tog) {
                                     tog.classList.add('on');
